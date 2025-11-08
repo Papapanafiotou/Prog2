@@ -64,3 +64,31 @@ with fitz.open(pdf_path) as doc, open(csv_path, "w", newline="", encoding="utf-8
         writer.writerow([code, description, amount1, amount2, amount3])
 
 print("ministries.csv is made successfully")
+
+##################
+# ΕΞΑΓΩΓΗ ΕΞΟΔΩΝ
+##################
+
+print("expenses.csv is being made")
+
+pattern = re.compile(r"(\d{2,}\.)\s+(.*?)\s+([\d\.]+)", re.DOTALL)
+
+with fitz.open(pdf_path) as doc, open(csv_path3, "w", newline="", encoding="utf-8") as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["Κωδικός", "Τύπος Εξόδου","Ποσό"])
+    pageindex = 0
+    full_text = ""
+    page = doc[1]
+    full_text += page.get_text("text") + "\n"
+    expenses_text_block = full_text.split("2. ΕΞΟΔΑ")[1]
+    expenses_text_block = expenses_text_block.split("3. ΑΠΟΤΕΛΕΣΜΑ")[0]
+    for match in pattern.findall(expenses_text_block):
+       code = match[0]
+       description = match[1]
+       amount = match[2]
+       clean_code = code.strip().replace('.', '')
+       clean_desc = " ".join(description.strip().split()).replace('»', '').strip()
+       clean_amount = amount.strip().replace('.', '')
+       writer.writerow([clean_code, clean_desc, clean_amount])
+
+print("expenses.csv is made successfully")
