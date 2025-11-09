@@ -17,7 +17,6 @@ pattern = re.compile(r"(\d{2,}\.)\s+(.*?)\s+([\d\.]+)", re.DOTALL)
 with fitz.open(pdf_path) as doc, open(csv_path2, "w", newline="", encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(["Κωδικός", "Τύπος Εσόδου","Ποσό"]) 
-    pageindex = 0
     full_text = ""
     page = doc[1]
     full_text += page.get_text("text") + "\n"
@@ -45,7 +44,6 @@ pattern = re.compile(r'(\d{4,})\s+((?:Υπουργ|Αποκεντρ|Προεδρ
 with fitz.open(pdf_path) as doc, open(csv_path, "w", newline="", encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(["Κωδικός", "Φορέας", "Τακτικός Προϋπολογισμός", "ΠΔΕ", "Σύνολο"])
-    pageindex = 0
     full_text = ""
     page = doc[2]
     full_text += page.get_text("text") + "\n"
@@ -76,7 +74,6 @@ pattern = re.compile(r"(\d{2,}\.)\s+(.*?)\s+([\d\.]+)", re.DOTALL)
 with fitz.open(pdf_path) as doc, open(csv_path3, "w", newline="", encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(["Κωδικός", "Τύπος Εξόδου","Ποσό"])
-    pageindex = 0
     full_text = ""
     page = doc[1]
     full_text += page.get_text("text") + "\n"
