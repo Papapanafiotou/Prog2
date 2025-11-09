@@ -7,6 +7,7 @@ echo     Python scripts setup for StateWallet
 echo ==================================================
 echo.
 
+echo [INFO] Checking if Python is installed
 REM === Cheching if Python is installed ===
 python --version >nul 2>&1
 IF ERRORLEVEL 1 (
