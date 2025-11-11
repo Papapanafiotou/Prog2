@@ -26,17 +26,18 @@ public class MockDataBase {
                                     " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                                     " ministry TEXT NOT NULL," +
                                     " category TEXT NOT NULL," +
-                                    " amount REAL NOT NULL" +
+                                    " amount REAL NOT NULL," +   // μεταβλητό ποσό λογαριασμού //
+                                    " original_amount REAL NOT NULL" + // σταθερό ποσό λογαριασμού //
                                     ");";
             stmt.executeUpdate(createTableSql);
             System.out.println("Ο νέος πίνακας 'budget' δημιουργήθηκε.");
 
             // 3. Βάζουμε τα ψεύτικα (mock) δεδομένα
             System.out.println("Εισαγωγή ψεύτικων δεδομένων...");
-            stmt.addBatch("INSERT INTO budget (ministry, category, amount) VALUES ('Υπουργείο Παιδείας', 'Μισθοί', 1200000.50);");
-            stmt.addBatch("INSERT INTO budget (ministry, category, amount) VALUES ('Υπουργείο Υγείας', 'Εξοπλισμός', 750000.00);");
-            stmt.addBatch("INSERT INTO budget (ministry, category, amount) VALUES ('Υπουργείο Άμυνας', 'Συντήρηση', 500000.25);");
-            stmt.addBatch("INSERT INTO budget (ministry, category, amount) VALUES ('Υπουργείο Πολιτισμού', 'Εκδηλώσεις', 150000.00);");
+            stmt.addBatch("INSERT INTO budget (ministry, category, amount, original_amount) VALUES ('Υπουργείο Παιδείας', 'Μισθοί', 1200000.50, 1200000.50);");
+            stmt.addBatch("INSERT INTO budget (ministry, category, amount, original_amount) VALUES ('Υπουργείο Υγείας', 'Εξοπλισμός', 750000.00, 750000.00);");
+            stmt.addBatch("INSERT INTO budget (ministry, category, amount, original_amount) VALUES ('Υπουργείο Άμυνας', 'Συντήρηση', 500000.25, 500000.25);");
+            stmt.addBatch("INSERT INTO budget (ministry, category, amount, original_amount) VALUES ('Υπουργείο Πολιτισμού', 'Εκδηλώσεις', 150000.00, 150000.00);");
             
             stmt.executeBatch(); // Εκτέλεση όλων των εντολών μαζί
 
