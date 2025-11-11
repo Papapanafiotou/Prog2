@@ -98,34 +98,32 @@ public class StateWallet {
     public void changeBudget(Scanner scanner) {
         
         try {
-            // --- 1. ΣΥΛΛΟΓΗ ΔΕΔΟΜΕΝΩΝ ---
-            // Ρωτάμε για το ID
+            
+            // ID που θα αλλάξει //
             System.out.print("Δώσε το ID του στοιχείου που θες να αλλάξεις: ");
             String idString = scanner.nextLine();
-            int id = Integer.parseInt(idString); // Μετατροπή κειμένου σε αριθμό
+            int id = Integer.parseInt(idString); // Μετατροπή κειμένου σε αριθμό //
 
             // Ρωτάμε για το Ποσό
             System.out.print("Δώσε το νέο ποσό: ");
             String amountString = scanner.nextLine();
-            double newAmount = Double.parseDouble(amountString); // Μετατροπή σε double
+            double newAmount = Double.parseDouble(amountString); // Μετατροπή σε double //
 
-            // --- 2. ΕΛΕΓΧΟΣ ΠΕΡΙΟΡΙΣΜΩΝ ---
-            // Αυτή είναι η απαίτηση #4 της εργασίας
+            // Καλούμε μέθοδο ελέγχου περιορισμού //
             
             boolean answer =Constrains.negativeAmount(newAmount);
             
             if (answer == true){
                 return;
             }
-            // --- 3. ΕΚΤΕΛΕΣΗ (DATABASE UPDATE) ---
-            // Η SQL εντολή με "placeholders" (τα '?')
+            // Αλλαγή budget //
             String sql = "UPDATE budget SET amount = ? WHERE id = ?";
 
-            // Χρησιμοποιούμε try-with-resources ξανά, αυτή τη φορά με PreparedStatement
+            // Try-with-resources αυτή τη φορά με PreparedStatement //
             try (Connection conn = this.connect();
                  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-                // "Γεμίζουμε" τα ερωτηματικά με ασφάλεια
+                // "Γεμίζουμε" τα ερωτηματικά με ασφάλεια 
                 pstmt.setDouble(1, newAmount); // 1ο ερωτηματικό (?) είναι το ποσό
                 pstmt.setInt(2, id);         // 2ο ερωτηματικό (?) είναι το id
 
