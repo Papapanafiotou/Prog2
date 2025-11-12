@@ -85,7 +85,7 @@ public class StateWallet {
                 );
             }
         } catch (SQLException e) {
-            System.out.println("!! Σφάλμα κατά την εμφάνιση του προϋπολογισμού: " + e.getMessage());
+            System.out.println("Σφάλμα κατά την εμφάνιση του προϋπολογισμού: " + e.getMessage());
         }
     }
     
@@ -104,7 +104,7 @@ public class StateWallet {
             String idString = scanner.nextLine();
             int id = Integer.parseInt(idString); // Μετατροπή κειμένου σε αριθμό //
 
-            // Ρωτάμε για το Ποσό
+            // Εκγχώρηση νέου ποσού //
             System.out.print("Δώσε το νέο ποσό: ");
             String amountString = scanner.nextLine();
             double newAmount = Double.parseDouble(amountString); // Μετατροπή σε double //
@@ -123,38 +123,35 @@ public class StateWallet {
             try (Connection conn = this.connect();
                  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-                // "Γεμίζουμε" τα ερωτηματικά με ασφάλεια 
-                pstmt.setDouble(1, newAmount); // 1ο ερωτηματικό (?) είναι το ποσό
-                pstmt.setInt(2, id);         // 2ο ερωτηματικό (?) είναι το id
+            
+                pstmt.setDouble(1, newAmount); // 1ο ερωτηματικό ? είναι το ποσό //
+                pstmt.setInt(2, id);         // 2ο ερωτηματικό ? είναι το id //
 
-                // Εκτελούμε το update. 
-                // Αυτό επιστρέφει το πόσες γραμμές άλλαξαν.
+            
+                // Γραμμές που άλλαξαν //
                 int rowsAffected = pstmt.executeUpdate();
 
-                // 4. ΕΛΕΓΧΟΣ ΑΠΟΤΕΛΕΣΜΑΤΟΣ
+                // Έλεγχος αν άλλαξε κάποια γραμμή // 
                 if (rowsAffected > 0) {
-                    // Αν άλλαξε 1 (ή παραπάνω) γραμμές, πέτυχε
                     System.out.println("ΕΠΙΤΥΧΙΑ! Το ποσό για το ID " + id + " ενημερώθηκε.");
                 } else {
-                    // Αν άλλαξε 0 γραμμές, σημαίνει ότι δεν βρήκε το ID
-                    System.out.println("!! ΑΠΟΤΥΧΙΑ: Δεν βρέθηκε εγγραφή με ID " + id);
+                    System.out.println("ΑΠΟΤΥΧΙΑ: Δεν βρέθηκε εγγραφή με ID " + id);
                 }
             }
 
         } catch (NumberFormatException e) {
-            // Αυτό θα τρέξει αν ο χρήστης γράψει "abc" αντί για αριθμό
-            System.out.println("!! ΣΦΑΛΜΑ: Μη έγκυρη είσοδος. Παρακαλώ δώστε μόνο αριθμούς.");
+            System.out.println("ΣΦΑΛΜΑ: Μη έγκυρη είσοδος. Παρακαλώ δώστε μόνο αριθμούς.");
         } catch (SQLException e) {
-            System.out.println("!! Σφάλμα κατά την αλλαγή του προϋπολογισμού: " + e.getMessage());
+            System.out.println("Σφάλμα κατά την αλλαγή του προϋπολογισμού: " + e.getMessage());
         }
 
     }
 
-    /**
-     * Εμφανίζει ΜΟΝΟ τις εγγραφές που έχουν αλλάξει.
-     */
+    
+    // Εμφάνιση των εγγραφών που έχουν αλλάξει //
+    
     public void showChanges() {
-        // Η SQL που συγκρίνει τις δύο στήλες
+        // Σύγκριση των δύο στηλών //
         String sql = "SELECT id, ministry, category, amount, original_amount FROM budget WHERE amount != original_amount";
 
         try (Connection conn = this.connect();
@@ -163,6 +160,8 @@ public class StateWallet {
 
             System.out.println("\n--- Αλλαγές Προϋπολογισμού ---");
             boolean foundChanges = false;
+            
+            // Loop για τις εγγραφές που είχαν αλλάξει //
             while (rs.next()) {
                 foundChanges = true;
                 System.out.printf(
@@ -178,7 +177,7 @@ public class StateWallet {
                 System.out.println("Δεν έχουν γίνει αλλαγές.");
             }
         } catch (SQLException e) {
-            System.out.println("!! Σφάλμα κατά την εμφάνιση αλλαγών: " + e.getMessage());
+            System.out.println("Σφάλμα κατά την εμφάνιση αλλαγών: " + e.getMessage());
         }
     }
     
