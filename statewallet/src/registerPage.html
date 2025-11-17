@@ -1,1 +1,170 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>Register</title>
+
+body {
+  background-color: #fff;
+}
+.navbar {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+.header {
+  background-color: #f2f2f2;
+  padding: 30px 0;
+  text-align: center;
+  font-size: 36px;
+}
+.form-section {
+  width: 600px;
+  margin: 30px auto;
+}
+.btn-container {
+  text-align: left;
+  margin-top: 20px;
+}
+footer {
+  background-color: #222;
+  color: #aaa;
+  text-align: center;
+  padding: 10px 0;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+/* ---- Νέα CSS για label και field στην ίδια γραμμή ---- */
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.form-group label {
+  width: 150px;        /* σταθερό πλάτος για όλα τα labels */
+  margin-bottom: 0;
+}
+.form-group .form-control {
+  flex: 1;             /* input παίρνει τον υπόλοιπο χώρο */
+}
+
+/* Radio και checkbox στην ίδια γραμμή με label */
+.form-group .radio-inline,
+.checkbox label {
+  margin-left: 10px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Επάνω μπάρα -->
+<nav class="navbar navbar-inverse">
+<div class="container-fluid">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="#">8230118σ</a>
+  </div>
+  <ul class="nav navbar-nav">
+    <li><a href="#">Home</a></li>
+    <li class="active"><a href="#">Register</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+</div>
+</nav>
+
+<!-- Κεντρικός τίτλος -->
+<div class="header">
+  ISMGroup5
+</div>
+
+<!-- Φόρμα Εγγραφής -->
+<div class="form-section">
+<h3>Register Student</h3>
+<form>
+
+  <div class="form-group">
+    <label>Υπουργεία</label>
+    <select class="form-control">
+      <option value="" disabled selected>-- Please choose a department --</option>
+      <option>Υπουργείο Αγροτικής Ανάπτυξης και Τροφίμων</option>
+      <option></option>
+      <option>Υπουργείο Ανάπτυξης</option>
+      <option>Υπουργείο Δικαιοσύνης</option>
+      <option>Υπουργείο Εθνικής Άμυνας</option>
+      <option>Υπουργείο Εθνικής Οικονομίας και Οικονομικών</option>
+      <option>Υπουργείο Εσωτερικών</option>
+      <option>Υπουργείο Εξωτερικών</option>
+      <option>Υπουργείο Κλιματικής Κρίσης και Πολιτικής Προστασίας</option>
+      <option>Υπουργείο Κοινωνικής Συνοχής και Οικογένειας</option>
+      <option>Υπουργείο Μετανάστευσης και Ασύλου</option>
+      <option>Υπουργείο Ναυτιλίας και Νησιωτικής Πολιτικής</option>
+      <option>Υπουργείο Πολιτισμού και Αθλητισμού</option>
+      <option>Υπουργείο Προστασίας του Πολίτη</option>
+      <option>Υπουργείο Τουρισμού</option>
+      <option>Υπουργείο Υγείας</option>
+      <option>Υπουργείο Υποδομών και Μεταφορών</option>
+      <option>Υπουργείο Ψηφιακής Διακυβέρνησης</option>
+      <option>Υπουργείο Περιβάλλοντος και Ενέργειας</option>
+      <option>Υπουργείο Παιδείας, Θρησκευμάτων και Αθλητισμού</option>
+      <option>Υπουργείο Εργασίας και Κοινωνικής Ασφάλισης</option>
+    
+    
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>ΑΜ</label>
+    <input type="text" class="form-control" placeholder="8XXXXXX">
+  </div>
+
+  <div class="form-group">
+    <label>Name</label>
+    <input type="text" class="form-control" placeholder="Name">
+  </div>
+
+  <div class="form-group">
+    <label>Surname</label>
+    <input type="text" class="form-control" placeholder="Surname">
+  </div>
+
+  <div class="form-group">
+    <label>Email</label>
+    <input type="email" class="form-control" placeholder="Email">
+  </div>
+
+  <div class="form-group">
+    <label>Phone</label>
+    <input type="tel" class="form-control" placeholder="Phone">
+  </div>
+
+     <div class="form-group" style="margin-left: 150px;> <label class="radio-inline"> <input type="radio" name="gender"> Male </label> <label class="radio-inline"> <input type="radio" name="gender"> Female </label> 
+
+    </div> <div class="checkbox" style="margin-left: 165px;> 
+  <label class="checkbox-inline">
+   <input type="checkbox"> Stay up to date with the latest news
+  </label>
+ </div>
+
+  <div class="btn-container">
+    <button type="submit" class="btn btn-success">
+      <span class="glyphicon glyphicon-ok"></span> Submit
+    </button>
+    <button type="reset" class="btn btn-danger">
+      <span class="glyphicon glyphicon-remove"></span> Cancel
+    </button>
+  </div>
+
+</form>
+</div>
+
+<!-- Υποσέλιδο -->
+<footer>
+&copy; Copyright 2018 by ismgroup5
+</footer>
+
+
+
+</body>
+</html>
 
