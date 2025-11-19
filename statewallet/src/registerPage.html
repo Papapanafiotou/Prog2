@@ -1,61 +1,9 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-<meta charset="UTF-8">
-<title>Register</title>
-
-body {
-  background-color: #fff;
-}
-.navbar {
-  margin-bottom: 0;
-  border-radius: 0;
-}
-.header {
-  background-color: #f2f2f2;
-  padding: 30px 0;
-  text-align: center;
-  font-size: 36px;
-}
-.form-section {
-  width: 600px;
-  margin: 30px auto;
-}
-.btn-container {
-  text-align: left;
-  margin-top: 20px;
-}
-footer {
-  background-color: #222;
-  color: #aaa;
-  text-align: center;
-  padding: 10px 0;
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-}
-
-/* ---- Νέα CSS για label και field στην ίδια γραμμή ---- */
-.form-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-.form-group label {
-  width: 150px;        /* σταθερό πλάτος για όλα τα labels */
-  margin-bottom: 0;
-}
-.form-group .form-control {
-  flex: 1;             /* input παίρνει τον υπόλοιπο χώρο */
-}
-
-/* Radio και checkbox στην ίδια γραμμή με label */
-.form-group .radio-inline,
-.checkbox label {
-  margin-left: 10px;
-}
-
-</style>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
 <body>
 
@@ -75,18 +23,18 @@ footer {
 
 <!-- Κεντρικός τίτλος -->
 <div class="header">
-  ISMGroup5
+  <h2>Ελληνική Δημοκρατία</h2>
 </div>
 
 <!-- Φόρμα Εγγραφής -->
 <div class="form-section">
-<h3>Register Student</h3>
+<h3>Registration </h3>
 <form>
 
   <div class="form-group">
     <label>Υπουργεία</label>
     <select class="form-control">
-      <option value="" disabled selected>-- Please choose a department --</option>
+      <option value="" disabled selected>-- Please choose a ministry --</option>
       <option>Υπουργείο Αγροτικής Ανάπτυξης και Τροφίμων</option>
       <option></option>
       <option>Υπουργείο Ανάπτυξης</option>
@@ -114,8 +62,9 @@ footer {
   </div>
 
   <div class="form-group">
-    <label>ΑΜ</label>
-    <input type="text" class="form-control" placeholder="8XXXXXX">
+    <label for="id">ID</label>
+    <input id="id" type="text" class="form-control" placeholder="8XXXXXX">
+
   </div>
 
   <div class="form-group">
@@ -138,15 +87,11 @@ footer {
     <input type="tel" class="form-control" placeholder="Phone">
   </div>
 
-     <div class="form-group" style="margin-left: 150px;> <label class="radio-inline"> <input type="radio" name="gender"> Male </label> <label class="radio-inline"> <input type="radio" name="gender"> Female </label> 
-
-    </div> <div class="checkbox" style="margin-left: 165px;> 
-  <label class="checkbox-inline">
-   <input type="checkbox"> Stay up to date with the latest news
-  </label>
+  <div class="checkbox"> 
+  <label><input type="checkbox"> Remember me</label>
  </div>
 
-  <div class="btn-container">
+  <div class="form-group">
     <button type="submit" class="btn btn-success">
       <span class="glyphicon glyphicon-ok"></span> Submit
     </button>
@@ -155,12 +100,12 @@ footer {
     </button>
   </div>
 
-</form>
+  </form>
 </div>
 
 <!-- Υποσέλιδο -->
-<footer>
-&copy; Copyright 2018 by ismgroup5
+<footer class="text-center" style="margin-top: 40px; padding: 10px; background:#222; color:#aaa;">
+&copy; 
 </footer>
 
 
