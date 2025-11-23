@@ -2,19 +2,24 @@ package mainapp;
 
 import java.nio.file.*;
 import java.util.Scanner;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class StateWallet {
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
+        int year;
+
+        do {
         System.out.print("Δώσε χρονολογία (2023 έως 2026): ");
-        int year = scanner.nextInt();
+        year = scanner.nextInt(); 
+        } while(year <2023 || year > 2026);
+
         scanner.close();
         String path ="Prog2/statewallet/src/main/sources/budget" + year + ".pdf";
         String newPath = "Prog2/statewallet/src/main/sources/budgettouse.pdf";
-
+        
         try {
             
             Files.move(Paths.get(path), Paths.get(newPath), StandardCopyOption.REPLACE_EXISTING);
@@ -45,7 +50,7 @@ public class StateWallet {
         try {
             Files.move(Paths.get(newPath), Paths.get(path), StandardCopyOption.REPLACE_EXISTING);
 
-            System.out.print("Το αρχείο μετονομάστηκε ξανό στο αρχικό επιτυχώς σε: ");
+            System.out.print("Το αρχείο μετονομάστηκε ξανά στο αρχικό επιτυχώς σε: ");
             System.out.println(path);
 
         } catch (Exception e) {
