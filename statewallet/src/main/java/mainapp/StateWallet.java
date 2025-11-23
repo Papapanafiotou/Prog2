@@ -7,12 +7,14 @@ import java.io.InputStreamReader;
 
 public class StateWallet {
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Δώσε χρονολογία (π.χ. 2025): ");
+        System.out.print("Δώσε χρονολογία (2023 έως 2026): ");
         int year = scanner.nextInt();
         scanner.close();
         String path ="Prog2/statewallet/src/main/sources/budget" + year + ".pdf";
         String newPath = "Prog2/statewallet/src/main/sources/budgettouse.pdf";
+
         try {
             
             Files.move(Paths.get(path), Paths.get(newPath), StandardCopyOption.REPLACE_EXISTING);
