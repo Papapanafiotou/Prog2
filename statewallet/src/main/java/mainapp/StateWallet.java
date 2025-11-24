@@ -17,11 +17,5 @@ public class StateWallet {
 
         scanner.close();
         Csvtopdf.run(year);
-
-        BudgetImporter importer = new BudgetImporter();
-        importer.importData();
-
-        Databaseprinter printer = new Databaseprinter();
-        printer.printAllData();
     }
 }
