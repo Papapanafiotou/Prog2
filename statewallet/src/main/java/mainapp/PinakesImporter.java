@@ -23,16 +23,24 @@ public class PinakesImporter {
             e.printStackTrace();
         }
     }
-
-    // ---------------------------------------------------------
-    //  CREATE TABLES
+// ---------------------------------------------------------
+    //  CREATE TABLES (ΔΙΟΡΘΩΜΕΝΟ)
     // ---------------------------------------------------------
     private void createTables(Connection conn) throws SQLException {
 
         Statement st = conn.createStatement();
 
+        // 1. ΠΡΩΤΑ ΣΒΗΝΟΥΜΕ ΤΟΥΣ ΠΑΛΙΟΥΣ ΠΙΝΑΚΕΣ (ΑΝ ΥΠΑΡΧΟΥΝ)
+        // Έτσι είμαστε σίγουροι ότι θα ξαναφτιαχτούν με τις ΝΕΕΣ στήλες.
+        st.executeUpdate("DROP TABLE IF EXISTS esoda");
+        st.executeUpdate("DROP TABLE IF EXISTS eksoda");
+        st.executeUpdate("DROP TABLE IF EXISTS ypourgeia");
+        st.executeUpdate("DROP TABLE IF EXISTS kratos");
+        st.executeUpdate("DROP TABLE IF EXISTS apokentromenes");
+
+        // 2. ΤΩΡΑ ΤΟΥΣ ΔΗΜΙΟΥΡΓΟΥΜΕ ΑΠΟ ΤΗΝ ΑΡΧΗ
         st.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS esoda(
+                CREATE TABLE esoda(
                     code INTEGER,
                     name TEXT,
                     amount1 REAL,
@@ -41,7 +49,7 @@ public class PinakesImporter {
             """);
 
         st.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS eksoda(
+                CREATE TABLE eksoda(
                     code INTEGER,
                     name TEXT,
                     amount1 REAL,
@@ -50,7 +58,7 @@ public class PinakesImporter {
             """);
 
         st.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS ypourgeia(
+                CREATE TABLE ypourgeia(
                     number INTEGER,
                     name TEXT,
                     amount1 REAL,
@@ -61,7 +69,7 @@ public class PinakesImporter {
             """);
 
         st.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS kratos(
+                CREATE TABLE kratos(
                     number INTEGER,
                     name TEXT,
                     amount1 REAL,
@@ -72,7 +80,7 @@ public class PinakesImporter {
             """);
 
         st.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS apokentromenes(
+                CREATE TABLE apokentromenes(
                     number INTEGER,
                     name TEXT,
                     amount1 REAL,
@@ -172,7 +180,7 @@ public class PinakesImporter {
         PreparedStatement psKr = conn.prepareStatement(sqlKr);
         PreparedStatement psAp = conn.prepareStatement(sqlAp);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(csvPath))) {
+       try (BufferedReader reader = new BufferedReader(new FileReader(csvPath))) {
 
             String line;
             boolean skipHeader = true;
@@ -184,14 +192,32 @@ public class PinakesImporter {
 
                 row++;
 
+                // Κόβουμε τη γραμμή στα κόμματα
                 String[] p = line.split(",");
+                
+                // Έλεγχος αν έχουμε αρκετά δεδομένα
                 if (p.length < 5) continue;
 
-                int number = Integer.parseInt(p[0]);
-                String name = p[1];
-                double amount1 = Double.parseDouble(p[2]);
-                double amount2 = Double.parseDouble(p[3]);
-                double amount3 = Double.parseDouble(p[4]); // original_amount
+                int len = p.length;
+
+                // 1. Διαβάζουμε τον Κωδικό (πάντα στην αρχή)
+                int number = Integer.parseInt(p[0].trim());
+
+                // 2. Διαβάζουμε τα Ποσά (πάντα στο τέλος του πίνακα)
+                // Παίρνουμε τα 3 τελευταία στοιχεία ως αριθμούς
+                double amount3 = Double.parseDouble(p[len - 1].trim()); // original
+                double amount2 = Double.parseDouble(p[len - 2].trim());
+                double amount1 = Double.parseDouble(p[len - 3].trim());
+
+                // 3. Φτιάχνουμε το Όνομα
+                // Ενώνουμε όλα τα ενδιάμεσα κομμάτια (αν το όνομα είχε κόμματα, έσπασε σε πολλά κομμάτια)
+                StringBuilder nameBuilder = new StringBuilder();
+                for (int i = 1; i <= len - 4; i++) {
+                    nameBuilder.append(p[i]);
+                    if (i < len - 4) nameBuilder.append(" "); // Βάζουμε κενό εκεί που ήταν το κόμμα
+                }
+                String name = nameBuilder.toString().trim();
+
 
                 // --- rows 1–3 → kratos
                 if (row >= 1 && row <= 3) {
@@ -200,7 +226,7 @@ public class PinakesImporter {
                     psKr.setDouble(3, amount1);
                     psKr.setDouble(4, amount2);
                     psKr.setDouble(5, amount3);
-                    psKr.setDouble(6, amount3);  // original_amount
+                    psKr.setDouble(6, amount3);
                     psKr.addBatch();
                 }
 
@@ -211,7 +237,7 @@ public class PinakesImporter {
                     psYp.setDouble(3, amount1);
                     psYp.setDouble(4, amount2);
                     psYp.setDouble(5, amount3);
-                    psYp.setDouble(6, amount3);  // original_amount
+                    psYp.setDouble(6, amount3);
                     psYp.addBatch();
                 }
 
@@ -222,7 +248,7 @@ public class PinakesImporter {
                     psAp.setDouble(3, amount1);
                     psAp.setDouble(4, amount2);
                     psAp.setDouble(5, amount3);
-                    psAp.setDouble(6, amount3);  // original_amount
+                    psAp.setDouble(6, amount3);
                     psAp.addBatch();
                 }
             }
@@ -231,5 +257,6 @@ public class PinakesImporter {
             psYp.executeBatch();
             psAp.executeBatch();
         }
+        }
     }
-}
+
