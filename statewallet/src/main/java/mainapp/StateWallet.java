@@ -1,7 +1,6 @@
 package mainapp;
 
 
-import java.io.BufferedInputStream;
 import java.util.Scanner;
 
 
@@ -21,5 +20,8 @@ public class StateWallet {
 
         BudgetImporter importer = new BudgetImporter();
         importer.importData();
+
+        Databaseprinter printer = new Databaseprinter();
+        printer.printAllData();
     }
 }

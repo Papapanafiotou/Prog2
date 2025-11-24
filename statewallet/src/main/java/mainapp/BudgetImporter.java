@@ -1,4 +1,5 @@
 package mainapp;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,58 +13,91 @@ import java.sql.Statement;
 
 public class BudgetImporter {
 
-    // Η διαδρομή για τη βάση δεδομένων
     private static final String DB_URL = "jdbc:sqlite:budget_data.db";
 
-    // Αυτή είναι η μέθοδος που θα καλείς από το άλλο σου πρόγραμμα
     public void importData() {
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(DB_URL);
             if (conn != null) {
-                System.out.println("---------- Έναρξη διαδικασίας εισαγωγής δεδομένων ----------");
+                // Απενεργοποίηση του auto-commit για να διαχειριστούμε εμείς το Transaction
+                conn.setAutoCommit(false);
+
+                System.out.println("--> Έναρξη διαδικασίας ενημέρωσης δεδομένων...");
 
                 // 1. Δημιουργία πινάκων (αν δεν υπάρχουν)
                 createTables(conn);
 
-                // 2. Εισαγωγή δεδομένων
-                // Υποθέτουμε ότι τα αρχεία είναι στο root folder του project
+                // 2. Καθαρισμός παλιών δεδομένων
+                clearOldData(conn);
+
+                // 3. Εισαγωγή νέων δεδομένων
                 insertIncomeData(conn, "statewallet\\src\\main\\sources\\income.csv");
                 insertMinistriesData(conn, "statewallet\\src\\main\\sources\\ministries.csv");
                 insertExpensesData(conn, "statewallet\\src\\main\\sources\\expenses.csv");
 
-                System.out.println("-------- Η διαδικασία ολοκληρώθηκε επιτυχώς! --------");
+                // Αν όλα πήγαν καλά, αποθηκεύουμε τις αλλαγές
+                conn.commit();
+                System.out.println("--> Η διαδικασία ολοκληρώθηκε επιτυχώς!");
             }
         } catch (SQLException e) {
-            System.err.println("Σφάλμα σύνδεσης στη βάση: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Σφάλμα βάσης δεδομένων: " + e.getMessage());
+            // Αν συμβεί σφάλμα, κάνουμε rollback για να μην αλλοιωθεί η βάση
+            if (conn != null) {
+                try {
+                    System.err.println("Γίνεται ακύρωση αλλαγών (Rollback)...");
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } finally {
+
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-    // --- Βοηθητικές μέθοδοι (Private) ---
+
 
     private void createTables(Connection conn) throws SQLException {
         Statement stmt = conn.createStatement();
-
-        stmt.execute("CREATE TABLE IF NOT EXISTS income (" +
-                     "code INTEGER, type TEXT, amount INTEGER)");
-
-        stmt.execute("CREATE TABLE IF NOT EXISTS ministries (" +
-                     "code INTEGER, entity TEXT, regular_budget INTEGER, pde INTEGER, total INTEGER)");
-
-        stmt.execute("CREATE TABLE IF NOT EXISTS expenses (" +
-                     "code INTEGER, type TEXT, amount INTEGER)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS income (code INTEGER, type TEXT, amount INTEGER)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS ministries (code INTEGER, entity TEXT, regular_budget INTEGER, pde INTEGER, total INTEGER)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS expenses (code INTEGER, type TEXT, amount INTEGER)");
+        stmt.close();
     }
 
-    private void insertIncomeData(Connection conn, String filePath) {
+    // Διαγράφει τα περιεχόμενα των πινάκων
+    private void clearOldData(Connection conn) throws SQLException {
+        Statement stmt = conn.createStatement();
+        
+        int rowsIncome = stmt.executeUpdate("DELETE FROM income");
+        int rowsMinistries = stmt.executeUpdate("DELETE FROM ministries");
+        int rowsExpenses = stmt.executeUpdate("DELETE FROM expenses");
+        
+        System.out.println("\tΔιαγράφηκαν παλιά δεδομένα: " + 
+                (rowsIncome + rowsMinistries + rowsExpenses) + " εγγραφές.");
+        
+        stmt.close();
+    }
+
+    private void insertIncomeData(Connection conn, String filePath) throws SQLException {
         String sql = "INSERT INTO income(code, type, amount) VALUES(?, ?, ?)";
         processFile(conn, filePath, sql, 3);
     }
 
-    private void insertExpensesData(Connection conn, String filePath) {
+    private void insertExpensesData(Connection conn, String filePath) throws SQLException {
         String sql = "INSERT INTO expenses(code, type, amount) VALUES(?, ?, ?)";
         processFile(conn, filePath, sql, 3);
     }
 
-    private void insertMinistriesData(Connection conn, String filePath) {
+    private void insertMinistriesData(Connection conn, String filePath) throws SQLException {
         String sql = "INSERT INTO ministries(code, entity, regular_budget, pde, total) VALUES(?, ?, ?, ?, ?)";
         
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8));
@@ -85,13 +119,13 @@ public class BudgetImporter {
             }
             System.out.println("\tΕισήχθησαν δεδομένα από: " + filePath);
 
-        } catch (IOException | SQLException | NumberFormatException e) {
+        } catch (IOException | NumberFormatException e) {
             System.err.println("Σφάλμα στο αρχείο " + filePath + ": " + e.getMessage());
+            throw new SQLException("Αποτυχία ανάγνωσης αρχείου " + filePath); // Ρίχνουμε το σφάλμα για να γίνει Rollback
         }
     }
 
-    // Μια γενική μέθοδος για τα απλά αρχεία (Income/Expenses) για να μη γράφουμε διπλό κώδικα
-    private void processFile(Connection conn, String filePath, String sql, int params) {
+    private void processFile(Connection conn, String filePath, String sql, int params) throws SQLException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8));
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -109,8 +143,9 @@ public class BudgetImporter {
             }
             System.out.println("\tΕισήχθησαν δεδομένα από: " + filePath);
 
-        } catch (IOException | SQLException | NumberFormatException e) {
+        } catch (IOException | NumberFormatException e) {
             System.err.println("Σφάλμα στο αρχείο " + filePath + ": " + e.getMessage());
+            throw new SQLException("Αποτυχία ανάγνωσης αρχείου " + filePath);
         }
     }
 }
