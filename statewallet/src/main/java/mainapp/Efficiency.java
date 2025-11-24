@@ -1,3 +1,5 @@
+package mainapp;
+
 import java.util.Scanner;
 
 public class Efficiency {
