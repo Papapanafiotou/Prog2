@@ -2,10 +2,10 @@ import fitz
 import csv
 import re
 
-csv_path = r"Prog2\statewallet\src\main\sources\ministries.csv"
-csv_path2 = r"Prog2\statewallet\src\main\sources\income.csv"
-csv_path3 = r"Prog2\statewallet\src\main\sources\expenses.csv"
-pdf_path = r"Prog2\statewallet\src\main\sources\budgettouse.pdf"
+csv_path = r"statewallet\src\main\sources\ministries.csv"
+csv_path2 = r"statewallet\src\main\sources\income.csv"
+csv_path3 = r"statewallet\src\main\sources\expenses.csv"
+pdf_path = r"statewallet\src\main\sources\budgettouse.pdf"
 
 
 #################

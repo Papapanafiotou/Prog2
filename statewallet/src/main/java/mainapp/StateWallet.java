@@ -17,8 +17,8 @@ public class StateWallet {
         } while(year <2023 || year > 2026);
 
         scanner.close();
-        String path ="Prog2/statewallet/src/main/sources/budget" + year + ".pdf";
-        String newPath = "Prog2/statewallet/src/main/sources/budgettouse.pdf";
+        String path ="statewallet/src/main/sources/budget" + year + ".pdf";
+        String newPath = "statewallet/src/main/sources/budgettouse.pdf";
         
         try {
             
@@ -31,7 +31,7 @@ public class StateWallet {
             System.out.println("Σφάλμα κατά τη μετονομασία: " + e.getMessage());
         }
         try {
-            String scriptPath = "Prog2\\statewallet\\src\\scripts\\pdftocsv.py";
+            String scriptPath = "statewallet\\src\\scripts\\pdftocsv.py";
 
             ProcessBuilder pb = new ProcessBuilder("python", scriptPath);
             pb.redirectErrorStream(true);
