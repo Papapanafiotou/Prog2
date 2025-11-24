@@ -43,7 +43,7 @@ public class PinakesImporter {
                 CREATE TABLE esoda(
                     code INTEGER,
                     name TEXT,
-                    amount1 REAL,
+                    amount REAL,
                     original_amount REAL
                 );
             """);
@@ -52,7 +52,7 @@ public class PinakesImporter {
                 CREATE TABLE eksoda(
                     code INTEGER,
                     name TEXT,
-                    amount1 REAL,
+                    amount REAL,
                     original_amount REAL
                 );
             """);
@@ -63,7 +63,7 @@ public class PinakesImporter {
                     name TEXT,
                     amount1 REAL,
                     amount2 REAL,
-                    amount3 REAL,
+                    amount REAL,
                     original_amount REAL
                 );
             """);
@@ -74,7 +74,7 @@ public class PinakesImporter {
                     name TEXT,
                     amount1 REAL,
                     amount2 REAL,
-                    amount3 REAL,
+                    amount REAL,
                     original_amount REAL
                 );
             """);
@@ -85,7 +85,7 @@ public class PinakesImporter {
                     name TEXT,
                     amount1 REAL,
                     amount2 REAL,
-                    amount3 REAL,
+                    amount REAL,
                     original_amount REAL
                 );
             """);
@@ -96,7 +96,7 @@ public class PinakesImporter {
     // ---------------------------------------------------------
     private void importEsoda(Connection conn, String csvPath) throws Exception {
 
-        String sql = "INSERT INTO esoda (code, name, amount1, original_amount) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO esoda (code, name, amount, original_amount) VALUES (?, ?, ?, ?)";
 
         try (BufferedReader reader = new BufferedReader(new FileReader(csvPath));
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -131,7 +131,7 @@ public class PinakesImporter {
     // ---------------------------------------------------------
     private void importEksoda(Connection conn, String csvPath) throws Exception {
 
-        String sql = "INSERT INTO eksoda (code, name, amount1, original_amount) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO eksoda (code, name, amount, original_amount) VALUES (?, ?, ?, ?)";
 
         try (BufferedReader reader = new BufferedReader(new FileReader(csvPath));
              PreparedStatement ps = conn.prepareStatement(sql)) {
