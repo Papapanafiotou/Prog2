@@ -1,6 +1,7 @@
 package mainapp;
 
 
+import java.io.BufferedInputStream;
 import java.util.Scanner;
 
 
@@ -17,5 +18,8 @@ public class StateWallet {
 
         scanner.close();
         Csvtopdf.run(year);
+
+        BudgetImporter importer = new BudgetImporter();
+        importer.importData();
     }
 }
