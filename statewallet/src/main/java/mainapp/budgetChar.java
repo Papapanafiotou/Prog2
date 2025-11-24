@@ -1,3 +1,5 @@
+package mainapp;
+
 public class budgetChar {
   public void budgetCharacterism() {
     GetTotal g1 = new GetTotal();
