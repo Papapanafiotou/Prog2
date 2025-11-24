@@ -15,9 +15,9 @@ public class PinakesImporter {
     public void importAll() {
         try (Connection conn = DriverManager.getConnection(dbUrl)) {
             createTables(conn);
-            importEsoda(conn, "statewallet\\src\\main\\java\\mainapp\\income.csv");
-            importEksoda(conn, "statewallet\\src\\main\\java\\mainapp\\expenses.csv");
-            importMinistries(conn, "statewallet\\src\\main\\java\\mainapp\\ministries.csv");
+            importEsoda(conn, "C:\\Users\\Α\\OneDrive\\Έγγραφα\\ΠΡΟΓΡ ΕΡΓΑΣΙΑ\\Prog2\\statewallet\\src\\main\\java\\mainapp\\income.csv");
+            importEksoda(conn, "C:\\Users\\Α\\OneDrive\\Έγγραφα\\ΠΡΟΓΡ ΕΡΓΑΣΙΑ\\Prog2\\statewallet\\src\\main\\java\\mainapp\\expenses.csv");
+            importMinistries(conn, "C:\\Users\\Α\\OneDrive\\Έγγραφα\\ΠΡΟΓΡ ΕΡΓΑΣΙΑ\\Prog2\\statewallet\\src\\main\\java\\mainapp\\ministries.csv");
             System.out.println(" Όλοι οι πίνακες εισήχθησαν επιτυχώς.");
         } catch (Exception e) {
             e.printStackTrace();
