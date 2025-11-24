@@ -77,10 +77,10 @@ public class MinMaX {
         }
     } while (flag3 = false);
     }
-}
+
 public double getMinMax (int x, int y) {
     final String url = "jdbc:sqlite:budget.db";  
-    String sql;
+    String sql = null;
         if (x==1) {
             if (y == 1) {
               sql = "SELECT MIN(amount) AS value FROM esoda";
@@ -108,8 +108,13 @@ public double getMinMax (int x, int y) {
              } catch (SQLException e) {
                 e.printStackTrace();;
              }
-    return value;           
+    return value;
+            }
+        }
+              
 
-}
+
+
+
 
 
