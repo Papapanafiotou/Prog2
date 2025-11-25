@@ -98,6 +98,9 @@ public class BudgetImporterGui extends JFrame {
     }
     private void handleClearData(ActionEvent e) {
         logArea.append("Clearing data...\n");
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() 
         
     }
 
