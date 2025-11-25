@@ -120,5 +120,11 @@ public class BudgetImporterGui extends JFrame {
             };
             worker.execute();
     } 
-          
+    private void handleImportData(ActionEvent e) {
+
+        logArea.append("Importing data...\n");
+
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+
+
     }
