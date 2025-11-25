@@ -9,9 +9,9 @@ public class StateWallet{
         PinakesImporter importer = new PinakesImporter(DATABASE_URL);
         importer.importAll();
 
-        BudgetMenu menu = new BudgetMenu();
+        BudgetMenu budgetmenu = new BudgetMenu();
         
         // 2. Εκκίνηση της εφαρμογής
-        menu.start();
+        budgetmenu.start();
     }
 }
