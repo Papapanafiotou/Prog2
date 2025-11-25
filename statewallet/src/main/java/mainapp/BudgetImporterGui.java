@@ -153,25 +153,35 @@ public class BudgetImporterGui extends JFrame {
             worker.execute();
     } 
     private void handleImportData(ActionEvent e) {
-
+        progressBar.setValue(0);
         logArea.append("Importing data...\n");
 
-        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+        SwingWorker<Void, Integer> worker = new SwingWorker<>() {
             
-            @Override
-            protected Void doInBackground() throws Exception {
+        @Override
+        protected Void doInBackground() throws Exception {
 
+            // FAKE progress 0–100
+            for (int i = 0; i <= 100; i++) {
+                Thread.sleep(20);
+                publish(i);
+            }
                 BudgetImporter importer = new BudgetImporter();
                 importer.importData();   // περιλαμβάνει όλα τα στάδια
 
                 return null;
             }
+                    @Override
+        protected void process(java.util.List<Integer> chunks) {
+            int value = chunks.get(chunks.size() - 1);
+            progressBar.setValue(value);
+        }
 
-            @Override
-            protected void done() {
-                progressBar.setValue(0);
-                logArea.append("Data imported successfully.\n");
-            }
+        @Override
+        protected void done() {
+            progressBar.setValue(100);
+            logArea.append("Data imported successfully.\n");
+        }
         };
 
         worker.execute();
