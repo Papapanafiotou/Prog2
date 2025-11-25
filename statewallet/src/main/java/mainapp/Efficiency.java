@@ -10,7 +10,7 @@ public class Efficiency {
   λόγω των βαρών που δίνονται απο τον χρήστη για κάθε κατηγορία */
 
   public double getEfficiency() {
-    Scanner scan = new Scanner(System.in);
+    Scanner scan = new Scanner(System.in, "CP737");
     Search search = new Search();
     System.out.println("Για ποιο υπουργείο θα υπολογιστεί η αποδοτικότητα");
     String ministry= scan.nextLine();
@@ -19,10 +19,13 @@ public class Efficiency {
         System.out.println("Το υπουργείο δεν βρέθηκε, δοκιμάστε ξανά!");
         return 0.0;
     } else {
-        System.out.println("Παρακαλώ εισάγετε τα βάρη για τις 4 κατηγορίες επίδρασης.");
+        System.out.println("Παρακαλώ εισάγετε το βάρος για την οικονομική επίδραση.");
         double w1= scan.nextDouble();
+         System.out.println("Παρακαλώ εισάγετε το βάρος για την κοινωνική επίδραση. ");
         double w2= scan.nextDouble();
+         System.out.println("Παρακαλώ εισάγετε το βάρος για την περιβαλλοντική επίδραση.");
         double w3= scan.nextDouble();
+         System.out.println("Παρακαλώ εισάγετε το βάρος για την στρατηγική επίδραση.");
         double w4= scan.nextDouble();
         EconGrade g1 = new EconGrade();
         int gr1 = g1.getEcGrade();
@@ -38,9 +41,9 @@ public class Efficiency {
             gr4= scan.nextInt(); 
         }
     } while (gr4<1 || gr4>10);
-    double efficiency = (w1 *gr1 + w2 *gr2 + w3 *gr3 + w4 *gr4) *1000000/expense;
-    System.out.println("Η αποδοτικότητα του" + ministry + 
-    "ισούται με" + efficiency);
+    double efficiency = (long) (w1 *gr1 + w2 *gr2 + w3 *gr3 + w4 *gr4) *1000000/expense;
+    System.out.println("Η αποδοτικότητα του " + ministry + 
+    " ισούται με " + efficiency);
     return efficiency;
   }   
 }
