@@ -1,6 +1,9 @@
 package mainapp;
 
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
+
 import java.sql.SQLException;
 public class StateWallet {
     public static void main(String[] args) {
@@ -28,10 +31,10 @@ importer.importAll();
         break;
     case 3:
         Search search = new Search();
-        Scanner scan2 = new Scanner(System.in);
-        String name2 = scan2.nextLine();
-        double num =search.searchAmount(name2);
-        System.out.println(num);
+        System.out.print("Πληκτρολόγησε το όνομα του Υπουργείου: ");
+        Scanner scanner = new Scanner(System.in, "CP737");
+        String inputName = scanner.nextLine();
+        search.searchAmount(inputName);
         break;
     case 4:
         break;
@@ -43,5 +46,6 @@ importer.importAll();
     } catch (Exception e) {
         e.printStackTrace();
     }
-    } 
 }
+} 
+
