@@ -69,7 +69,10 @@ public class BudgetImporterGui extends JFrame {
 
         setVisible(true);
     }
-       
+        /**
+     * Δημιουργεί μόνο τους πίνακες στη βάση δεδομένων.
+     * Καλεί την createTables(conn) από το BudgetImporter.
+     */       
     private void handleCreateTables(ActionEvent e) {
         logArea.append("Creating tables...\n");
         
