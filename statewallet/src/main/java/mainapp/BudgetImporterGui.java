@@ -74,6 +74,7 @@ public class BudgetImporterGui extends JFrame {
      * Καλεί την createTables(conn) από το BudgetImporter.
      */       
    private void handleCreateTables(ActionEvent e) {
+    progressBar.setValue(0);
     logArea.append("Creating tables...\n");
 
     SwingWorker<Void, Integer> worker = new SwingWorker<>() {
@@ -133,6 +134,7 @@ public class BudgetImporterGui extends JFrame {
             }           
             @Override
             protected void done() {
+                progressBar.setValue(0);
                 logArea.append("Data cleared successfully.\n");
             }
             };
@@ -155,6 +157,7 @@ public class BudgetImporterGui extends JFrame {
 
             @Override
             protected void done() {
+                progressBar.setValue(0);
                 logArea.append("Data imported successfully.\n");
             }
         };
