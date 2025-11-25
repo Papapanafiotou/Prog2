@@ -15,7 +15,7 @@ public class MinMaX {
      */
     public void showMinMax() {
         double value = 0;
-        Scanner scan = new Scanner(System.in);
+        Scanner scan = new Scanner(System.in, "CP737");
         Search s = new Search();
         String name = s.searchString(value);
         System.out.println("Θα θέλατε να υπολογίσετε μέγιστο ή ελάχιστο;");

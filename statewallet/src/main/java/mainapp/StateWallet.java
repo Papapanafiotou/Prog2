@@ -16,8 +16,9 @@ importer.importAll();
               "2. Αποδοτικότητα υπουργείου\n" +
               "3. Εύρεση στοιχείου\n" +
               "4. Εύρεση μέγιστου/ελάχιστου\n" +
-              "5. Ποσοστό";
-        System.out.println(menu);      
+              "5. Ποσοστό";     
+        System.out.println(menu);
+        System.out.println("Πληκτρολογήστε την επιλογή σας !");      
         Scanner scan = new Scanner(System.in);
         int choice = scan.nextInt();
         switch (choice) {
@@ -37,8 +38,12 @@ importer.importAll();
         search.searchAmount(inputName);
         break;
     case 4:
+        MinMaX minmax = new MinMaX();
+        minmax.showMinMax();
         break;
     case 5:
+        Precentage p1 = new Precentage();
+        double prec = p1.getPrecentage();
         break;
     default:
         break;
