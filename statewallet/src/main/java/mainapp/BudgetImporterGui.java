@@ -34,6 +34,7 @@ public class BudgetImporterGui extends JFrame {
         setResizable(true);                   // Μπορεί να αλλάξει μέγεθος το παραθυρο απο αριστερα η δεξια
         setUndecorated(false);                // Ενεργοποιεί minimize/maximize buttons
         setSize(700, 500);              // Ορίζει το βασικό μέγεθος του παραθυρου
+    
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Κλεινει το παραθυρο
         setLayout(new BorderLayout());
 
@@ -111,12 +112,13 @@ public class BudgetImporterGui extends JFrame {
                     conn.commit();
                 }
                 return null;
+            }           
+            @Override
+            protected void done() {
+                logArea.append("Data cleared successfully.\n");
             }
-            
+            };
+            worker.execute();
+    } 
+          
     }
-
-    private void handleImportData(ActionEvent e) {
-        logArea.append("Importing data...\n");
-       
-    }
-}
