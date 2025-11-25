@@ -24,4 +24,14 @@ public class BudgetImporterGui extends JFrame {
 // 5.Κουμπί που όταν πατηθεί εισάγει όλα τα δεδομένα από τα CSV στη βάση
     private JButton importDataBtn;  
 
+  public BudgetImporterGUI() {  // O constructor της κλασης
+
+        super("Budget Importer Tool");
+
+         setDefaultLookAndFeelDecorated(true); // Δείχνει σωστά minimize/maximize
+        setResizable(true);                   // Μπορεί να αλλάξει μέγεθος
+        setUndecorated(false);                // Ενεργοποιεί minimize/maximize buttons
+
+
+  }     
 }
