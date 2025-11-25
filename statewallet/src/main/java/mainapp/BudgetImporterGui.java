@@ -35,6 +35,10 @@ public class BudgetImporterGui extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Κλεινει το παραθυρο
         setLayout(new BorderLayout());
 
+           logArea = new JTextArea();  // Δημιουργία περιοχής κειμένου για εμφάνιση logs και μηνυμάτων
+        logArea.setEditable(false);  // Κάνει την περιοχή κειμένου μη-επεξεργάσιμη (μόνο για ανάγνωση)
+        JScrollPane scrollPane = new JScrollPane(logArea);  // Προσθέτει scrollbars γύρω από το JTextArea ώστε να μπορεί να κάνει scroll ο χρηστης
+        add(scrollPane, BorderLayout.CENTER);  // Τοποθετεί το scroll pane στο κέντρο του παραθύρου (κύρια περιοχή)
 
   }     
 }
