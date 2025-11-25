@@ -27,6 +27,11 @@ importer.importAll();
         eff.getEfficiency();
         break;
     case 3:
+        Search search = new Search();
+        Scanner scan2 = new Scanner(System.in);
+        String name2 = scan2.nextLine();
+        double num =search.searchAmount(name2);
+        System.out.println(num);
         break;
     case 4:
         break;
