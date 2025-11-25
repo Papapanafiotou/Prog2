@@ -8,7 +8,7 @@ public class Precentage {
     */
     public double getPrecentage() {
         double precent = 0.0;
-        Scanner scan = new Scanner(System.in);
+        Scanner scan = new Scanner(System.in, "CP737");
         System.out.println("Για ποιον λογαριασμό θέλετε να υπολογίσετε " +
          "το ποσοστό;");
         String name = scan.nextLine();
