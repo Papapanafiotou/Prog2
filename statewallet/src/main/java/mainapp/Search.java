@@ -59,7 +59,7 @@ public class Search {
             for (String table : Tables) {
                 String sql = " SELECT EXISTS ( " +
                          " SELECT 1 FROM " + table +
-                         " WHERE logariasmos = ? " +
+                         " WHERE name = ? " +
                          " )";
            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, name2);
