@@ -1,9 +1,6 @@
 package mainapp;
 
 import java.util.Scanner;
-
-import javax.swing.JOptionPane;
-
 import java.sql.SQLException;
 public class StateWallet {
     public static void main(String[] args) {

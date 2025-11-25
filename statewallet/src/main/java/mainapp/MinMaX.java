@@ -16,57 +16,63 @@ public class MinMaX {
     public void showMinMax() {
         double value = 0;
         Scanner scan = new Scanner(System.in, "CP737");
+        String name;
         Search s = new Search();
-        String name = s.searchString(value);
         System.out.println("Θα θέλατε να υπολογίσετε μέγιστο ή ελάχιστο;");
         String answer = scan.nextLine();
         boolean flag3 = false;
         do {
-        if (answer.equals("ελάχιστο")) {
+        if (answer.equals("Ελάχιστο")) {
             System.out.println("Θέλετε το ελάχιστο έσοδο, έξοδο ή την ελάχιστη δαπάνη υπουργείου;");
             String answer2 = scan.nextLine();
             boolean flag = false;
             do {
             if (answer2.equals("έσοδο")) {
-                value = getMinMax(1, 1);
+                value = (long) getMinMax(1, 1);
+                name = s.searchString(value);
                 flag = true;
                 System.out.println("Το ελάχιστο έσοδο είναι το "
-                + name + "με ποσό" + value);
+                + name + " με ποσό " + value);
             } else if (answer2.equals("έξοδο")) {
-                value = getMinMax(1, 2);
+                value = (long) getMinMax(1, 2);
+                name = s.searchString(value);
                 flag = true;
                  System.out.println("Το ελάχιστο έξοδο είναι το "
-                + name +"με ποσό" + value);
+                + name +" με ποσό " + value);
             }else if (answer2.equals("δαπάνη υπουργείου")) { 
-                value = getMinMax(1, 3);
+                value = (long) getMinMax(1, 3);
+                name = s.searchString(value);
                 flag = true;
                 System.out.println("Η ελάχιστη δαπάνη σε υπουργείο "  
-                 + "είναι στο"+ name + "με ποσο "+ value);
+                 + "είναι στο "+ name + " με ποσο "+ value);
             } else {
                 System.out.println("Ο τύπος δέν αναγνωρίζεται");
             }
         } while (flag = false); 
         flag3 = true; 
-        } else if (answer.equals("μέγιστο")) {
+        } else if (answer.equals("Μέγιστο")) {
             System.out.println("Θέλετε το μέγιστο έσοδο, έξοδο ή την μέγιστη δαπάνη υπουργείου;");
             String answer3 = scan.nextLine();
             boolean flag2 = false;
             do {
             if (answer3.equals("έσοδο")) {
-                value = getMinMax(2, 1);
+                value = (long) getMinMax(2, 1);
+                name = s.searchString(value);
                 flag2 = true;
                 System.out.println("Tο μέγιστο έσοδο είναι το "
-                + name +"με ποσό" + value);
+                + name +" με ποσό " + value);
             } else if (answer3.equals("έξοδο")) {
-                value = getMinMax(2, 2);
+                value = (long) getMinMax(2, 2);
+                name = s.searchString(value);
                 flag2 = true;
                  System.out.println("Το ελάχιστο έξοδο είναι το "
-                 + name + "με ποσό" + value);
+                 + name + " με ποσό " + value);
             } else if (answer3.equals("δαπάνη υπουργείου")) { 
-                value = getMinMax(2, 3);
+                value = (long) getMinMax(2, 3);
+                name = s.searchString(value);
                 flag2 = true;
                 System.out.println("Η μέγιστη δαπάνη σε υπουργείο" + 
-                "είναι στο"+ name +"με ποσό" + value);
+                "είναι στο"+ name +" με ποσό " + value);
             } else {
                 System.out.println("Ο τύπος δέν αναγνωρίζεται");
             }
