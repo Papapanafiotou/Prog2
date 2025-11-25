@@ -29,8 +29,11 @@ public class BudgetImporterGui extends JFrame {
         super("Budget Importer Tool");
 
          setDefaultLookAndFeelDecorated(true); // Δείχνει σωστά minimize/maximize
-        setResizable(true);                   // Μπορεί να αλλάξει μέγεθος
+        setResizable(true);                   // Μπορεί να αλλάξει μέγεθος το παραθυρο απο αριστερα η δεξια
         setUndecorated(false);                // Ενεργοποιεί minimize/maximize buttons
+         setSize(700, 500);              // Ορίζει το βασικό μέγεθος του παραθυρου
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Κλεινει το παραθυρο
+        setLayout(new BorderLayout());
 
 
   }     
