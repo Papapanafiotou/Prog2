@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class BudgetImporterGui extends JFrame {
     
@@ -58,5 +60,85 @@ public class BudgetImporterGui extends JFrame {
         panel.add(importDataBtn);
 
         add(panel, BorderLayout.SOUTH); // Τοποθετεί τα κουμπιά στο κάτω μέρος της οθόνης
-  }     
+        
+      
+        createTablesBtn.addActionListener(this::handleCreateTables);
+        clearDataBtn.addActionListener(this::handleClearData);
+        importDataBtn.addActionListener(this::handleImportData);
+
+        setVisible(true);
+    }
+       
+    private void handleCreateTables(ActionEvent e) {
+        logArea.append("Creating tables...\n");
+        
+         SwingWorker<Void, Void> worker = new SwingWorker<>() {
+        @Override
+        protected Void doInBackground() throws Exception {
+
+            try (Connection conn = DriverManager.getConnection("jdbc:sqlite:budget_data.db")) {
+                conn.setAutoCommit(false);
+
+                BudgetImporter importer = new BudgetImporter();
+                importer.createTables(conn);   // καλούμε την private μέθοδο
+
+                conn.commit();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            logArea.append("Tables created successfully.\n");
+        }
+    };
+
+    worker.execute();
+    }
+    private void handleClearData(ActionEvent e) {
+        logArea.append("Clearing data...\n");
+         SwingWorker<Void, Void> worker = new SwingWorker<>() {
+        @Override
+        protected Void doInBackground() throws Exception {
+
+            try (Connection conn = DriverManager.getConnection("jdbc:sqlite:budget_data.db")) {
+                BudgetImporter importer = new BudgetImporter();
+                conn.setAutoCommit(false);
+
+                importer.clearOldData(conn);   // καλούμε την private μέσω reference
+                conn.commit();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            logArea.append("Data cleared.\n");
+        }
+    };
+
+    worker.execute();
+    }
+
+    private void handleImportData(ActionEvent e) {
+        logArea.append("Importing data...\n");
+        
+    SwingWorker<Void, Void> worker = new SwingWorker<>() {
+        @Override
+        protected Void doInBackground() throws Exception {
+            BudgetImporter importer = new BudgetImporter();
+            importer.importData();   //  κάνει όλο το workflow
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            logArea.append("Import completed!\n");
+        }
+    };
+
+    worker.execute();
+    }
 }

@@ -65,7 +65,7 @@ public class BudgetImporter {
 
 
 
-    private void createTables(Connection conn) throws SQLException {
+    public void createTables(Connection conn) throws SQLException {
         Statement stmt = conn.createStatement();
         stmt.execute("CREATE TABLE IF NOT EXISTS income (code INTEGER, type TEXT, amount INTEGER)");
         stmt.execute("CREATE TABLE IF NOT EXISTS ministries (code INTEGER, entity TEXT, regular_budget INTEGER, pde INTEGER, total INTEGER)");
@@ -74,7 +74,7 @@ public class BudgetImporter {
     }
 
     // Διαγράφει τα περιεχόμενα των πινάκων
-    private void clearOldData(Connection conn) throws SQLException {
+    public void clearOldData(Connection conn) throws SQLException {
         Statement stmt = conn.createStatement();
         
         int rowsIncome = stmt.executeUpdate("DELETE FROM income");
@@ -87,7 +87,7 @@ public class BudgetImporter {
         stmt.close();
     }
 
-    private void insertIncomeData(Connection conn, String filePath) throws SQLException {
+    public void insertIncomeData(Connection conn, String filePath) throws SQLException {
         String sql = "INSERT INTO income(code, type, amount) VALUES(?, ?, ?)";
         processFile(conn, filePath, sql, 3);
     }
