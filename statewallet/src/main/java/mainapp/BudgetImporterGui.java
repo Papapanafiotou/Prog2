@@ -74,6 +74,7 @@ public class BudgetImporterGui extends JFrame {
      * Καλεί την createTables(conn) από το BudgetImporter.
      */       
    private void handleCreateTables(ActionEvent e) {
+    logArea.setText("");
     progressBar.setValue(0);
     logArea.append("Creating tables...\n");
 
@@ -117,6 +118,7 @@ public class BudgetImporterGui extends JFrame {
     worker.execute();
 }
     private void handleClearData(ActionEvent e) {
+        logArea.setText("");
         progressBar.setValue(0);
         logArea.append("Clearing data...\n");
         SwingWorker<Void, Integer> worker = new SwingWorker<>() {
@@ -153,6 +155,7 @@ public class BudgetImporterGui extends JFrame {
             worker.execute();
     } 
     private void handleImportData(ActionEvent e) {
+        logArea.setText("");
         progressBar.setValue(0);
         logArea.append("Importing data...\n");
 
@@ -183,7 +186,6 @@ public class BudgetImporterGui extends JFrame {
             logArea.append("Data imported successfully.\n");
         }
         };
-
         worker.execute();
     }
     public static void main(String[] args) {
