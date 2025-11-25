@@ -14,7 +14,7 @@ public class MinMaX {
      * που υπολογίζεται μέσω των μεθόδων παρακάτω
      */
     public void showMinMax() {
-        double value = 0;
+        long value = 0;
         Scanner scan = new Scanner(System.in, "CP737");
         String name;
         Search s = new Search();
@@ -72,7 +72,7 @@ public class MinMaX {
                 name = s.searchString(value);
                 flag2 = true;
                 System.out.println("Η μέγιστη δαπάνη σε υπουργείο" + 
-                "είναι στο"+ name +" με ποσό " + value);
+                " είναι στο "+ name +" με ποσό " + value);
             } else {
                 System.out.println("Ο τύπος δέν αναγνωρίζεται");
             }
