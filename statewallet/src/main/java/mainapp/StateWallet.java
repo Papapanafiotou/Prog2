@@ -9,7 +9,12 @@ public class StateWallet {
 importer.importAll();  
         System.out.println("Ολα ok!");
         System.out.println(" --ΜΕΝΟΥ ΕΠΙΛΟΓΩΝ-- ");
-        
+        String menu = "1. Χαρακτηρισμός προϋπολογισμού\n" +
+              "2. Αποδοτικότητα υπουργείου\n" +
+              "3. Εύρεση στοιχείου\n" +
+              "4. Εύρεση μέγιστου/ελάχιστου\n" +
+              "5. Ποσοστό";
+        System.out.println(menu);      
         Scanner scan = new Scanner(System.in);
         int choice = scan.nextInt();
         switch (choice) {
@@ -18,6 +23,8 @@ importer.importAll();
         b1.budgetCharacterism();;
         break;
     case 2:
+        Efficiency eff = new Efficiency();
+        eff.getEfficiency();
         break;
     case 3:
         break;
