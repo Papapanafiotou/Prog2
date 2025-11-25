@@ -117,11 +117,17 @@ public class BudgetImporterGui extends JFrame {
     worker.execute();
 }
     private void handleClearData(ActionEvent e) {
+        progressBar.setValue(0);
         logArea.append("Clearing data...\n");
-        SwingWorker<Void, Void> worker = new SwingWorker<>() {
-            @Override
-            protected Void doInBackground() throws Exception {
+        SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+        @Override
+        protected Void doInBackground() throws Exception {
 
+            // FAKE progress 0–100
+            for (int i = 0; i <= 100; i++) {
+                Thread.sleep(20);
+                publish(i);
+            }
                 try (Connection conn = DriverManager.getConnection("jdbc:sqlite:budget_data.db")) {
                     conn.setAutoCommit(false);
 
@@ -132,11 +138,17 @@ public class BudgetImporterGui extends JFrame {
                 }
                 return null;
             }           
-            @Override
-            protected void done() {
-                progressBar.setValue(0);
-                logArea.append("Data cleared successfully.\n");
-            }
+        @Override
+        protected void process(java.util.List<Integer> chunks) {
+            int value = chunks.get(chunks.size() - 1);
+            progressBar.setValue(value);      // ενημέρωση μπάρας
+        }
+
+        @Override
+        protected void done() {
+            progressBar.setValue(100);
+            logArea.append("Data cleared successfully.\n");
+        }
             };
             worker.execute();
     } 
