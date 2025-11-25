@@ -220,7 +220,7 @@ public class PinakesImporter {
 
 
                 // --- rows 1–3 → kratos
-                if (row >= 1 && row <= 3) {
+                if (row >= 0 && row <= 2) {
                     psKr.setInt(1, number);
                     psKr.setString(2, name);
                     psKr.setDouble(3, amount1);
@@ -231,7 +231,7 @@ public class PinakesImporter {
                 }
 
                 // --- rows 4–23 → ypourgeia
-                else if (row >= 4 && row <= 23) {
+                else if (row >= 3 && row <= 23) {
                     psYp.setInt(1, number);
                     psYp.setString(2, name);
                     psYp.setDouble(3, amount1);
