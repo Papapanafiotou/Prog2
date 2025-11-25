@@ -161,4 +161,7 @@ public class BudgetImporterGui extends JFrame {
 
         worker.execute();
     }
+    public static void main(String[] args) {
+    SwingUtilities.invokeLater(() -> new BudgetImporterGui());
     }
+}
