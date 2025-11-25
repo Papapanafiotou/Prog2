@@ -100,8 +100,19 @@ public class BudgetImporterGui extends JFrame {
         logArea.append("Clearing data...\n");
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
-            protected Void doInBackground() 
-        
+            protected Void doInBackground() throws Exception {
+
+                try (Connection conn = DriverManager.getConnection("jdbc:sqlite:budget_data.db")) {
+                    conn.setAutoCommit(false);
+
+                    BudgetImporter importer = new BudgetImporter();
+                    importer.clearOldData(conn);  // καλούμε την clearOldData
+
+                    conn.commit();
+                }
+                return null;
+            }
+            
     }
 
     private void handleImportData(ActionEvent e) {
