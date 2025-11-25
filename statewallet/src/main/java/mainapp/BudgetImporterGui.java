@@ -73,18 +73,25 @@ public class BudgetImporterGui extends JFrame {
      * Δημιουργεί μόνο τους πίνακες στη βάση δεδομένων.
      * Καλεί την createTables(conn) από το BudgetImporter.
      */       
-    private void handleCreateTables(ActionEvent e) {
-        logArea.append("Creating tables...\n");
-        
-        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+   private void handleCreateTables(ActionEvent e) {
+    logArea.append("Creating tables...\n");
+
+    SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+
         @Override
         protected Void doInBackground() throws Exception {
 
-            try (Connection conn = DriverManager.getConnection("jdbc:sqlite:budget_data.db")) {
-                conn.setAutoCommit(false);
+            // FAKE progress 
+            for (int i = 0; i <= 100; i++) {
+                Thread.sleep(20);   // μικρή παύση για να φαίνεται η κίνηση
+                publish(i);         // στέλνουμε την τιμή στο process()
+            }
 
+            //  δημιουργία πινάκων
+            try (Connection conn= DriverManager.getConnection("jdbc:sqlite:budget_data.db")) {
+                conn.setAutoCommit(false);
                 BudgetImporter importer = new BudgetImporter();
-                importer.createTables(conn);   // καλούμε την private μέθοδο
+                importer.createTables(conn);
 
                 conn.commit();
             }
@@ -93,13 +100,21 @@ public class BudgetImporterGui extends JFrame {
         }
 
         @Override
+        protected void process(java.util.List<Integer> chunks) {
+            // παίρνουμε την τελευταία τιμή που στάλθηκε από το publish()
+            int value = chunks.get(chunks.size() - 1);
+            progressBar.setValue(value);   // ενημέρωση της μπάρας
+        }
+
+        @Override
         protected void done() {
+            progressBar.setValue(100);     // σιγουρεύουμε ότι είναι στο 100%
             logArea.append("Tables created successfully.\n");
         }
     };
 
     worker.execute();
-    }
+}
     private void handleClearData(ActionEvent e) {
         logArea.append("Clearing data...\n");
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
