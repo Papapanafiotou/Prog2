@@ -14,7 +14,7 @@ public class Search {
     double amount = 0;
         try (Connection conn = DriverManager.getConnection(url)) {
             for (String table : Tables) { // αναζητεί σε όλους τους πίνακες μέχρι να βρεί τον λογαριασμό
-                String sql = "SELECT amount FROM" + table + "WHERE name = ? "; // εντολή SQL
+                String sql = "SELECT amount FROM " + table + " WHERE name = ? "; // εντολή SQL
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setString(1, name); // σε κάθε επανάληψη αλλάζει το όνομα του πίνακα
                     ResultSet rs = stmt.executeQuery();
@@ -34,7 +34,7 @@ public class Search {
         String name = null;
          try (Connection conn = DriverManager.getConnection(url)) {
             for (String table : Tables) { // αναζητεί σε όλους τους πίνακες μέχρι να βρεί τον λογαριασμό
-                String sql = "SELECT name FROM" + table + "WHERE amount = ? "; // εντολή SQL
+                String sql = "SELECT name FROM " + table + " WHERE amount = ? "; // εντολή SQL
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setDouble(1, amount1); // σε κάθε επανάληψη αλλάζει το όνομα του πίνακα
                     ResultSet rs = stmt.executeQuery();
@@ -54,10 +54,10 @@ public class Search {
         String tab = null;
         try (Connection conn = DriverManager.getConnection(url)) {
             for (String table : Tables) {
-                String sql = "SELECT EXISTS (" +
-                         "SELECT 1 FROM " + table +
-                         " WHERE logariasmos = ?" +
-                         ")";
+                String sql = " SELECT EXISTS ( " +
+                         " SELECT 1 FROM " + table +
+                         " WHERE logariasmos = ? " +
+                         " )";
            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, name2);
 
