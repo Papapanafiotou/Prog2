@@ -125,6 +125,22 @@ public class BudgetImporterGui extends JFrame {
         logArea.append("Importing data...\n");
 
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            
+            @Override
+            protected Void doInBackground() throws Exception {
 
+                BudgetImporter importer = new BudgetImporter();
+                importer.importData();   // περιλαμβάνει όλα τα στάδια
 
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                logArea.append("Data imported successfully.\n");
+            }
+        };
+
+        worker.execute();
+    }
     }
