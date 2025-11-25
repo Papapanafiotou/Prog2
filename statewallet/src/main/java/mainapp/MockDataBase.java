@@ -1,4 +1,4 @@
-package mainapp;
+/*package mainapp;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -49,4 +49,4 @@ public class MockDataBase {
             System.out.println("ΣΦΑΛΜΑ: " + e.getMessage());
         }
     }
-}
+}*/
