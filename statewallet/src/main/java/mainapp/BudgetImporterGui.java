@@ -95,7 +95,7 @@ public class BudgetImporterGui extends JFrame {
     };
 
     worker.execute();
-    }
+    
     private void handleClearData(ActionEvent e) {
         logArea.append("Clearing data...\n");
         
@@ -105,4 +105,7 @@ public class BudgetImporterGui extends JFrame {
         logArea.append("Importing data...\n");
        
     }
+    
+   
+}
 }
