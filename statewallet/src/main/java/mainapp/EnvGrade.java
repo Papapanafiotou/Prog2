@@ -28,7 +28,7 @@ public class EnvGrade {
     } else if (precent < 0.25) {
         return 9;
     } else {
-        return 1;
+        return 10;
     }
   } 
 }
