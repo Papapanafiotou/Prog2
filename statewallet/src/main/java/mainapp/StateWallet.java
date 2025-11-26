@@ -20,9 +20,11 @@ public class StateWallet {
         Csvtopdf.run(year);
         importer.importAll();
 
-        BudgetMenu menu = new BudgetMenu();
+        BudgetMenu budgetmenu = new BudgetMenu();
         
-        menu.start();
-        scanner.close();
+        // 2. Εκκίνηση της εφαρμογής
+        budgetmenu.start();
+        
+
     }
 }

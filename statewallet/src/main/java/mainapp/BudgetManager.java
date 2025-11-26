@@ -45,7 +45,7 @@ public class BudgetManager {
         String sql = "UPDATE " + tableName + " SET amount = ? WHERE " + idColName + " = ?";
 
         try (Connection conn = dbHandler.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, newAmount);
             pstmt.setInt(2, id);

@@ -27,7 +27,7 @@ public class BudgetMenu {
 
             switch (choice) {
                 case 1: showBudgetSelection(); break;
-                case 2: performChangeBudget(); break;
+                case 2: ChangeBudget(); break;
                 case 3: manager.showChanges(); break;
                 case 4:
                     System.out.println("Έξοδος...");
@@ -68,7 +68,7 @@ public class BudgetMenu {
         }
     }
 
-    private void performChangeBudget() {
+    private void ChangeBudget() {
         System.out.println("\nΣε ποιον πίνακα ανήκει το στοιχείο που θέλετε να αλλάξετε;");
         System.out.println("1. Έσοδα");
         System.out.println("2. Έξοδα");
@@ -99,7 +99,10 @@ public class BudgetMenu {
             System.out.print("Δώσε το νέο ποσό: ");
             double newAmount = Double.parseDouble(scanner.nextLine());
 
+            newAmount = Constrains.negativeAmount(scanner, newAmount);
+
             // Εδώ καλείς τη λογική από τον Manager
+            
             boolean success = manager.updateAmount(tableName, idColName, id, newAmount);
             
             if (success) System.out.println("Επιτυχής ενημέρωση!");
