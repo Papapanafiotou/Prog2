@@ -9,4 +9,14 @@ public class EnvElemGrades {
         else if (percent >= 22.0) return 6;
         else return 5;
     }
+
+//Βαθμός για την ετήσια ποσοστιαία μεταβολή ρύπων θερμοκηπίου
+    public int getEmmisionGrade(double percent) {
+        if (percent <= -0.04) return 10;
+        else if (percent <= -0.02) return 9;
+        else if (percent <= 0) return 8;
+        else if (percent <= 1.9) return 7;
+        else if (percent <= 3.9) return 6;
+        else return 5;
+    }
 }
