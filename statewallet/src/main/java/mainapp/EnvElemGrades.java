@@ -19,4 +19,13 @@ public class EnvElemGrades {
         else if (percent <= 3.9) return 6;
         else return 5;
     }
+//Βαθμός για το ποσοστό ανακύκλωσης στα αστικά κέντρα
+    public int getRecycleGrade(double percent) {
+        if (percent >= 0.32) return 10;
+        else if (percent >= 0.28) return 9;
+        else if (percent >= 0.24) return 8;
+        else if (percent >= 0.20) return 7;
+        else if (percent >= 0.16) return 6;
+        else return 5;
+    }
 }
