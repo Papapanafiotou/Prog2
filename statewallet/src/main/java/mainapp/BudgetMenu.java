@@ -28,20 +28,15 @@ public class BudgetMenu {
             scanner.nextLine();
 
             switch (choice) {
-                case 1: 
-                    showBudgetSelection(); 
-                    break;
-                case 2: 
-                    ChangeBudget(); 
-                    break;
-                case 3: 
-                    manager.showChanges(); 
-                    break;
-                case 4:
+                case 1 -> showBudgetSelection();
+                case 2 -> ChangeBudget();
+                case 3 -> manager.showChanges();
+                case 4 -> {
                     System.out.println("Έξοδος...");
                     scanner.close();
-                return;
-                    default: System.out.println("Λάθος επιλογή.");
+                    return;
+                }
+                    default -> System.out.println("Λάθος επιλογή.");
             }
         }
     }
@@ -62,30 +57,19 @@ public class BudgetMenu {
         scanner.nextLine();
 
         switch (choice) {
-            case 1: 
-                manager.printTable("esoda", "code"); 
-                break;
-            case 2: 
-                manager.printTable("eksoda", "code"); 
-                break;
-            case 3: 
-                manager.printTable("kratos", "number"); 
-                break;
-            case 4: 
-                manager.printTable("ypourgeia", "number"); 
-                break;
-            case 5: 
-                manager.printTable("apokentromenes", "number"); 
-                break;
-            case 6:
+            case 1 -> manager.printTable("esoda", "code");
+            case 2 -> manager.printTable("eksoda", "code");
+            case 3 -> manager.printTable("kratos", "number");
+            case 4 -> manager.printTable("ypourgeia", "number");
+            case 5 -> manager.printTable("apokentromenes", "number");
+            case 6 -> {
                 manager.printTable("esoda", "code");
                 manager.printTable("eksoda", "code");
                 manager.printTable("kratos", "number");
                 manager.printTable("ypourgeia", "number");
                 manager.printTable("apokentromenes", "number");
-                break;
-            default: 
-                System.out.println("Λάθος επιλογή.");
+            }
+            default -> System.out.println("Λάθος επιλογή.");
         }
     }
 
@@ -107,24 +91,25 @@ public class BudgetMenu {
         String idColName;
 
         switch (tableChoice) {
-            case 1: 
-                tableName = "esoda"; idColName = "code"; 
-                break;
-            case 2: 
-                tableName = "eksoda"; idColName = "code"; 
-                break;
-            case 3: 
-                tableName = "kratos"; idColName = "number"; 
-                break;
-            case 4: 
-                tableName = "ypourgeia"; idColName = "number"; 
-                break;
-            case 5: 
-                tableName = "apokentromenes"; idColName = "number"; 
-                break;
-            default: 
+            case 1 -> {
+                tableName = "esoda"; idColName = "code";
+            }
+            case 2 -> {
+                tableName = "eksoda"; idColName = "code";
+            }
+            case 3 -> {
+                tableName = "kratos"; idColName = "number";
+            }
+            case 4 -> {
+                tableName = "ypourgeia"; idColName = "number";
+            }
+            case 5 -> {
+                tableName = "apokentromenes"; idColName = "number";
+            }
+            default -> {
                 System.out.println("Άκυρη επιλογή."); 
                 return;
+            }
         }
 
         try {
