@@ -1,3 +1,5 @@
+package mainapp;
+
 public class SocElemGrades {
     
 //Βαθμος για τον δείκτη ανισότητασ GINI

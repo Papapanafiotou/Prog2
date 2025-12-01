@@ -1,3 +1,5 @@
+package mainapp;
+
 public class EnvElemGrades {
 
 //Βαθμός για το ποσοστό χρήσησ ανανεώσιμων πηγών ενέργειας

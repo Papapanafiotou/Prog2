@@ -1,3 +1,5 @@
+package mainapp;
+
 public class EconElemGrades {
 //Βαθμός για την μεγένθυση του ΑΕΠ
     public int getGDPGrowthGrade(double percent) {
