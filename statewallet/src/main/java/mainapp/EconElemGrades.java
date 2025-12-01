@@ -33,7 +33,7 @@ public class EconElemGrades {
         else if (percent >= 0.0) return 6;
         else return 5;
     }
-    
+    //Υπολογισμός του τελικού βαθμού στον οικονομικό τομέα
     public double getEconomicGrade(double w1, double w2, double w3,
         double surplusPercent, double debtPercent, double gdpPercent) {
             int g1 = getGDPGrowthGrade(gdpPercent);

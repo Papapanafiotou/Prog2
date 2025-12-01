@@ -2,7 +2,7 @@ package mainapp;
 
 public class EnvElemGrades {
 
-//Βαθμός για το ποσοστό χρήσησ ανανεώσιμων πηγών ενέργειας
+//Βαθμός για το ποσοστό χρήσης ανανεώσιμων πηγών ενέργειας
     public int getRESGrade(double percent) {
         if (percent >= 30.0) return 10;
         else if (percent >= 28.0) return 9;
@@ -21,7 +21,7 @@ public class EnvElemGrades {
         else if (percent <= 3.9) return 6;
         else return 5;
     }
-//Βαθμός για το ποσοστό ανακύκλωσης στα αστικά κέντρα
+//Βαθμός για το ποσοστό ανακύκλωσης αστικών αποβλήτων
     public int getRecycleGrade(double percent) {
         if (percent >= 0.32) return 10;
         else if (percent >= 0.28) return 9;
@@ -30,4 +30,14 @@ public class EnvElemGrades {
         else if (percent >= 0.16) return 6;
         else return 5;
     }
+
+//Τελικός βαθμός για τον περιβαλλοντικό τομέα
+     public double getEconomicGrade(double w1, double w2, double w3,
+        double resPercent, double emmisionPercent, double recyclePercent) {
+            int g1 = getRESGrade(resPercent);
+            int g2 = getEmmisionGrade(emmisionPercent);
+            int g3 = getRecycleGrade(recyclePercent);
+            double grade = w1 *g1 + w2 *g2 + w3 *g3;
+            return grade;
+        }
 }
