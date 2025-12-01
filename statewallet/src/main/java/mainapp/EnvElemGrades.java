@@ -38,6 +38,8 @@ public class EnvElemGrades {
             int g2 = getEmmisionGrade(emmisionPercent);
             int g3 = getRecycleGrade(recyclePercent);
             double grade = w1 *g1 + w2 *g2 + w3 *g3;
+            System.out.println("O βαθμός για το κράτος στον περιβαλλοντικό"
+                + " τομέα με βάση τα στοιχεία είναι " + grade);
             return grade;
         }
 }

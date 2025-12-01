@@ -47,6 +47,8 @@ public class SocElemGrades {
             int g3 = getMentalHealthGrade(mentalHealthPercent);
             int g4 = getHealthEduGrade(eduHealthExpensesPercent);
             double grade = g1 * w1 + g2 * w2 + g3 * w3 + g4 * w4;
+            System.out.println("O βαθμός για το κράτος στον κοινωνικό"
+                + " τομέα με βάση τα στοιχεία είναι " + grade);
             return grade;
          }
 }
