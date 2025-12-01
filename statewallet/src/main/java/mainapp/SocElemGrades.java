@@ -1,4 +1,5 @@
 public class SocElemGrades {
+    
 //Βαθμος για τον δείκτη ανισότητασ GINI
     public int getGINIGrade(double gini) {
         if (gini <= 30.9) return 10;
