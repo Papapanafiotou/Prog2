@@ -2,7 +2,7 @@ package mainapp;
 
 public class SocElemGrades {
     
-//Βαθμος για τον δείκτη ανισότητασ GINI
+//Βαθμος για τον δείκτη ανισότητας GINI
     public int getGINIGrade(double gini) {
         if (gini <= 30.9) return 10;
         else if (gini <= 31.9) return 9;
@@ -20,7 +20,7 @@ public class SocElemGrades {
         else if (percent < 0.09) return 6;
         else return 5;
     }
-//Βαθμός για το ποσοστό ατόμων με δυνητικά προβλήματα ψυχικής υγείας
+//Βαθμός για το ποσοστό ατόμων με δυνητικά προβλήματα ψυχικής υγείας(άγχος, κατάθλιψη κλπ)
     public int getMentalHealthGrade(double percent) {
         if (percent <= 0.15) return 10;
         else if (percent <= 0.16) return 9;
@@ -38,5 +38,15 @@ public class SocElemGrades {
         else if (percent >= 0.07) return 6;
         else return 5; 
     }
-
+    //Τελικός βαθμός για τον κοινωνικό τομέα
+    public double getSocialGrade(double w1, double w2, double w3, double w4,
+         double gini, double crimePercent, double mentalHealthPercent,
+         double eduHealthExpensesPercent) {
+            int g1 = getGINIGrade(gini);
+            int g2 = getCrimeGrade(crimePercent);
+            int g3 = getMentalHealthGrade(mentalHealthPercent);
+            int g4 = getHealthEduGrade(eduHealthExpensesPercent);
+            double grade = g1 * w1 + g2 * w2 + g3 * w3 + g4 * w4;
+            return grade;
+         }
 }
