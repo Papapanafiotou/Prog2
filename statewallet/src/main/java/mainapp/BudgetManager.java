@@ -1,5 +1,5 @@
 package mainapp;
-
+import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,10 +8,9 @@ import java.sql.Statement;
 
 public class BudgetManager {
 
-    private DatabaseHandler dbHandler;
+
     String URL;
     public BudgetManager(String url) {
-        this.dbHandler = new DatabaseHandler();
         this.URL = url;
     }
 
@@ -19,7 +18,7 @@ public class BudgetManager {
     public void printTable(String tableName, String idColumnName) {
         String sql = "SELECT " + idColumnName + ", name, original_amount, amount FROM " + tableName;
 
-        try (Connection conn = dbHandler.connect(URL);
+        try (Connection conn = DriverManager.getConnection(URL);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -45,7 +44,7 @@ public class BudgetManager {
     public boolean updateAmount(String tableName, String idColName, int id, double newAmount) {
         String sql = "UPDATE " + tableName + " SET amount = ? WHERE " + idColName + " = ?";
 
-        try (Connection conn = dbHandler.connect(URL);
+        try (Connection conn = DriverManager.getConnection(URL);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, newAmount);
@@ -80,7 +79,7 @@ public class BudgetManager {
         String sql = "SELECT " + idColName + ", name, amount, original_amount FROM " + tableName + " WHERE amount != original_amount";
         boolean found = false;
 
-        try (Connection conn = dbHandler.connect(URL);
+        try (Connection conn = DriverManager.getConnection(URL);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
