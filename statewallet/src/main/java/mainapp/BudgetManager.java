@@ -28,7 +28,7 @@ public class BudgetManager {
 
             while (rs.next()) {
                 System.out.printf(
-                    "%-5d | %-40s | %12.2f € | %12.2f €\n",
+                    "%-5d | %-40s | %12.2f € | %12.2f "+"€\n",
                     rs.getInt(idColumnName),
                     limitString(rs.getString("name"), 40),
                     rs.getDouble("original_amount"),
