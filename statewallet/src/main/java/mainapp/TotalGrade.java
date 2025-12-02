@@ -71,8 +71,17 @@ public class TotalGrade {
              res, emmisionsDiff, recycleRate);
         double socGrade = soc.getSocialGrade(wGini, wCrimeRate, wMentHealPer, wEdHealExp,
             gini, crimeRateDiff, mentalHealthPer, eduHealthExp);
-            
-
-
+        //Εισαγωγή των βαρών για τις 3 κατηγορίες
+        System.out.println("Εισάγετε τα βάρη του τελικού βαθμού για τους "
+            + " τρεις τομείς");
+        System.out.println("Οικονομικός τομέας");    
+        double wEcon = w.getWeight();
+        System.out.println("Περιβαλλοντικός τομέας");    
+        double wEnv = w.getWeight();
+        System.out.println("Κοινωνικός τομέας");    
+        double wSoc = w.getWeight();
+        double finalGrade = (wEcon * econGrade) + (wEnv * envGrade) + (wSoc * socGrade);
+        System.out.println("O τελικός βαθμός για το κράτος για το έτος 2024"
+            + "με βάση τα στοιχεία είναι " + finalGrade);
     }
 }
