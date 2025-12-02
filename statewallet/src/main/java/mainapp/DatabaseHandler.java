@@ -6,9 +6,10 @@ import java.sql.SQLException;
 
 public class DatabaseHandler {
     
-    private static final String DATABASE_URL = "jdbc:sqlite:budget.db";
 
-    public Connection connect() {
+
+    public Connection connect(String URL) {
+        String DATABASE_URL = URL;
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");

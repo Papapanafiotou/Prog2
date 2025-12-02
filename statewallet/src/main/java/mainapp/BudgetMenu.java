@@ -4,12 +4,14 @@ import java.util.Scanner;
 
 public class BudgetMenu {
     
+    String URL;
     private BudgetManager manager;
     private Scanner scanner;
 
     // Constructor tou BudgetMenu //
-    public BudgetMenu() {
-        this.manager = new BudgetManager();
+    public BudgetMenu(String url) {
+        this.URL = url;
+        this.manager = new BudgetManager(URL);
         this.scanner = new Scanner(System.in);
     }
 

@@ -9,16 +9,17 @@ import java.sql.Statement;
 public class BudgetManager {
 
     private DatabaseHandler dbHandler;
-
-    public BudgetManager() {
+    String URL;
+    public BudgetManager(String url) {
         this.dbHandler = new DatabaseHandler();
+        this.URL = url;
     }
 
     // --- Λογική για εμφάνιση (από το παλιό Printtable & ShowBudget) ---
     public void printTable(String tableName, String idColumnName) {
         String sql = "SELECT " + idColumnName + ", name, original_amount, amount FROM " + tableName;
 
-        try (Connection conn = dbHandler.connect();
+        try (Connection conn = dbHandler.connect(URL);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -44,7 +45,7 @@ public class BudgetManager {
     public boolean updateAmount(String tableName, String idColName, int id, double newAmount) {
         String sql = "UPDATE " + tableName + " SET amount = ? WHERE " + idColName + " = ?";
 
-        try (Connection conn = dbHandler.connect();
+        try (Connection conn = dbHandler.connect(URL);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, newAmount);
@@ -79,7 +80,7 @@ public class BudgetManager {
         String sql = "SELECT " + idColName + ", name, amount, original_amount FROM " + tableName + " WHERE amount != original_amount";
         boolean found = false;
 
-        try (Connection conn = dbHandler.connect();
+        try (Connection conn = dbHandler.connect(URL);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 

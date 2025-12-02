@@ -15,12 +15,16 @@ public class StateWallet {
                 System.out.print("Δώσε χρονολογία (2023 έως 2026): ");
                 year = scanner.nextInt();
             } while(year <2023 || year > 2026);
-            final String DATABASE_URL = "jdbc:sqlite:budget.db";
-            PinakesImporter importer = new PinakesImporter(DATABASE_URL);
-            Csvtopdf.run(year);
-            importer.importAll();
+            String DATABASE_URL = "jdbc:sqlite:budget_" + year + ".db";
+
+            DatabaseFinder finder = new DatabaseFinder();
+            boolean DatabaseExists = finder.findYearbase(year);
+            if (!DatabaseExists) {
+                Csvtopdf.run(year);
+                PinakesImporter importer = new PinakesImporter(DATABASE_URL);
+                importer.importAll(); }
             
-            BudgetMenu budgetmenu = new BudgetMenu();
+            BudgetMenu budgetmenu = new BudgetMenu(DATABASE_URL);
             
             // 2. Εκκίνηση της εφαρμογής
             budgetmenu.start();
