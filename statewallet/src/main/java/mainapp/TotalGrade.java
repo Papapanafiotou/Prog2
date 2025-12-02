@@ -83,5 +83,6 @@ public class TotalGrade {
         double finalGrade = (wEcon * econGrade) + (wEnv * envGrade) + (wSoc * socGrade);
         System.out.println("O τελικός βαθμός για το κράτος για το έτος 2024"
             + "με βάση τα στοιχεία είναι " + finalGrade);
+            return finalGrade;
     }
 }
