@@ -7,7 +7,7 @@ public class DatabaseFinder {
         File dbFile = new File(dbName);
         boolean dbExists = dbFile.exists();
         if (dbExists) {
-            System.out.println(">> Η βάση δεδομένων '" + dbName + "' βρέθηκε. Υπάρχει ήδη");
+            System.out.println("Η βάση δεδομένων '" + dbName + "' βρέθηκε.");
             return true;
         } else {
             System.out.println(">> Η βάση δεδομένων δεν υπάρχει. Δημιουργία νέας: '" + dbName + "'...");

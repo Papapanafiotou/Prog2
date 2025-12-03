@@ -53,6 +53,7 @@ public class BudgetMenu {
         System.out.println("4. Υπουργεία");
         System.out.println("5. Αποκεντρωμένες Διοικήσεις");
         System.out.println("6. Όλα");
+        System.out.println("7. Πίσω");
         System.out.print("Επιλογή: ");
 
         int choice = scanner.nextInt();
@@ -71,6 +72,7 @@ public class BudgetMenu {
                 manager.printTable("ypourgeia", "number");
                 manager.printTable("apokentromenes", "number");
             }
+            case 7 -> { return; }
             default -> System.out.println("Λάθος επιλογή.");
         }
     }
