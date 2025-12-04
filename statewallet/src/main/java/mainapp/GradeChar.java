@@ -1,6 +1,6 @@
 public class GradeChar {
 
-    public void gdpGrowthchar(int g) {
+    public void gdpGrowthChar(int g) {
         if (g == 5) {
             System.out.println("Το ΑΕΠ μειώθηκε! Πρέπει να "
                 + " γίνουν ενέργειες για την επαναφορά της ανάπτυξής του "
@@ -19,7 +19,7 @@ public class GradeChar {
         }
     }
 
-    public void surpluschar(int g) {
+    public void surplusChar(int g) {
         if (g == 5) {
             System.out.println("Το πρωτογενές πλεόνασμα έχει αρνηρική τιμή." 
                 + " Το κράτος δέν κατάφερε να καλύχει τα έξοδά του με τα έσοδα!"
@@ -40,5 +40,22 @@ public class GradeChar {
                 + " με τα έσοδα που είχε σε αποδεκτό βαθμό."
             );
         }
+    }
+        public void giniChar(int g) {
+            if (g <= 6) {
+                System.out.println("Υπάρχουν μεγάλες εισοδηματικέςσ ανισότητες"
+                    + " εντός του πλυθησμού! Πρέπει να γίνουν ενέργειες " 
+                    + "για να κατανεμηθεί πιο δίκαια το συνολικό εισόδημα "
+                    + "στην κοινωνία!"
+                 );
+            } else if (g >= 9) {
+                System.out.println("Οι εισοδηματικές ανισότητες έχουν "
+                    + "περιοριστεί! Πολύ καλή επίδοση!"
+                 ); 
+            } else {
+                System.out.println("Αποδεκτή επίδοση. Οι ανισότητες " 
+                    + "βρίσκονται σε επιτρεπτό επίπεδο."
+                );
+            } 
     }
 }
