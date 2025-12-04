@@ -26,28 +26,29 @@ public class BudgetImporterGui extends JFrame {
 // 5.Κουμπί που όταν πατηθεί εισάγει όλα τα δεδομένα από τα CSV στη βάση
     private JButton importDataBtn;  
 
-  public BudgetImporterGUI() {  // O constructor της κλασης
+  public BudgetImporterGui() {  // O constructor της κλασης
 
         super("Budget Importer Tool");
 
-         setDefaultLookAndFeelDecorated(true); // Δείχνει σωστά minimize/maximize
+        setDefaultLookAndFeelDecorated(true); // Δείχνει σωστά minimize/maximize
         setResizable(true);                   // Μπορεί να αλλάξει μέγεθος το παραθυρο απο αριστερα η δεξια
         setUndecorated(false);                // Ενεργοποιεί minimize/maximize buttons
-         setSize(700, 500);              // Ορίζει το βασικό μέγεθος του παραθυρου
+        setSize(700, 500);              // Ορίζει το βασικό μέγεθος του παραθυρου
+    
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Κλεινει το παραθυρο
         setLayout(new BorderLayout());
 
-           logArea = new JTextArea();  // Δημιουργία περιοχής κειμένου για εμφάνιση logs και μηνυμάτων
+        logArea = new JTextArea();  // Δημιουργία περιοχής κειμένου για εμφάνιση logs και μηνυμάτων
         logArea.setEditable(false);  // Κάνει την περιοχή κειμένου μη-επεξεργάσιμη (μόνο για ανάγνωση)
         JScrollPane scrollPane = new JScrollPane(logArea);  // Προσθέτει scrollbars γύρω από το JTextArea ώστε να μπορεί να κάνει scroll ο χρηστης
         add(scrollPane, BorderLayout.CENTER);  // Τοποθετεί το scroll pane στο κέντρο του παραθύρου
 
-           progressBar = new JProgressBar(0, 100); //Δημιουργει progress bar με τιμές από 0-100
+        progressBar = new JProgressBar(0, 100); //Δημιουργει progress bar με τιμές από 0-100
         progressBar.setStringPainted(true); // χρωματίζει το ποσοστό που έχει φορτώσει
         progressBar.setValue(0); // Θέτει στη μπάρα αρχική τιμή 0
         add(progressBar, BorderLayout.NORTH); //Τοποθετεί τη μπάρα στο πάνω μέρος του layout
 
-              JPanel panel = new JPanel(); // panel με ολα τα κουμπιά
+            JPanel panel = new JPanel(); // panel με ολα τα κουμπιά
         panel.setLayout(new GridLayout(1, 3, 10, 10)); //φτιαχνει layout για 3 κουμπιά
 
         createTablesBtn = new JButton("Δημιουργία πινάκων");
@@ -68,19 +69,31 @@ public class BudgetImporterGui extends JFrame {
 
         setVisible(true);
     }
-       
-    private void handleCreateTables(ActionEvent e) {
-        logArea.append("Creating tables...\n");
-        
-         SwingWorker<Void, Void> worker = new SwingWorker<>() {
+        /**
+     * Δημιουργεί μόνο τους πίνακες στη βάση δεδομένων.
+     * Καλεί την createTables(conn) από το BudgetImporter.
+     */       
+   private void handleCreateTables(ActionEvent e) {
+    logArea.setText("");
+    progressBar.setValue(0);
+    logArea.append("Creating tables...\n");
+
+    SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+
         @Override
         protected Void doInBackground() throws Exception {
 
-            try (Connection conn = DriverManager.getConnection("jdbc:sqlite:budget_data.db")) {
-                conn.setAutoCommit(false);
+            // FAKE progress 
+            for (int i = 0; i <= 100; i++) {
+                Thread.sleep(20);   // μικρή παύση για να φαίνεται η κίνηση
+                publish(i);         // στέλνουμε την τιμή στο process()
+            }
 
+            //  δημιουργία πινάκων
+            try (Connection conn= DriverManager.getConnection("jdbc:sqlite:budget_data.db")) {
+                conn.setAutoCommit(false);
                 BudgetImporter importer = new BudgetImporter();
-                importer.createTables(conn);   // καλούμε την private μέθοδο
+                importer.createTables(conn);
 
                 conn.commit();
             }
@@ -89,23 +102,93 @@ public class BudgetImporterGui extends JFrame {
         }
 
         @Override
+        protected void process(java.util.List<Integer> chunks) {
+            // παίρνουμε την τελευταία τιμή που στάλθηκε από το publish()
+            int value = chunks.get(chunks.size() - 1);
+            progressBar.setValue(value);   // ενημέρωση της μπάρας
+        }
+
+        @Override
         protected void done() {
+            progressBar.setValue(100);     // σιγουρεύουμε ότι είναι στο 100%
             logArea.append("Tables created successfully.\n");
         }
     };
 
     worker.execute();
-    
-    private void handleClearData(ActionEvent e) {
-        logArea.append("Clearing data...\n");
-        
-    }
-
-    private void handleImportData(ActionEvent e) {
-        logArea.append("Importing data...\n");
-       
-    }
-    
-   
 }
+    private void handleClearData(ActionEvent e) {
+        logArea.setText("");
+        progressBar.setValue(0);
+        logArea.append("Clearing data...\n");
+        SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+        @Override
+        protected Void doInBackground() throws Exception {
+
+            // FAKE progress 0–100
+            for (int i = 0; i <= 100; i++) {
+                Thread.sleep(20);
+                publish(i);
+            }
+                try (Connection conn = DriverManager.getConnection("jdbc:sqlite:budget_data.db")) {
+                    conn.setAutoCommit(false);
+
+                    BudgetImporter importer = new BudgetImporter();
+                    importer.clearOldData(conn);  // καλούμε την clearOldData
+
+                    conn.commit();
+                }
+                return null;
+            }           
+        @Override
+        protected void process(java.util.List<Integer> chunks) {
+            int value = chunks.get(chunks.size() - 1);
+            progressBar.setValue(value);      // ενημέρωση μπάρας
+        }
+
+        @Override
+        protected void done() {
+            progressBar.setValue(100);
+            logArea.append("Data cleared successfully.\n");
+        }
+            };
+            worker.execute();
+    } 
+    private void handleImportData(ActionEvent e) {
+        logArea.setText("");
+        progressBar.setValue(0);
+        logArea.append("Importing data...\n");
+
+        SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+            
+        @Override
+        protected Void doInBackground() throws Exception {
+
+            // FAKE progress 0–100
+            for (int i = 0; i <= 100; i++) {
+                Thread.sleep(20);
+                publish(i);
+            }
+                BudgetImporter importer = new BudgetImporter();
+                importer.importData();   // περιλαμβάνει όλα τα στάδια
+
+                return null;
+            }
+                    @Override
+        protected void process(java.util.List<Integer> chunks) {
+            int value = chunks.get(chunks.size() - 1);
+            progressBar.setValue(value);
+        }
+
+        @Override
+        protected void done() {
+            progressBar.setValue(100);
+            logArea.append("Data imported successfully.\n");
+        }
+        };
+        worker.execute();
+    }
+    public static void main(String[] args) {
+    SwingUtilities.invokeLater(() -> new BudgetImporterGui());
+    }
 }
