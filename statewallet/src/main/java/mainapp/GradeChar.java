@@ -1,3 +1,5 @@
+package mainapp;
+
 public class GradeChar {
 
     public void gdpGrowthChar(int g) {
@@ -122,10 +124,9 @@ public class GradeChar {
             + " τους μακροπρόθεσμους στόχους."
             );
         } else {
-            s
             System.out.println("Μικρή αύξηση στους ρύπους. Μπορούν να γίνουν "
                 + "ενέργειες για να φτάσουμε στην μείωση!"
-            )
+            );
         }
     }
 

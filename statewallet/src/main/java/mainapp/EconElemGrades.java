@@ -36,9 +36,18 @@ public class EconElemGrades {
     //Υπολογισμός του τελικού βαθμού στον οικονομικό τομέα
     public double getEconomicGrade(double w1, double w2, double w3,
         double surplusPercent, double debtPercent, double gdpPercent) {
+            GradeChar gradeChar = new GradeChar();
             int g1 = getGDPGrowthGrade(gdpPercent);
+            System.out.println("O βαθμός για την μεταβολή του ΑΕΠ είναι: " 
+                + g1);
+            gradeChar.gdpGrowthChar(g1);    
             int g2 = getpublicDebtGrade(debtPercent);
+            System.out.println("O βαθμός για το δημόσιο χρέος ως ποσοστό" +
+             " του ΑΕΠ είναι: " + g2);
             int g3 = getSurplusGrade(surplusPercent);
+            System.out.println("O βαθμός για το πρωτογενές πλεόνασμα είναι: " 
+                + g3);
+            gradeChar.surplusChar(g3);    
             double grade = w1 *g1 + w2 *g2 + w3 *g3;
             System.out.println("O βαθμός για το κράτος στον οικονομικό"
                 + " τομέα με βάση τα στοιχεία είναι " + grade);
