@@ -10,17 +10,39 @@ public class TotalGrade {
         SocElemGrades soc = new SocElemGrades();
         EnvElemGrades env = new EnvElemGrades();
         Weights w = new Weights();
-        //ΣΤΟΙΧΕΙΑ ΤΟΥ 2024 ΓΙΑ ΤΗΝ ΑΠΟΔΟΤΙΚΟΤΗΤΑ
-        double gdpGrowth = 0.028;  //ΕΛΣΤΑΤ
-        double publicDebt = 161.9;  //ΕΛΣΤΑΤ
-        double surplus = 0.019; //ΕΛΣΤΑΤ
-        double res = 0.234; //EUROSTAT
-        double recycleRate = 0.22;  //EUROSTAT
-        double emmisionsDiff = -0.026;  //EUROSTAT
-        double gini = 33.5;  //EΛΣΤΑΤ
-        double eduHealthExp = 0.101; //EUROSTAT
-        double mentalHealthPer = 0.20; //ΕΚΤΕΠΝ(ΠΡΟΣΕΓΓΙΣΤΙΚΑ)
-        double crimeRateDiff = 0.06; //ΕΛ. ΑΣ.
+        DataforGrade d = new DataforGrade();
+        //Εύρεση δεδομένων για το έτος που ζητάει ο χρήστης
+        boolean flag = true;
+        int year;
+        do {
+        System.out.println("Ποιο έτος θέλετε να χρησιμοποιήσετε");
+        year = scan.nextInt();
+        if (year >2024 || year <2020) {
+            System.out.println("Επιλέξτε ένα έτος ανάμεσα στο 2020 και 2024");
+        } else {
+            flag = false;
+        }
+        } while (flag);
+        //Προειδοποίησησ στον χρήστη για το 2020
+        if (year == 2020) {
+            System.out.println("Κάποια στοιχεία είναι πολύ εππηρεαμσένα "
+                + "από το ξέσπασμα της πανδημίας, όπως ο ρυθμός αύξησης του "
+                + "ΑΕΠ και η μεταβολή των ρύπων, οπότε ο τελικός βαθμος "
+                + "δεν είναι 100% αξιόπιστος!"
+            );
+        }
+        //Εισαγωγή των δεδομένων στις μεταβλητές
+        double[] yearsData = d.getData(year);
+        double gdpGrowth = yearsData[0];  //ΕΛΣΤΑΤ
+        double publicDebt = yearsData[1];  //ΕΛΣΤΑΤ
+        double surplus = yearsData[2]; //ΕΛΣΤΑΤ
+        double res = yearsData[3]; //EUROSTAT
+        double recycleRate = yearsData[4];  //EUROSTAT
+        double emmisionsDiff = yearsData[5];  //EUROSTAT
+        double gini = yearsData[6];  //EΛΣΤΑΤ
+        double eduHealthExp = yearsData[7]; //EUROSTAT
+        double mentalHealthPer = yearsData[8]; //ΕΚΤΕΠΝ(ΠΡΟΣΕΓΓΙΣΤΙΚΑ)
+        double crimeRateDiff = yearsData[9]; //ΕΛ. ΑΣ.
         //EIΣΑΓΩΓΗ ΤΩΝ ΒΑΡΩΝ ΓΙΑ ΤΟΥΣ ΥΠΟΛΟΓΙΣΜΟΎΣ ΑΠΟ ΤΟΝ ΧΡΗΣΤΗ
         double[] weights = new double[10]; //KΑΤΑΧΩΡΗΣΗ ΒΑΡΩΝ ΣΤΟΝ ΠΙΝΑΚΑ
         int i = 0;
