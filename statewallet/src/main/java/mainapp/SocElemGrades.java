@@ -13,10 +13,10 @@ public class SocElemGrades {
     }
 //Βαθμός για την μεταβολή της εγκληματικότητας(σοβαρά αδικήματα)
     public int getCrimeGrade(double percent){
-        if (percent <= -0.01) return 10;
-        else if (percent < 0.01) return 9;
+        if (percent <= -0.03) return 10;
+        else if (percent < 0.0) return 9;
         else if (percent < 0.03) return 8;
-        else if (percent < 0.05) return 7;
+        else if (percent < 0.06) return 7;
         else if (percent < 0.09) return 6;
         else return 5;
     }
