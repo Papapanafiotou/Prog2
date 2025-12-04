@@ -6,8 +6,8 @@ public class EconElemGrades {
         if (percent >= 0.022) return 10;
         else if (percent >= 0.015) return 9;
         else if (percent >= 0.012) return 8;
-        else if (percent >= 0.009) return 7;
-        else if (percent >= 0.005) return 6;
+        else if (percent >= 0.007) return 7;
+        else if (percent >= 0.00) return 6;
         else return 5;
     }
 
