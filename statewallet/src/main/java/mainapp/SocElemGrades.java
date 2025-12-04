@@ -31,10 +31,10 @@ public class SocElemGrades {
     }
 //Βαθμός για το άρθροισμα των ποσοστών δαπανών υγείας και παιδείας στο ΑΕΠ
     public int getHealthEduGrade(double percent) {
-        if (percent >= 0.12) return 10;
+        if (percent >= 0.13) return 10;
         else if (percent >= 0.11) return 9;
         else if (percent >= 0.095) return 8;
-        else if (percent >= 0.08) return 7; // 10.1% -> 7/10
+        else if (percent >= 0.08) return 7; 
         else if (percent >= 0.07) return 6;
         else return 5; 
     }
