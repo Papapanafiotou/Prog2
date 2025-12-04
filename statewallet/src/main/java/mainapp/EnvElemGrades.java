@@ -34,9 +34,18 @@ public class EnvElemGrades {
 //Τελικός βαθμός για τον περιβαλλοντικό τομέα
      public double getEnviromentalGrade(double w1, double w2, double w3,
         double resPercent, double emmisionPercent, double recyclePercent) {
+            GradeChar gradeChar = new GradeChar();
             int g1 = getRESGrade(resPercent);
+            System.out.println("O βαθμός για τo ποσοστό αξιοποίησης "
+            + "ανανεώσιμων πηγών ενέργειας είναι : " + g1);
+            gradeChar.resChar(g1);
             int g2 = getEmmisionGrade(emmisionPercent);
+            System.out.println("O βαθμός για την μεταβολή των ρύπων είναι: " 
+            + g1);
+            gradeChar.emmisionChar(g2);
             int g3 = getRecycleGrade(recyclePercent);
+             System.out.println("O βαθμός για τo ποσοστό ανακύκλωσης" 
+            + " των αστικών αποβλήτων είναι: " + g3);
             double grade = w1 *g1 + w2 *g2 + w3 *g3;
             System.out.println("O βαθμός για το κράτος στον περιβαλλοντικό"
                 + " τομέα με βάση τα στοιχεία είναι " + grade);
