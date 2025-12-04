@@ -52,7 +52,7 @@ with fitz.open(pdf_path) as doc, open(csv_path, "w", newline="", encoding="utf-8
         code = match[0]
         
 
-        description = ' '.join(match[1].split()) 
+        description = ' '.join(match[1].split()).replace(',','')
         
         amount1 = match[2].replace('.','')
         amount2 = match[3].replace('.','')
