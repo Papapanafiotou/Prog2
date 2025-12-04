@@ -73,6 +73,7 @@ public class GradeChar {
             );
         }
     }
+
     public void edHealthChar(int g) {
         if (g <= 6) {
             System.out.println("Oι δαπάνες στην υγεία και την παιδεία "
@@ -89,5 +90,21 @@ public class GradeChar {
                  + "ευρύτερη ικανοποίηση των πολιτών!"
             );
         }
-    }   
+    }
+
+    public void resChar(int g) {
+        if (g <= 6) {
+            System.out.println("Το ποσοστό χρήσης των αμαμεώσιμων "
+              + "πηγών ενέργειας είναι χαμηλό! Πρέπει να αυξηθεί."
+            );
+        } else if (g >= 9) {
+            System.out.println("Οι ανανεώσιμες πηγές ενέργειας "
+                + "αξιοποιήθηκαν σε πολύ μεγάλη κλίμακα! Συγχαρητήρια!"
+            );
+        } else {
+            System.out.println("Η αξιοποίηση ανανεώσιμων πηγών ενέργειας "
+            + " βρίσκεται σε αποδεκτό επίπεδο"
+            );
+        }
+    }
 }
