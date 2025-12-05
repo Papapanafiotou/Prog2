@@ -88,4 +88,7 @@ private final BudgetManager manager;     // χρηση του manager που φ�
 
     
         JScrollPane tableScroll = new JScrollPane(dataTable); //προσθηκη scroll bar
+
+        // Κάτω: αλλαγή ποσού + αλλαγές
+        JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
 }
