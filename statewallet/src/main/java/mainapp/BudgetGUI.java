@@ -66,4 +66,8 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         dataTable = new JTable(tableModel); //δεδομενα που θα μπουν στο μοντελο πινακα που φτιαξαμε
         dataTable.setFillsViewportHeight(true);
 
+         // Πεδία για αλλαγή ποσού
+        idField = new JTextField(8); //id που θα αλλαξουμε
+        amountField = new JTextField(10); // νεο ποσο
+        updateButton = new JButton("Αλλαγή Ποσού"); //πραγματοποιηση αλλαγης
 }
