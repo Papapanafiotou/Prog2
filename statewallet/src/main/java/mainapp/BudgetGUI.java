@@ -80,5 +80,10 @@ private final BudgetManager manager;     // χρηση του manager που φ�
 
     private void initLayout() {
         setLayout(new BorderLayout(8, 8));  //χωριζει την περιοχη σε τμηματα
+        
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(new JLabel("Πίνακας:"));
+        topPanel.add(tableSelector);
+        topPanel.add(loadTableButton);
 
 }
