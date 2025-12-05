@@ -53,4 +53,17 @@ private final BudgetManager manager;     // χρηση του manager που φ�
 
        loadTableButton = new JButton("Εμφάνιση Πίνακα");  //κουμπι εμφανισης πινακα
 
+         // Πίνακας δεδομένων (δομη)
+        tableModel = new DefaultTableModel(
+                new Object[]{"ID", "Περιγραφή", "Αρχικό Ποσό", "Τρέχον Ποσό"}, //ονοματα στηλων της δομης
+                0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // ο πινακας ειναι μονο για αναγνωση
+            }
+        };
+        dataTable = new JTable(tableModel); //δεδομενα που θα μπουν στο μοντελο πινακα που φτιαξαμε
+        dataTable.setFillsViewportHeight(true);
+
 }
