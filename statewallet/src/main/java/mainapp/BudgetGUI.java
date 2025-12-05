@@ -42,5 +42,15 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         initLayout();
         initListeners();
     }
-    
+    private void initComponents() {
+        // Μενου επιλογης πινακα και συνδεση με τη βαση δεδομενων (αντιστοιχια ονοματων στηλων)
+        tableSelector = new JComboBox<>();
+        tableSelector.addItem(new TableInfo("Έσοδα", "esoda", "code"));
+        tableSelector.addItem(new TableInfo("Έξοδα", "eksoda", "code"));
+        tableSelector.addItem(new TableInfo("Κράτος", "kratos", "number"));
+        tableSelector.addItem(new TableInfo("Υπουργεία", "ypourgeia", "number"));
+        tableSelector.addItem(new TableInfo("Αποκεντρωμένες Διοικήσεις", "apokentromenes", "number"));
+
+       loadTableButton = new JButton("Εμφάνιση Πίνακα");  //κουμπι εμφανισης πινακα
+
 }
