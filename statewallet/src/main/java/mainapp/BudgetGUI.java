@@ -70,4 +70,11 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         idField = new JTextField(8); //id που θα αλλαξουμε
         amountField = new JTextField(10); // νεο ποσο
         updateButton = new JButton("Αλλαγή Ποσού"); //πραγματοποιηση αλλαγης
+
+         // Περιοχή εμφάνισης αλλαγών
+        showChangesButton = new JButton("Εμφάνιση Αλλαγών");
+        changesArea = new JTextArea(8, 50);
+        changesArea.setEditable(false);
+        changesArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+    }
 }
