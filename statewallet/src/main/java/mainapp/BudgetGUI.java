@@ -77,4 +77,8 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         changesArea.setEditable(false);
         changesArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
     }
+
+    private void initLayout() {
+        setLayout(new BorderLayout(8, 8));  //χωριζει την περιοχη σε τμηματα
+
 }
