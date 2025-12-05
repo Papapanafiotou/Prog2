@@ -114,4 +114,21 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         add(tableScroll, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
     }
+    private void initListeners() {
+        // Εμφάνιση επιλεγμένου πίνακα
+        loadTableButton.addActionListener(e -> loadSelectedTable());
+        // Διπλό κλικ σε γραμμή -> γέμισμα ID & ποσού
+        dataTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    int row = dataTable.getSelectedRow();
+                    if (row >= 0) {
+                        Object idVal = tableModel.getValueAt(row, 0);
+                        Object amountVal = tableModel.getValueAt(row, 3);
+                        idField.setText(Objects.toString(idVal, ""));
+                        amountField.setText(Objects.toString(amountVal, ""));
+                    }
+                }
+            }
+        });
 }
