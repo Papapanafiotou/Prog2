@@ -68,6 +68,8 @@ public class PinakesImporter {
                     amount1 REAL,
                     amount2 REAL,
                     amount REAL,
+                    original_amount1 REAL,
+                    original_amount2 REAL,
                     original_amount REAL
                 );
             """);
@@ -79,6 +81,8 @@ public class PinakesImporter {
                     amount1 REAL,
                     amount2 REAL,
                     amount REAL,
+                    original_amount1 REAL,
+                    original_amount2 REAL,
                     original_amount REAL
                 );
             """);
@@ -90,6 +94,8 @@ public class PinakesImporter {
                     amount1 REAL,
                     amount2 REAL,
                     amount REAL,
+                    original_amount1 REAL,
+                    original_amount2 REAL,
                     original_amount REAL
                 );
             """);
@@ -176,9 +182,9 @@ public class PinakesImporter {
         // number, name, amount1, amount2, amount3
         // --------------------------------------------------------------------------------
 
-        String sqlYp = "INSERT INTO ypourgeia VALUES (?, ?, ?, ?, ?, ?)";
-        String sqlKr = "INSERT INTO kratos VALUES (?, ?, ?, ?, ?, ?)";
-        String sqlAp = "INSERT INTO apokentromenes VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlYp = "INSERT INTO ypourgeia VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlKr = "INSERT INTO kratos VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlAp = "INSERT INTO apokentromenes VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement psYp = conn.prepareStatement(sqlYp);
         PreparedStatement psKr = conn.prepareStatement(sqlKr);
@@ -230,7 +236,9 @@ public class PinakesImporter {
                     psKr.setDouble(3, amount1);
                     psKr.setDouble(4, amount2);
                     psKr.setDouble(5, amount3);
-                    psKr.setDouble(6, amount3);
+                    psKr.setDouble(6, amount1);
+                    psKr.setDouble(7, amount2);
+                    psKr.setDouble(8, amount3);
                     psKr.addBatch();
                 }
 
@@ -241,7 +249,9 @@ public class PinakesImporter {
                     psYp.setDouble(3, amount1);
                     psYp.setDouble(4, amount2);
                     psYp.setDouble(5, amount3);
-                    psYp.setDouble(6, amount3);
+                    psYp.setDouble(6, amount1);
+                    psYp.setDouble(7, amount2);
+                    psYp.setDouble(8, amount3);
                     psYp.addBatch();
                 }
 
@@ -252,7 +262,9 @@ public class PinakesImporter {
                     psAp.setDouble(3, amount1);
                     psAp.setDouble(4, amount2);
                     psAp.setDouble(5, amount3);
-                    psAp.setDouble(6, amount3);
+                    psAp.setDouble(6, amount1);
+                    psAp.setDouble(7, amount2);
+                    psAp.setDouble(8, amount3);
                     psAp.addBatch();
                 }
             }
