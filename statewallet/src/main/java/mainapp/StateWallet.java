@@ -3,11 +3,15 @@ package mainapp;
 
 import java.util.Scanner;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 
 
 public class StateWallet {
     
     public static void main(String[] args) {
+    
         try (Scanner scanner = new Scanner(System.in)) { // χρηση try-with για να κλεισει αυτοματα το scanner //
             int year;
             
