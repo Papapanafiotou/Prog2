@@ -131,4 +131,10 @@ private final BudgetManager manager;     // χρηση του manager που φ�
                 }
             }
         });
+        // Κουμπί αλλαγής ποσού
+        updateButton.addActionListener(e -> updateAmount());
+
+        // Κουμπί εμφάνισης αλλαγών
+        showChangesButton.addActionListener(e -> loadChangesFromDb());
+    }
 }
