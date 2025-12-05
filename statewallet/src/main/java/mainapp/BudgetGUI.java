@@ -91,4 +91,13 @@ private final BudgetManager manager;     // χρηση του manager που φ�
 
         // Κάτω: αλλαγή ποσού + αλλαγές
         JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
+
+        //ενημερωση στοιχειων
+        JPanel updatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        updatePanel.setBorder(BorderFactory.createTitledBorder("Αλλαγή στοιχείου προϋπολογισμού"));
+        updatePanel.add(new JLabel("ID:"));
+        updatePanel.add(idField);
+        updatePanel.add(new JLabel("Νέο ποσό:"));
+        updatePanel.add(amountField);
+        updatePanel.add(updateButton);
 }
