@@ -42,4 +42,5 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         initLayout();
         initListeners();
     }
+    
 }
