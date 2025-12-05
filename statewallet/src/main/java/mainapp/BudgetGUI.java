@@ -100,4 +100,11 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         updatePanel.add(new JLabel("Νέο ποσό:"));
         updatePanel.add(amountField);
         updatePanel.add(updateButton);
+
+        JPanel changesPanel = new JPanel(new BorderLayout());
+        changesPanel.setBorder(BorderFactory.createTitledBorder("Αλλαγές προϋπολογισμού"));
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        btnPanel.add(showChangesButton);
+        changesPanel.add(btnPanel, BorderLayout.NORTH);
+        changesPanel.add(new JScrollPane(changesArea), BorderLayout.CENTER);
 }
