@@ -107,4 +107,11 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         btnPanel.add(showChangesButton);
         changesPanel.add(btnPanel, BorderLayout.NORTH);
         changesPanel.add(new JScrollPane(changesArea), BorderLayout.CENTER);
+
+        bottomPanel.add(updatePanel, BorderLayout.NORTH);
+        bottomPanel.add(changesPanel, BorderLayout.CENTER); 
+        add(topPanel, BorderLayout.NORTH);
+        add(tableScroll, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
+    }
 }
