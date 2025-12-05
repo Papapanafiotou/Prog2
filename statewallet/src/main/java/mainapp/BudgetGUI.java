@@ -56,8 +56,9 @@ private final BudgetManager manager;     // χρηση του manager που φ�
          // Πίνακας δεδομένων (δομη)
         tableModel = new DefaultTableModel(
                 new Object[]{"ID", "Περιγραφή", "Αρχικό Ποσό", "Τρέχον Ποσό"}, //ονοματα στηλων της δομης
-                0
-        ) {
+                
+        ) 
+        {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // ο πινακας ειναι μονο για αναγνωση
@@ -137,4 +138,11 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         // Κουμπί εμφάνισης αλλαγών
         showChangesButton.addActionListener(e -> loadChangesFromDb());
     }
-}
+        private void loadSelectedTable() {
+        TableInfo info = (TableInfo) tableSelector.getSelectedItem();
+        if (info == null) return;
+
+        tableModel.setRowCount(0); // καθάρισμα
+
+        String sql = "SELECT " + info.idColumnName + ", name, original_amount, amount FROM " + info.tableName;
+        }
