@@ -188,13 +188,13 @@ public class PinakesImporter {
 
             String line;
             boolean skipHeader = true;
-            int row = 0;
+
 
             while ((line = reader.readLine()) != null) {
 
                 if (skipHeader) { skipHeader = false; continue; }
 
-                row++;
+
 
                 // Κόβουμε τη γραμμή στα κόμματα
                 String[] p = line.split(",");
@@ -224,7 +224,7 @@ public class PinakesImporter {
 
 
                 // --- rows 1–3 → kratos
-                if (row >= 1 && row <= 3) {
+                if (number >= 1000 && number <= 1005) {
                     psKr.setInt(1, number);
                     psKr.setString(2, name);
                     psKr.setDouble(3, amount1);
@@ -235,7 +235,7 @@ public class PinakesImporter {
                 }
 
                 // --- rows 4–23 → ypourgeia
-                else if (row >= 4 && row <= 23) {
+                else if (number >= 1007 && number <= 1070) {
                     psYp.setInt(1, number);
                     psYp.setString(2, name);
                     psYp.setDouble(3, amount1);
@@ -246,7 +246,7 @@ public class PinakesImporter {
                 }
 
                 // --- rows 24–30 → apokentromenes
-                else if (row >= 24 && row <= 30) {
+                else if (number >= 1800 && number <= 2000) {
                     psAp.setInt(1, number);
                     psAp.setString(2, name);
                     psAp.setDouble(3, amount1);
