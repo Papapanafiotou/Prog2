@@ -29,6 +29,17 @@ private final BudgetManager manager;     // χρηση του manager που φ�
     private JButton showChangesButton;
     private JTextArea changesArea;
 
-    
-    
+    public BudgetGUI() {
+        this.manager = new BudgetManager();
+        this.dbHandler = new DatabaseHandler();
+
+        setTitle("Διαχείριση Προϋπολογισμού");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  //κλεινει το προγραμμα με το Χ
+        setSize(950, 600); //ορισμος του αρχικου μεγεθους του παραθυρου
+        setLocationRelativeTo(null); // τοποθετηση του παραθυρου στο κεντρο της οθονης
+
+        initComponents();
+        initLayout();
+        initListeners();
+    }
 }
