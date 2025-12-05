@@ -86,4 +86,6 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
 
+    
+        JScrollPane tableScroll = new JScrollPane(dataTable); //προσθηκη scroll bar
 }
