@@ -233,4 +233,31 @@ private void loadChangesFromDb() {
         String sql = "SELECT " + info.idColumnName + ", name, amount, original_amount FROM "
                 + info.tableName + " WHERE amount != original_amount";
         // Φτιάχνουμε SQL που παίρνει μόνο τις γραμμές όπου το amount είναι διαφορετικό από original_amount
+    
+        try (Connection conn = dbHandler.connect();               // Ανοίγουμε σύνδεση με βάση
+             Statement stmt = conn.createStatement();            
+             ResultSet rs = stmt.executeQuery(sql)) {             // Εκτελούμε το query και παίρνουμε τις γραμμές που έχουν αλλαγές
+
+            boolean tableHasChanges = false;                      //αν ο συγκεκριμένος πίνακας έχει αλλαγές
+            while (rs.next()) {                                   // Διατρέχουμε κάθε γραμμή του ResultSet
+                if (!tableHasChanges) {                           // Αν βρίσκουμε αλλαγή σε αυτόν τον πίνακα
+                    sb.append("\nΑλλαγές στον πίνακα: ")          
+                      .append(info.displayName).append("\n");
+                    tableHasChanges = true;                       // Σημειώνουμε ότι αυτός ο πίνακας έχει αλλαγές
+                    foundAny = true;                              // Και ότι γενικά βρήκαμε τουλάχιστον μία αλλαγή
+                }
+                sb.append(String.format(                          // Προσθέτουμε μια γραμμή με λεπτομέρειες της αλλαγής
+                        "ID: %-3d | %-30s | Αρχικό: %10.2f | Νέο: %10.2f%n",
+                        rs.getInt(info.idColumnName),             
+                        rs.getString("name"),                     
+                        rs.getDouble("original_amount"),          
+                        rs.getDouble("amount")                    
+                ));
+            }
+
+        } catch (SQLException e) {
+            sb.append("Σφάλμα ελέγχου αλλαγών στο ")
+              .append(info.displayName).append(": ")
+              .append(e.getMessage()).append("\n");
+        }
     }
