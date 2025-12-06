@@ -183,8 +183,6 @@ private void updateAmount() {
                 JOptionPane.WARNING_MESSAGE);
         return;                                                   // Και σταματάμε τη μέθοδο
     }
-}
-
     try {
         int id = Integer.parseInt(idText);                        // Μετατρέπουμε το κείμενο του ID σε ακέραιο
         double newAmount = Double.parseDouble(amountText);        // Μετατρέπουμε το κείμενο του ποσού σε double 
@@ -198,4 +196,19 @@ private void updateAmount() {
                 return;                                           // Σταματάμε χωρίς να κάνουμε την αλλαγή
             }
         }
+        boolean success = manager.updateAmount(info.tableName, info.idColumnName, id, newAmount);                                       
+        if (success) {                                             // Αν η μέθοδος επέστρεψε true
+            JOptionPane.showMessageDialog(this,                   // Εμφανίζουμε μήνυμα επιτυχίας
+                    "Επιτυχής ενημέρωση!",
+                    "Επιτυχία",
+                    JOptionPane.INFORMATION_MESSAGE);
+            loadSelectedTable();                                  // Ξαναφορτώνουμε τον πίνακα για να δούμε τα νέα ποσά
+        } else {                                                  // Αν η ενημέρωση δεν πέτυχε 
+            JOptionPane.showMessageDialog(this,                   // Εμφανίζουμε προειδοποίηση στον χρήστη
+                    "Αποτυχία: Δεν βρέθηκε το ID.",
+                    "Αποτυχία",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+}
 }
