@@ -184,4 +184,18 @@ private void updateAmount() {
         return;                                                   // Και σταματάμε τη μέθοδο
     }
 }
+
+    try {
+        int id = Integer.parseInt(idText);                        // Μετατρέπουμε το κείμενο του ID σε ακέραιο
+        double newAmount = Double.parseDouble(amountText);        // Μετατρέπουμε το κείμενο του ποσού σε double 
+
+        if (newAmount < 0) {                                      // Αν το νέο ποσό είναι αρνητικό
+            int option = JOptionPane.showConfirmDialog(this,      // Ρωτάμε τον χρήστη αν θέλει σίγουρα να συνεχίσει
+                    "Το νέο ποσό είναι αρνητικό. Θέλεις να συνεχίσεις;",
+                    "Επιβεβαίωση",
+                    JOptionPane.YES_NO_OPTION);
+            if (option != JOptionPane.YES_OPTION) {               // Αν απαντήσει όχι
+                return;                                           // Σταματάμε χωρίς να κάνουμε την αλλαγή
+            }
+        }
 }
