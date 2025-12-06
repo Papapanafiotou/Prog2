@@ -261,3 +261,10 @@ private void loadChangesFromDb() {
               .append(e.getMessage()).append("\n");
         }
     }
+            if (!foundAny) {
+            sb.append("Δεν βρέθηκαν αλλαγές σε κανέναν πίνακα.\n");
+        }
+
+        changesArea.setText(sb.toString());
+        changesArea.setCaretPosition(0);
+    }
