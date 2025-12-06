@@ -137,4 +137,34 @@ private final BudgetManager manager;     // χρηση του manager που φ�
         // Κουμπί εμφάνισης αλλαγών
         showChangesButton.addActionListener(e -> loadChangesFromDb());
     }
+    // Μέθοδος που φορτώνει τον επιλεγμένο πίνακα από τη βάση και τον δείχνει στο JTable
+private void loadSelectedTable() { 
+    TableInfo info = (TableInfo) tableSelector.getSelectedItem(); // Παίρνουμε ποιο στοιχείο έχει επιλεγεί από το ComboBox
+    if (info == null) return;                                    // Αν για κάποιο λόγο δεν έχει επιλεγεί τίποτα, βγαίνουμε από τη μέθοδο
+
+    tableModel.setRowCount(0);     // Σβήνουμε όλες τις υπάρχουσες γραμμές από το JTable
+
+    String sql = "SELECT " + info.idColumnName + ", name, original_amount, amount FROM " + info.tableName;
+    // Φτιάχνουμε το SQL query: παίρνουμε ID στήλη, όνομα, αρχικό ποσό και τρέχον ποσό από τον σωστό πίνακα
+    try (Connection conn = dbHandler.connect();                   // Ανοίγουμε σύνδεση με τη βάση μέσω του DatabaseHandler
+         Statement stmt = conn.createStatement();                 // Δημιουργούμε Statement για να εκτελέσουμε το SQL
+         ResultSet rs = stmt.executeQuery(sql)) {                 // Εκτελούμε το query και παίρνουμε τα αποτελέσματα σε ResultSet
+
+        while (rs.next()) {                                       // Επαναλαμβάνουμε για κάθε γραμμή που επιστρέφει η βάση
+            Object[] row = new Object[]{                          // Δημιουργούμε ένα object array που αντιπροσωπεύει μια γραμμή του πίνακα
+                    rs.getInt(info.idColumnName),                 
+                    rs.getString("name"),                         
+                    rs.getDouble("original_amount"),              
+                    rs.getDouble("amount")                       
+            };
+            tableModel.addRow(row);                               // Προσθέτουμε αυτή τη γραμμή στο JTable
+        }
+
+    } catch (SQLException ex) {                                   // Αν συμβεί κάποιο SQL σφάλμα...
+        JOptionPane.showMessageDialog(this,                       // Εμφανίζουμε ένα μήνυμα λάθους
+                "Σφάλμα κατά την εμφάνιση του πίνακα " + info.tableName + ":\n" + ex.getMessage(),
+                "Σφάλμα",
+                JOptionPane.ERROR_MESSAGE);
+        }
+}
 }
