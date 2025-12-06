@@ -1,11 +1,29 @@
 package mainapp;
 
 //βιβλιοθηκες για τα στοιχεια του UI
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.sql.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Objects;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.table.DefaultTableModel;
 
 public class BudgetGUI extends JFrame {
 
@@ -265,7 +283,7 @@ private void loadChangesFromDb() {
             sb.append("Δεν βρέθηκαν αλλαγές σε κανέναν πίνακα.\n");
         }
 
-        changesArea.setText(sb.toString());      // Βάζουμε όλο το κείμενο που χτίσαμε στο JTextArea
+        changesArea.setText(sb.toString());      // Βάζουμε όλο το κείμενο που φτιάξαμε στο JTextArea
         changesArea.setCaretPosition(0);
 }
 // Βοηθητική κλάση για το comboBox: κρατάει όνομα εμφάνισης και στοιχεία πίνακα
@@ -284,4 +302,17 @@ private static class TableInfo {
     public String toString() {
         return displayName;                                       // Αυτό θα εμφανίζεται στο ComboBox όταν δείχνει το αντικείμενο
     }
+}
+
+public static void main(String[] args) {
+   try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); // Θέτουμε το Look & Feel να μοιάζει με αυτό του συστήματος 
+   } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        e.printStackTrace();                                      
+   }
+    javax.swing.SwingUtilities.invokeLater(() -> {                // Τρέχουμε τη δημιουργία του GUI στο Event Dispatch Thread 
+        BudgetGUI gui = new BudgetGUI();                          // Δημιουργούμε ένα νέο αντικείμενο BudgetGUI 
+        gui.setVisible(true);                                     // Το κάνουμε το παράθυρο ορατό στην οθόνη
+    });
+}
 }
