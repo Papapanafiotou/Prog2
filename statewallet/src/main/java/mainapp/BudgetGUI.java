@@ -265,6 +265,23 @@ private void loadChangesFromDb() {
             sb.append("Δεν βρέθηκαν αλλαγές σε κανέναν πίνακα.\n");
         }
 
-        changesArea.setText(sb.toString());
+        changesArea.setText(sb.toString());      // Βάζουμε όλο το κείμενο που χτίσαμε στο JTextArea
         changesArea.setCaretPosition(0);
+}
+// Βοηθητική κλάση για το comboBox: κρατάει όνομα εμφάνισης και στοιχεία πίνακα
+private static class TableInfo {
+    final String displayName;                                     // Όνομα που θα εμφανίζεται στο GUI 
+    final String tableName;                                       // Όνομα πίνακα στη βάση 
+    final String idColumnName;                                    // Όνομα στήλης ID στη βάση 
+
+    TableInfo(String displayName, String tableName, String idColumnName) {
+        this.displayName = displayName;                           
+        this.tableName = tableName;                               
+        this.idColumnName = idColumnName;                         
     }
+
+    @Override
+    public String toString() {
+        return displayName;                                       // Αυτό θα εμφανίζεται στο ComboBox όταν δείχνει το αντικείμενο
+    }
+}
