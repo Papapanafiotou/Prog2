@@ -217,5 +217,20 @@ private void updateAmount() {
                 JOptionPane.ERROR_MESSAGE);
     }
 }
+private void loadChangesFromDb() {
+    StringBuilder sb = new StringBuilder();                       // Δημιουργούμε ένα StringBuilder για να φτιάξουμε μεγάλο κείμενο
+    sb.append("--- Αλλαγές Προϋπολογισμού (σε όλους τους πίνακες) ---\n"); 
+    boolean foundAny = false;                                     // αν βρέθηκε έστω μία αλλαγή
 
-}
+    TableInfo[] tables = new TableInfo[]{                         // Ορίζουμε έναν πίνακα με όλους τους πίνακες που θα ελέγξουμε
+            new TableInfo("Έσοδα", "esoda", "code"),              // Πίνακας esoda με στήλη ID "code"
+            new TableInfo("Έξοδα", "eksoda", "code"),             // Πίνακας eksoda με στήλη ID "code"
+            new TableInfo("Κράτος", "kratos", "number"),          // Πίνακας kratos με στήλη ID "number"
+            new TableInfo("Υπουργεία", "ypourgeia", "number"),    // Πίνακας ypourgeia με στήλη ID "number"
+            new TableInfo("Αποκεντρωμένες Διοικήσεις", "apokentromenes", "number") // Πίνακας apokentromenes με στήλη ID "number"
+    };
+    for (TableInfo info : tables) {                               // Για κάθε πίνακα στη λίστα...
+        String sql = "SELECT " + info.idColumnName + ", name, amount, original_amount FROM "
+                + info.tableName + " WHERE amount != original_amount";
+        // Φτιάχνουμε SQL που παίρνει μόνο τις γραμμές όπου το amount είναι διαφορετικό από original_amount
+    }
