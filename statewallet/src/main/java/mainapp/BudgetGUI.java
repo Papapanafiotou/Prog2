@@ -148,8 +148,8 @@ private void loadSelectedTable() {
     // Φτιάχνουμε το SQL query: παίρνουμε ID στήλη, όνομα, αρχικό ποσό και τρέχον ποσό από τον σωστό πίνακα
     try (Connection conn = dbHandler.connect();                   // Ανοίγουμε σύνδεση με τη βάση μέσω του DatabaseHandler
          Statement stmt = conn.createStatement();                 // Δημιουργούμε Statement για να εκτελέσουμε το SQL
-         ResultSet rs = stmt.executeQuery(sql)) {                 // Εκτελούμε το query και παίρνουμε τα αποτελέσματα σε ResultSet
-
+         ResultSet rs = stmt.executeQuery(sql)) 
+         {                
         while (rs.next()) {                                       // Επαναλαμβάνουμε για κάθε γραμμή που επιστρέφει η βάση
             Object[] row = new Object[]{                          // Δημιουργούμε ένα object array που αντιπροσωπεύει μια γραμμή του πίνακα
                     rs.getInt(info.idColumnName),                 
@@ -160,11 +160,28 @@ private void loadSelectedTable() {
             tableModel.addRow(row);                               // Προσθέτουμε αυτή τη γραμμή στο JTable
         }
 
-    } catch (SQLException ex) {                                   // Αν συμβεί κάποιο SQL σφάλμα...
+        }  
+        catch (SQLException ex) {                                   // Αν συμβεί κάποιο SQL σφάλμα
         JOptionPane.showMessageDialog(this,                       // Εμφανίζουμε ένα μήνυμα λάθους
                 "Σφάλμα κατά την εμφάνιση του πίνακα " + info.tableName + ":\n" + ex.getMessage(),
                 "Σφάλμα",
                 JOptionPane.ERROR_MESSAGE);
         }
+}
+// Χρησιμοποιούμε τον ΥΠΑΡΧΟΝ BudgetManager.updateAmount για να αλλάξουμε ποσό σε γραμμή
+private void updateAmount() {
+    TableInfo info = (TableInfo) tableSelector.getSelectedItem(); // Ξαναπαίρνουμε τον επιλεγμένο πίνακα από το ComboBox
+    if (info == null) return;                                     // Αν δεν υπάρχει επιλογή, σταματάμε
+
+    String idText = idField.getText().trim();                     // Διαβάζουμε το κείμενο που έγραψε ο χρήστης στο πεδίο ID
+    String amountText = amountField.getText().trim();             // Διαβάζουμε το κείμενο που έγραψε ο χρήστης στο πεδίο Νέο Ποσό
+
+    if (idText.isEmpty() || amountText.isEmpty()) {               // Αν κάποιο από τα δύο πεδία είναι άδειο 
+        JOptionPane.showMessageDialog(this,                       // Εμφανίζουμε προειδοποίηση ότι πρέπει να τα συμπληρώσει
+                "Συμπλήρωσε ID και νέο ποσό.",
+                "Προειδοποίηση",
+                JOptionPane.WARNING_MESSAGE);
+        return;                                                   // Και σταματάμε τη μέθοδο
+    }
 }
 }
