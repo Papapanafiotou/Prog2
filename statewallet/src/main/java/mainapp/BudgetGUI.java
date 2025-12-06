@@ -209,6 +209,13 @@ private void updateAmount() {
                     "Αποτυχία",
                     JOptionPane.WARNING_MESSAGE);
         }
+    } 
+    catch (NumberFormatException ex) {                          // Αν γίνει λάθος στη μετατροπή string → αριθμό (ID ή ποσό)
+        JOptionPane.showMessageDialog(this,                       // Εμφανίζουμε μήνυμα λάθους για λάθος μορφή αριθμών
+                "Λάθος μορφή αριθμών. To ID πρέπει να είναι ακέραιος και το ποσό αριθμός.",
+                "Σφάλμα",
+                JOptionPane.ERROR_MESSAGE);
     }
 }
+
 }
