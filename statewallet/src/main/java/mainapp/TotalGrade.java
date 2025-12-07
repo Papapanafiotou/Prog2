@@ -50,42 +50,55 @@ public class TotalGrade {
         double wGDP = w.getWeight();
         weights[i] = wGDP;
         i+= 1;
-        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
+        System.out.println("Το βάρος για τον βαθμό της μεταβολής του ΑΕΠ" 
+        + "καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
         double wPubDebt = w.getWeight();
         weights[i] = wPubDebt;
         i+= 1;
-        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
+        System.out.println("Το βάρος για τον βαθμό του δημοσίου χρέους ως ποσοστό του ΑΕΠ" 
+        +"καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
         double wSurp = w.getWeight();
         weights[i] = wSurp;
         i+= 1;
+        System.out.println("Το βάρος για τον βαθμό του πρωτογενούς πλεονάσματος ως ποσοστό του ΑΕΠ" 
+        +"καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
         System.out.println("Εισάγετε τα βάρη για τα περιβαλλοντικά στοιχεία ");
         double wRES = w.getWeight();
         weights[i] = wRES;
         i+= 1;
-        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
+        System.out.println("Το βάρος για τον βαθμό της αξιοποίησης ανανεώσιμων πηγών ενέργειας" 
+        + "καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
         double wRecRate = w.getWeight();
         weights[i] = wRecRate;
         i+= 1;
-        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
+        System.out.println("Το βάρος για τον βαθμό του ποσοστόυ ανακύκλωσης αστικών"
+         + "αποβλήτων καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
         double wEmm = w.getWeight();
         weights[i] = wEmm;
         i+= 1;
+        System.out.println("Το βάρος για τον βαθμό της μεταβολής των ρύπων"
+         + "θερμοκηπίου καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
         System.out.println("Εισάγετε τα βάρη για τα κοινωνικά στοιχεία");
         double wGini = w.getWeight();
         weights[i] = wGini;
         i+= 1;
-        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
+        System.out.println("Το βάρος για τον βαθμό του δείκτη GINI" 
+        + "καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
         double wEdHealExp = w.getWeight();
         weights[i] = wEdHealExp;
         i+= 1;
-        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
+        System.out.println("Το βάρος για τον βαθμό των δαπανών για υγεία" + 
+        "και παιδεία καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
         double wMentHealPer = w.getWeight();
         weights[i] = wMentHealPer;
         i+= 1;
-        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
+        System.out.println("Το βάρος για τον βαθμό του εκτιμώμενου ποσοστού ατόμων με" 
+        + "προβλήματα ψυχικής υγείας καταχωρήθηκε! Eισάγετε το επόμενο βάρος!");
         double wCrimeRate = w.getWeight();
         weights[i] = wCrimeRate;
         i+= 1;
+        System.out.println("Το βάρος για τον βαθμό της ποσοστιαίας μεταβολής"
+         + "εγκληματικότητας(σοβαρά αδικήματα ανά 10000 αιδκήματα) καταχωρήθηκε!");
         //Υπολογισμός των βαθμών για τις 3 κατηγορίες
         double econGrade = ec.getEconomicGrade(wGDP, wPubDebt, wSurp,
              surplus, publicDebt, gdpGrowth);
@@ -105,6 +118,7 @@ public class TotalGrade {
         double finalGrade = (wEcon * econGrade) + (wEnv * envGrade) + (wSoc * socGrade);
         System.out.println("O τελικός βαθμός για το κράτος για το έτος 2024"
             + "με βάση τα στοιχεία είναι " + finalGrade);
+        w.showTotalWeights(weights, wEcon, wEnv, wSoc);
             return finalGrade;
     }
 }
