@@ -50,8 +50,13 @@
 
                         UserRow[] users = {
                             new UserRow("Chris", "Karahalios", "kchris@somewhere.com"),
-                            new UserRow("Mary", "Smith", "msmith@somewhere.com"),
-                            new UserRow("Bob", "Jakson", "bjackson@somewhere.com")
+                            new UserRow("Marios", "Voutsas", "mvoutsas@somewhere.com"),
+                            new UserRow("Christine", "Gallou", "cgallou@somewhere.com")
+                            new UserRow("Axilleas", "Damianidis", "adam@somewhere.com")
+                            new UserRow("Max", "Denaxas", "mdenaxas@somewhere.com")
+                            new UserRow("John", "Mpal", "jmpal@somewhere.com")
+                            new UserRow("Jason", "Damianidis", "jdam@somewhere.com")
+                            new UserRow("Konstantina", "Papapanag", "kpap@somewhere.com")
                         };
 
                         for(int i=0; i<users.length; i++){
