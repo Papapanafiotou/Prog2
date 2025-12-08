@@ -1,11 +1,11 @@
-<%@ page contentType="text/html; charset=UTF-8" errorPage="error_ex2_8230118.jsp" %>
+<%@ page contentType="text/html; charset=UTF-8" errorPage="errorPage.jsp" %>
 <%
     request.setAttribute("currentPage", "Dashboard");
-    exercise2_2025_2026_8230118.User currentUser =
-        (exercise2_2025_2026_8230118.User) session.getAttribute("userObj2025");
+    StateWallet_ex_2025_2026.UserPage currentUser =
+        (StateWallet_ex_2025_2026.UserPage) session.getAttribute("userObj2025");
 
     if(currentUser == null) {
-        response.sendRedirect("login_ex2_8230118.jsp");
+        response.sendRedirect("loginPage.jsp");
         return;
     }
 %>
@@ -49,7 +49,7 @@
                         }
 
                         UserRow[] users = {
-                            new UserRow("John", "Doe", "jdoe@somewhere.com"),
+                            new UserRow("Chris", "Karahalios", "kchris@somewhere.com"),
                             new UserRow("Mary", "Smith", "msmith@somewhere.com"),
                             new UserRow("Bob", "Jakson", "bjackson@somewhere.com")
                         };
@@ -71,4 +71,4 @@
     </div>
 </div>
 
-<%@ include file="footer_ex2_8230118.jsp" %>
+<%@ include file="footerPage.jsp" %>
