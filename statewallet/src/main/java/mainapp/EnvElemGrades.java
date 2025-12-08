@@ -41,7 +41,7 @@ public class EnvElemGrades {
             gradeChar.resChar(g1);
             int g2 = getEmmisionGrade(emmisionPercent);
             System.out.println("O βαθμός για την μεταβολή των ρύπων είναι: " 
-            + g1);
+            + g2);
             gradeChar.emmisionChar(g2);
             int g3 = getRecycleGrade(recyclePercent);
              System.out.println("O βαθμός για τo ποσοστό ανακύκλωσης" 

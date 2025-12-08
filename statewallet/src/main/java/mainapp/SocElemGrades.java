@@ -48,7 +48,7 @@ public class SocElemGrades {
             + "GINI είναι: " + g1);
             gradeChar.giniChar(g1); //Χαρακτηρισμός τησ επίδοσης για το στοιχείο
             int g2 = getCrimeGrade(crimePercent);
-            System.out.println("O βαθμός για την μεταβολή της εγκληματικότητας"
+            System.out.println("O βαθμός για την μεταβολή της εγκληματικότητας "
             + "είναι: " + g2);
             gradeChar.crimeRateChar(g2);
             int g3 = getMentalHealthGrade(mentalHealthPercent);

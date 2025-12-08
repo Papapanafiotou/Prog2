@@ -24,8 +24,8 @@ importer.importAll();
         b1.budgetCharacterism();;
         break;
     case 2:
-        Efficiency eff = new Efficiency();
-        eff.getEfficiency();
+       TotalGrade g = new TotalGrade();
+       g.getTotalGrade();
         break;
     case 3:
         Search search = new Search();

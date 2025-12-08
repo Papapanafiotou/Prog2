@@ -52,7 +52,7 @@ public class Weights {
             );
             for (int i = 0; i < 10; i++) {
                 System.out.println("Στοιχείο: " + names[i] +
-                "Ποσοστό: " + totalPercentage[i] );
+                " Ποσοστό: " + totalPercentage[i] );
             }
     } 
 }
