@@ -7,7 +7,7 @@ public class UserPageDAO {
 
     public List<UserPage> getUsers() {
         List<UserPage> users = new ArrayList<>();
-        users.add(new UserPage("Chris", "K", "kchris", "1111"));
+        users.add(new UserPage("Chris", "Karahalios", "kchris", "1111"));
         users.add(new UserPage("Marios", "Voutsas", "mvoutsas", "2222"));
         users.add(new UserPage("Christine", "Gallou", "cgallou", "3333"));
         users.add(new UserPage("Axilleas", "Damianidis", "adam", "4444"));
