@@ -8,7 +8,7 @@ public class Precentage {
     */
     public double getPrecentage() {
         double precent = 0.0;
-        Scanner scan = new Scanner(System.in);
+        Scanner scan = new Scanner(System.in, "CP737");
         System.out.println("Για ποιον λογαριασμό θέλετε να υπολογίσετε " +
          "το ποσοστό;");
         String name = scan.nextLine();
@@ -20,18 +20,18 @@ public class Precentage {
         if (table == "esoda") {
             total = t.getTotalRevenue();
             try {
-                precent = amount / total;
+                precent = (amount / total) * 100;
                 System.out.println("Το ποσοστό του " + name +
-                " στα συνολικά έσοδα έιναι " + precent);
+                " στα συνολικά έσοδα έιναι " + precent + " %");
             } catch (ArithmeticException e) {
                 System.out.println("Δεν είναι δυνατή η διαίρεση με το μηδέν!");
             }
         } else {
             total = t.getTotalExpenses();
              try {
-                precent = amount / total;
+                precent = (amount / total) * 100;
                 System.out.println("Το ποσοστό του " + name +
-                " στα συνολικά έξοδα έιναι " + precent);
+                " στα συνολικά έξοδα έιναι " + precent + " %");
             } catch (ArithmeticException e) {
                 System.out.println("Δεν είναι δυνατή η διαίρεση με το μηδέν!");
             }

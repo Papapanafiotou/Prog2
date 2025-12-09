@@ -1,9 +1,6 @@
 package mainapp;
 
 import java.util.Scanner;
-
-import javax.swing.JOptionPane;
-
 import java.sql.SQLException;
 public class StateWallet {
     public static void main(String[] args) {
@@ -27,8 +24,8 @@ importer.importAll();
         b1.budgetCharacterism();;
         break;
     case 2:
-        Efficiency eff = new Efficiency();
-        eff.getEfficiency();
+       TotalGrade g = new TotalGrade();
+       g.getTotalGrade();
         break;
     case 3:
         Search search = new Search();
