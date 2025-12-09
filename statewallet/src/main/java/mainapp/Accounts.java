@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 
 public class Accounts {
@@ -34,4 +35,27 @@ public class Accounts {
             System.err.println(e.getMessage());
         }
     }
+    public String getPassword(String username) {
+        String url = "jdbc:sqlite:accounts.db";
+        String sql = "SELECT password FROM accounts WHERE username = " + username;
+        String password = null;
+         try (
+            Connection conn = DriverManager.getConnection(url);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    password = rs.getString("password");
+                    System.out.println("Βρέθηκε χρήστης: " + username);
+                } else {
+                    System.out.println("Ο χρήστης " + username + " δεν βρέθηκε.");
+                }
+            } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            }
+            } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return password;
+    }
 }
+
