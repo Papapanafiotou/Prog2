@@ -57,5 +57,12 @@ public class Accounts {
         }
         return password;
     }
+    public boolean logIn(String pass1, String pass2) {
+        if (pass1 == pass2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
