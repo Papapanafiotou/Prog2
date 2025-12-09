@@ -58,9 +58,11 @@ public class Accounts {
         return password;
     }
     public boolean logIn(String pass1, String pass2) {
-        if (pass1 == pass2) {
+        if (pass1.equals(pass2)) {
+            System.out.println("Επιτυχής σύνδεση! Καλωσορίσατε!");
             return true;
         } else {
+            System.out.println("Λάθος κωδικός! Δοκιμάστε ξανά");
             return false;
         }
     }
