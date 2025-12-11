@@ -1,64 +1,92 @@
 package mainapp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-class MinistryData {
-    String name;
-    double amount2025;
-    double amount2026;
-
-    public MinistryData(String name, double amount2025, double amount2026) {
-        this.name = name;
-        this.amount2025 = amount2025;
-        this.amount2026 = amount2026;
-    }
-}
+import java.sql.*;
+import java.util.Scanner;
 
 public class BudgetComparison {
 
-    public static void main(String[] args) {
-        // 1. Φόρτωση Mock Δεδομένων (Προσομοίωση ανάγνωσης από τη βάση για 2 έτη)
-        // Χρησιμοποιώ δεδομένα από το PDF που ανέβασες για το 2026 και τυχαία για το 2025
-        List<MinistryData> ministries = new ArrayList<>();
+    // --- Η Μέθοδος που ξεκινάει τη διαδικασία ---
+    public void startComparison() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n✅ ΕΚΚΙΝΗΣΗ ΛΕΙΤΟΥΡΓΙΑΣ ΣΥΓΚΡΙΣΗΣ");
+        System.out.println("----------------------------------");
         
-        ministries.add(new MinistryData("Υπ. Παιδείας", 5500000000.00, 6763933000.00));
-        ministries.add(new MinistryData("Υπ. Υγείας", 7200000000.00, 7841945000.00));
-        ministries.add(new MinistryData("Υπ. Άμυνας", 6800000000.00, 7063272000.00));
-        ministries.add(new MinistryData("Υπ. Πολιτισμού", 600000000.00, 653109000.00));
-        ministries.add(new MinistryData("Προεδρία Δημ.", 5200000.00, 4951000.00)); // Παράδειγμα μείωσης
-
-        // 2. Εκτέλεση Σύγκρισης
-        System.out.println("==================================================================================");
-        System.out.println("                         ΣΥΓΚΡΙΣΗ ΠΡΟΥΠΟΛΟΓΙΣΜΩΝ (2025 vs 2026)                   ");
-        System.out.println("==================================================================================");
+        System.out.print("👉 Δώσε το 1ο έτος (π.χ. 2025): ");
+        String year1 = scanner.nextLine();
         
-        System.out.printf("%-20s | %-15s | %-15s | %-12s | %-8s%n", 
-                "ΦΟΡΕΑΣ", "ΠΟΣΟ 2025 ($)", "ΠΟΣΟ 2026 ($)", "ΔΙΑΦΟΡΑ ($)", "ΜΕΤΑΒΟΛΗ");
-        System.out.println("----------------------------------------------------------------------------------");
+        System.out.print("👉 Δώσε το 2ο έτος (π.χ. 2026): ");
+        String year2 = scanner.nextLine();
 
-        double totalDiff = 0;
+        compareDatabases(year1, year2);
+    }
 
-        for (MinistryData min : ministries) {
-            double diff = min.amount2026 - min.amount2025;
-            double percent = (diff / min.amount2025) * 100;
-            
-            totalDiff += diff;
+    // --- Η Μέθοδος που κάνει τη "βρώμικη" δουλειά με την SQL ---
+    private void compareDatabases(String year1, String year2) {
+        // Υποθέτουμε ότι τα αρχεία είναι στον κεντρικό φάκελο (εκτός src)
+        String url1 = "jdbc:sqlite:budget_" + year1 + ".db";
+        String url2 = "jdbc:sqlite:budget_" + year2 + ".db";
+        
+        // Αν στη βάση σας ο πίνακας λέγεται "ypourgeia" και οι στήλες "name", "amount"
+        // Αν λέγονται αλλιώς, άλλαξέ τα εδώ!
+        String sql = "SELECT name, amount FROM ypourgeia"; 
 
-            // Επιλογή προσήμου για εμφάνιση
-            String sign = (diff > 0) ? "+" : "";
-            
-            System.out.printf("%-20s | %,15.0f | %,15.0f | %s%,11.0f | %s%.2f%%%n", 
-                    min.name, 
-                    min.amount2025, 
-                    min.amount2026, 
-                    sign, diff, 
-                    sign, percent);
+        System.out.println("\n======================================================================");
+        System.out.printf("%-30s | %-12s | %-12s | %-10s\n", "ΥΠΟΥΡΓΕΙΟ", year1, year2, "ΔΙΑΦΟΡΑ");
+        System.out.println("----------------------------------------------------------------------");
+
+        try (Connection conn1 = DriverManager.getConnection(url1);
+             Connection conn2 = DriverManager.getConnection(url2);
+             Statement stmt1 = conn1.createStatement();
+             Statement stmt2 = conn2.createStatement();
+             ResultSet rs1 = stmt1.executeQuery(sql)) {
+
+            boolean foundData = false;
+
+            // Διαβάζουμε γραμμή-γραμμή το 1ο έτος
+            while (rs1.next()) {
+                foundData = true;
+                String name = rs1.getString("name"); 
+                double val1 = rs1.getDouble("amount");
+                
+                // Ψάχνουμε το αντίστοιχο ποσό στο 2ο έτος
+                // Χρησιμοποιούμε PreparedStatement για ασφάλεια
+                String sql2 = "SELECT amount FROM ypourgeia WHERE name = ?";
+                PreparedStatement pstmt2 = conn2.prepareStatement(sql2);
+                pstmt2.setString(1, name);
+                ResultSet rs2 = pstmt2.executeQuery();
+                
+                double val2 = 0.0;
+                if (rs2.next()) {
+                    val2 = rs2.getDouble("amount");
+                }
+                rs2.close();
+                pstmt2.close();
+
+                // Υπολογισμός διαφοράς
+                double diff = val2 - val1;
+                String sign = (diff > 0) ? "+" : ""; // Αν θετικό, βάλε +
+
+                // Εκτύπωση γραμμής στον πίνακα
+                System.out.printf("%-30s | %,12.0f | %,12.0f | %s%,10.0f\n", 
+                        name, val1, val2, sign, diff);
+            }
+
+            if (!foundData) {
+                System.out.println("⚠️  Δεν βρέθηκαν εγγραφές στον πίνακα 'ypourgeia'.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("\n❌ ΣΦΑΛΜΑ ΣΥΝΔΕΣΗΣ:");
+            System.out.println("   Δεν βρέθηκαν τα αρχεία: budget_" + year1 + ".db ή budget_" + year2 + ".db");
+            System.out.println("   ή ο πίνακας/στήλες έχουν άλλο όνομα.");
+            System.out.println("   (Τεχνικό μήνυμα: " + e.getMessage() + ")");
         }
+        System.out.println("======================================================================\n");
+    }
 
-        System.out.println("----------------------------------------------------------------------------------");
-        System.out.printf("%-20s                                         ΣΥΝΟΛΙΚΗ ΑΥΞΗΣΗ: %,15.0f $%n", "ΣΥΝΟΛΟ", totalDiff);
+    // --- ΠΡΟΣΩΡΙΝΗ MAIN (ΓΙΑ ΝΑ ΤΟ ΤΡΕΞΕΙΣ ΤΩΡΑ) ---
+    public static void main(String[] args) {
+        BudgetComparison test = new BudgetComparison();
+        test.startComparison();
     }
 }
