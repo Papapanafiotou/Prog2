@@ -1,10 +1,20 @@
 package mainapp;
 
-/**
- * Hello world!
- */
+
+
+
+
 public class StateWallet {
+    
     public static void main(String[] args) {
-        System.out.println("Hello!");
-    }
+            // 1. Επιλογή κατάλληλου database
+            DatabaseChooser chooser = new DatabaseChooser();
+            String DATABASE_URL = chooser.getURL();
+            BudgetMenu budgetmenu = new BudgetMenu(DATABASE_URL);
+            
+            // 2. Εκκίνηση της εφαρμογής
+            budgetmenu.start();
+        }
 }
+
+
