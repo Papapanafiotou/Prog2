@@ -5,24 +5,24 @@ import java.util.Scanner;
 
 public class BudgetComparison {
 
-    // --- Η Μέθοδος που ξεκινάει τη διαδικασία ---
+    
     public void startComparison() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n✅ ΕΚΚΙΝΗΣΗ ΛΕΙΤΟΥΡΓΙΑΣ ΣΥΓΚΡΙΣΗΣ");
+        System.out.println("\n ΕΚΚΙΝΗΣΗ ΛΕΙΤΟΥΡΓΙΑΣ ΣΥΓΚΡΙΣΗΣ");
         System.out.println("----------------------------------");
-        
-        System.out.print("👉 Δώσε το 1ο έτος (π.χ. 2025): ");
+
+        System.out.print("-> Δώσε το 1ο έτος (π.χ. 2025): ");
         String year1 = scanner.nextLine();
         
-        System.out.print("👉 Δώσε το 2ο έτος (π.χ. 2026): ");
+        System.out.print("-> Δώσε το 2ο έτος (π.χ. 2026): ");
         String year2 = scanner.nextLine();
 
         compareDatabases(year1, year2);
     }
 
-    // --- Η Μέθοδος που κάνει τη "βρώμικη" δουλειά με την SQL ---
+    // Συγκριση των βασεων //
     private void compareDatabases(String year1, String year2) {
-        // Υποθέτουμε ότι τα αρχεία είναι στον κεντρικό φάκελο (εκτός src)
+       
         String url1 = "jdbc:sqlite:budget_" + year1 + ".db";
         String url2 = "jdbc:sqlite:budget_" + year2 + ".db";
         
