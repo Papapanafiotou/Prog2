@@ -3,14 +3,25 @@ package mainapp;
 
 import java.util.Scanner;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 
 
 public class StateWallet {
     
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 2. Εκκίνηση του Launcher (Το πρώτο παράθυρο)
+        SwingUtilities.invokeLater(() -> {
+            StateWalletLauncher launcher = new StateWalletLauncher();
+            launcher.setVisible(true);
+        });
     
         try (Scanner scanner = new Scanner(System.in)) { // χρηση try-with για να κλεισει αυτοματα το scanner //
             int year;

@@ -21,15 +21,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 
 public class BudgetGUI extends JFrame {
 
 private final BudgetManager manager;     // χρηση του manager που φτιαξαμε
     private final DatabaseHandler dbHandler; // συνδεση μεταξυ βασης δεδομενων και UI
-
+    private int currentYear;
     //επιλογη πινακα
     private JComboBox<TableInfo> tableSelector; 
     private JButton loadTableButton;
@@ -47,7 +45,8 @@ private final BudgetManager manager;     // χρηση του manager που φ�
     private JButton showChangesButton;
     private JTextArea changesArea;
 
-    public BudgetGUI() {
+    public BudgetGUI(int year) {
+        this.currentYear = year;
         this.manager = new BudgetManager();
         this.dbHandler = new DatabaseHandler();
 
@@ -304,15 +303,5 @@ private static class TableInfo {
     }
 }
 
-public static void main(String[] args) {
-   try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); // Θέτουμε το Look & Feel να μοιάζει με αυτό του συστήματος 
-   } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-        e.printStackTrace();                                      
-   }
-    javax.swing.SwingUtilities.invokeLater(() -> {                // Τρέχουμε τη δημιουργία του GUI στο Event Dispatch Thread 
-        BudgetGUI gui = new BudgetGUI();                          // Δημιουργούμε ένα νέο αντικείμενο BudgetGUI 
-        gui.setVisible(true);                                     // Το κάνουμε το παράθυρο ορατό στην οθόνη
-    });
-}
+
 }
