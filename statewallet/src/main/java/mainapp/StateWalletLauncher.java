@@ -44,5 +44,14 @@ public class StateWalletLauncher extends JFrame {
         mainPanel.setBackground(BG);
         mainPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
 
+        addComp(mainPanel, new JLabel("🏛️"), new Font("Segoe UI Emoji", Font.PLAIN, 70), Color.BLACK, 5);
+        addComp(mainPanel, new JLabel("State Wallet"), new Font("Segoe UI", Font.BOLD, 24), PRIMARY, 5);
+        addComp(mainPanel, new JLabel("Επιλέξτε οικονομικό έτος"), new Font("Segoe UI", Font.PLAIN, 12), Color.GRAY, 30);
 
+        yearSelector = new JComboBox<>(new String[]{"2023", "2024", "2025", "2026"});
+        yearSelector.setMaximumSize(new Dimension(150, 30));
+        yearSelector.setBackground(Color.WHITE);
+        addComp(mainPanel, yearSelector, new Font("Segoe UI", Font.PLAIN, 14), Color.BLACK, 15);
+
+       
 }
