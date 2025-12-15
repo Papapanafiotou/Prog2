@@ -32,10 +32,17 @@ public class StateWalletLauncher extends JFrame {
 
     // ο βασικος constructor
     public StateWalletLauncher() {
+
         setTitle("State Wallet");
         setSize(450, 350);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(BG);
+        mainPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
+
 
 }
