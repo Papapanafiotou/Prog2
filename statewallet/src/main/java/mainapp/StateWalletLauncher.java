@@ -26,4 +26,7 @@ public class StateWalletLauncher extends JFrame {
     private final JButton startButton;
     private final JLabel statusLabel;
     private final JProgressBar progressBar;
+
+    private static final Color PRIMARY = new Color(70, 130, 180);
+    private static final Color BG = new Color(245, 245, 250);
 }
