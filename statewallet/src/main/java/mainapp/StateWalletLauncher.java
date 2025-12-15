@@ -53,5 +53,12 @@ public class StateWalletLauncher extends JFrame {
         yearSelector.setBackground(Color.WHITE);
         addComp(mainPanel, yearSelector, new Font("Segoe UI", Font.PLAIN, 14), Color.BLACK, 15);
 
-       
+       startButton = new JButton("Φόρτωση & Είσοδος");
+        startButton.setBackground(PRIMARY);
+        startButton.setForeground(Color.BLACK); // Λευκά γράμματα για αντίθεση
+        startButton.setFocusPainted(false);
+        startButton.setMaximumSize(new Dimension(200, 40));
+        startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        addComp(mainPanel, startButton, new Font("Segoe UI", Font.BOLD, 14), null, 20);
+
 }
