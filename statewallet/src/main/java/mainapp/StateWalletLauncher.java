@@ -72,7 +72,14 @@ public class StateWalletLauncher extends JFrame {
         add(mainPanel);
         startButton.addActionListener(e -> startProcess());
     }
-    
+    private void addComp(JPanel p, JComponent c, Font f, Color col, int gap) {
+        if (f != null) c.setFont(f);
+        if (col != null) c.setForeground(col);
+        c.setAlignmentX(Component.CENTER_ALIGNMENT);
+        p.add(c);
+        if (gap > 0) p.add(Box.createRigidArea(new Dimension(0, gap)));
+    }
+   
 
 
 
