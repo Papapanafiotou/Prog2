@@ -79,6 +79,40 @@ public class StateWalletLauncher extends JFrame {
         p.add(c);
         if (gap > 0) p.add(Box.createRigidArea(new Dimension(0, gap)));
     }
+    private void startProcess() {
+        int year = Integer.parseInt((String) yearSelector.getSelectedItem());
+        statusLabel.setText("Επεξεργασία δεδομένων...");
+        startButton.setEnabled(false);
+        progressBar.setVisible(true);
+        progressBar.setIndeterminate(true);
+        new Thread(() -> {
+            try {
+                
+                Csvtopdf.run(year);
+                new PinakesImporter("jdbc:sqlite:budget.db").importAll(); 
+
+                SwingUtilities.invokeLater(() -> {
+                    progressBar.setValue(100);
+                    statusLabel.setText("Ολοκληρώθηκε!");
+                    Timer timer = new Timer(100, e -> {
+        dispose(); // Κλείνει τον Launcher
+        new BudgetGUI(year).setVisible(true); // Ανοίγει το κεντρικό παράθυρο
+    });
+    timer.setRepeats(false); 
+    timer.start();
+                });
+            } catch (Exception ex) {
+                SwingUtilities.invokeLater(() -> {
+                    progressBar.setVisible(false);
+                    statusLabel.setText("Σφάλμα!");
+                    startButton.setEnabled(true);
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                });
+            }
+        }).start();
+    }
+}
+
    
 
 
