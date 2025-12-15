@@ -29,4 +29,13 @@ public class StateWalletLauncher extends JFrame {
 
     private static final Color PRIMARY = new Color(70, 130, 180);
     private static final Color BG = new Color(245, 245, 250);
+
+    // ο βασικος constructor
+    public StateWalletLauncher() {
+        setTitle("State Wallet");
+        setSize(450, 350);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
+
 }
