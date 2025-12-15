@@ -61,4 +61,20 @@ public class StateWalletLauncher extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         addComp(mainPanel, startButton, new Font("Segoe UI", Font.BOLD, 14), null, 20);
 
-}
+        progressBar = new JProgressBar();
+        progressBar.setMaximumSize(new Dimension(200, 5));
+        progressBar.setForeground(PRIMARY);
+        progressBar.setVisible(false);
+        addComp(mainPanel, progressBar, null, null, 5);
+
+        statusLabel = new JLabel("Αναμονή...");
+        addComp(mainPanel, statusLabel, new Font("Segoe UI", Font.ITALIC, 11), Color.GRAY, 0);
+        add(mainPanel);
+        startButton.addActionListener(e -> startProcess());
+    }
+    
+
+
+
+
+

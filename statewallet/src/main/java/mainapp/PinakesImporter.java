@@ -16,6 +16,7 @@ public class PinakesImporter {
         this.dbUrl = dbUrl;
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     public void importAll() {
         try (Connection conn = DriverManager.getConnection(dbUrl)) {
             createTables(conn);
