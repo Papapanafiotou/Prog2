@@ -1,5 +1,6 @@
 package mainapp;
 
+import java.util.Random;
 import java.util.Scanner;
 public class Log {
     public void logMenu() {
@@ -11,8 +12,23 @@ public class Log {
     if (answer == 1) {
         System.out.println("Εισάγετε το username");
         String name = scan.nextLine();
-        System.out.println("Εισάγετε τον κωδικό προσβασης");
-        String pass = scan.nextLine();
+        System.out.println("Για τυχαίο κωδικό πατήστε 1, αλλιώς εισάγετε κωδικό");
+        String pass;
+        int an = scan.nextInt();
+        if (an == 1) {
+            Random random = new Random();
+            String characterSet = "abcdefghijklmnopqrstuvwxyz0123456789@#!";
+            String randomString = "";
+            for (int i = 0; i < 10; i++) {
+            int randomIndex = random.nextInt(characterSet.length());
+            char randomChar = characterSet.charAt(randomIndex);
+            randomString = randomString + randomChar; 
+            }
+            pass = randomString;
+        } 
+        else {
+        pass = scan.nextLine();
+        }
         acc.createAccount(name, pass);
         return; 
     } else {
