@@ -27,7 +27,6 @@ public class BudgetGUI extends JFrame {
 
     private final BudgetManager manager;     // χρηση του manager που φτιαξαμε
     private final DatabaseHandler dbHandler; // συνδεση μεταξυ βασης δεδομενων και UI
-    private int currentYear;
     //επιλογη πινακα
     private JComboBox<TableInfo> tableSelector; 
     private JButton loadTableButton;
@@ -46,7 +45,6 @@ public class BudgetGUI extends JFrame {
     private JTextArea changesArea;
 
     public BudgetGUI(int year) {
-        this.currentYear = year;
         this.manager = new BudgetManager();
         this.dbHandler = new DatabaseHandler();
 

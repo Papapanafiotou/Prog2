@@ -3,13 +3,26 @@ package mainapp;
 
 import java.util.Scanner;
 
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
 
 
 public class StateWallet {
     
+    @SuppressWarnings({"CallToPrintStackTrace", "UseSpecificCatch"})
     public static void main(String[] args) {
-       
-    
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SwingUtilities.invokeLater(() -> {   // τρεχουμε τη statewalletlauncher
+            StateWalletLauncher launcher = new StateWalletLauncher();
+            launcher.setVisible(true);
+        });
+
         try (Scanner scanner = new Scanner(System.in)) { // χρηση try-with για να κλεισει αυτοματα το scanner //
             int year;
             
