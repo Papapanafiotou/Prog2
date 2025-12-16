@@ -6,7 +6,8 @@ public class Log {
     public void logMenu() {
     Accounts acc = new Accounts();
     acc.createTable();
-    System.out.println("Για δημιουργία λογαριασμού πατήστε 1, για σύνδεση 2");
+    System.out.println("Για δημιουργία λογαριασμού πατήστε 1, για σύνδεση 2," 
+    + "για αλλαγή κωδικού 3");
     Scanner scan = new Scanner(System.in);
     int answer = scan.nextInt();
     if (answer == 1) {
@@ -25,13 +26,14 @@ public class Log {
             randomString = randomString + randomChar; 
             }
             pass = randomString;
+            System.out.println("Ο κωδικός ειναι" + pass);
         } 
         else {
         pass = scan.nextLine();
         }
         acc.createAccount(name, pass);
         return; 
-    } else {
+    } else if (answer == 2) {
         System.out.println("Εισάγετε το username σας");
         String name = scan.nextLine();
         String realpass = acc.getPassword(name);
@@ -41,6 +43,18 @@ public class Log {
         if (connect == false) {
             return;
         }
+    } else{
+        System.out.println("Εισάγετε το username σας");
+        String name = scan.nextLine();
+        String realpass = acc.getPassword(name);
+        System.out.println("Πληκτρολογήστε τον τρέχον κωδικό πρόσβασης");
+        String userPass = scan.nextLine();
+        boolean connect = acc.logIn(realpass, userPass);
+        if (connect) {
+            acc.newPass();
+        } else {
+            System.out.println("Λάθος κωδικός! Προσπαθήστε ξανά!");
+        }   
     }
-}
+    }
 }
