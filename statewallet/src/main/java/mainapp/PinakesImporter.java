@@ -2,6 +2,9 @@ package mainapp;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,11 +20,19 @@ public class PinakesImporter {
     }
 
     public void importAll() {
+        Path currentWorkingDir = Paths.get(".").toAbsolutePath().normalize();
+        Path baseDir;
+        if (Files.exists(currentWorkingDir.resolve("statewallet"))) {
+            baseDir = currentWorkingDir.resolve("statewallet");
+        } else {
+            baseDir = currentWorkingDir;
+        }
+        Path sourcesDir = baseDir.resolve(Paths.get("src", "main", "sources"));
         try (Connection conn = DriverManager.getConnection(dbUrl)) {
             createTables(conn);
-            importEsoda(conn, "statewallet\\src\\main\\sources\\income.csv");
-            importEksoda(conn, "statewallet\\src\\main\\sources\\expenses.csv");
-            importMinistries(conn, "statewallet\\src\\main\\sources\\ministries.csv");
+            importEsoda(conn, sourcesDir.resolve("income.csv").toString());
+            importEksoda(conn, sourcesDir.resolve("expenses.csv").toString());
+            importMinistries(conn, sourcesDir.resolve("ministries.csv").toString());
             System.out.println(" Όλοι οι πίνακες εισήχθησαν επιτυχώς.");
         } catch (Exception e) {
             e.printStackTrace();
