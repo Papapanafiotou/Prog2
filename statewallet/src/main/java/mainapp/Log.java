@@ -51,7 +51,8 @@ public class Log {
         String userPass = scan.nextLine();
         boolean connect = acc.logIn(realpass, userPass);
         if (connect) {
-            acc.newPass();
+            String newP = scan.nextLine();
+            acc.newPass(newP,name);
         } else {
             System.out.println("Λάθος κωδικός! Προσπαθήστε ξανά!");
         }   

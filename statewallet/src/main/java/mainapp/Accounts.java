@@ -66,5 +66,18 @@ public class Accounts {
             return false;
         }
     }
+    public void newPass(String password, String name) {
+        String url = "jdbc:sqlite:accounts.db";
+        String sql = "UPDATE accounts SET password = ? WHERE usermame = ?";
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, password); 
+            pstmt.setString(2, name); 
+            pstmt.executeUpdate();
+            System.out.println("Ο νέος κωδικός είναι " + password);
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα στη βάση δεδομένων: " + e.getMessage());
+        }
+    }
 }
 
