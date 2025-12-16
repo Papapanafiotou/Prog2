@@ -1,11 +1,24 @@
 import fitz
 import csv
 import re
+from pathlib import Path 
 
-csv_path = r"statewallet\src\main\sources\ministries.csv"
-csv_path2 = r"statewallet\src\main\sources\income.csv"
-csv_path3 = r"statewallet\src\main\sources\expenses.csv"
-pdf_path = r"statewallet\src\main\sources\budgettouse.pdf"
+# Βρίσκουμε τον φάκελο που βρίσκεται ΑΥΤΟ το script (src/scripts)
+ # Το .resolve() μας δίνει το απόλυτο μονοπάτι (Absolute Path)
+script_dir = Path(__file__).resolve().parent
+
+# Υπολογίζουμε τον φάκελο "sources" πηγαίνοντας πίσω/πάνω στους φακέλους
+# Δομή: statewallet/src/scripts/pdftocsv.py
+# Στόχος: statewallet/src/main/sources/
+
+sources_dir = script_dir.parent / "main" / "sources"
+
+# Ορίζουμε τα αρχεία χρησιμοποιώντας το sources_dir
+# Η Python φροντίζει να βάλει τα σωστά διαχωριστικά (\ ή /) αυτόματα
+csv_path = sources_dir / "ministries.csv"
+csv_path2 = sources_dir / "income.csv"
+csv_path3 = sources_dir / "expenses.csv"
+pdf_path = sources_dir / "budgettouse.pdf"
 
 
 #################
