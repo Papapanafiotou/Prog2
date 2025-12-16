@@ -3,28 +3,39 @@ package mainapp;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class Csvtopdf {
     public static void run(int year) {
-        String path ="statewallet/src/main/sources/budget" + year + ".pdf";
-        String newPath = "statewallet/src/main/sources/budgettouse.pdf";
+        Path currentWorkingDir = Paths.get(".").toAbsolutePath().normalize();
+        Path baseDir;
+        if (Files.exists(currentWorkingDir.resolve("statewallet"))) {
+            baseDir = currentWorkingDir.resolve("statewallet");
+        } else {
+            baseDir = currentWorkingDir;
+        }
+
+        Path sourceDir = baseDir.resolve(Paths.get("src", "main", "sources"));
+        Path scriptsDir = baseDir.resolve(Paths.get("src", "scripts"));
+        Path path = sourceDir.resolve("budget" + year + ".pdf");
+        Path newpath = sourceDir.resolve("budgettouse.pdf");
         
         try {
             
-            Files.move(Paths.get(path), Paths.get(newPath), StandardCopyOption.REPLACE_EXISTING);
+            Files.move(path, newpath, StandardCopyOption.REPLACE_EXISTING);
 
             System.out.print("Το αρχείο μετονομάστηκε επιτυχώς σε: ");
-            System.out.println(newPath);
+            System.out.println(newpath);
 
         } catch (Exception e) {
             System.out.println("Σφάλμα κατά τη μετονομασία: " + e.getMessage());
         }
         try {
-            String scriptPath = "statewallet\\src\\scripts\\pdftocsv.py";
+            Path scriptPath = scriptsDir.resolve("pdftocsv.py").toAbsolutePath();
 
-            ProcessBuilder pb = new ProcessBuilder("python", scriptPath);
+            ProcessBuilder pb = new ProcessBuilder("python", scriptPath.toAbsolutePath().toString());
             pb.redirectErrorStream(true);
 
             Process process = pb.start();
@@ -39,7 +50,7 @@ public class Csvtopdf {
             e.printStackTrace();
         }
         try {
-            Files.move(Paths.get(newPath), Paths.get(path), StandardCopyOption.REPLACE_EXISTING);
+            Files.move(newpath, path, StandardCopyOption.REPLACE_EXISTING);
 
             System.out.print("Το αρχείο μετονομάστηκε ξανά στο αρχικό επιτυχώς σε: ");
             System.out.println(path);
