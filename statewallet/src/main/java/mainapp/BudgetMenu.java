@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class BudgetMenu {
     
+    DatabaseChooser chooser = new DatabaseChooser();
     String URL;
     private BudgetManager manager;
     private Scanner scanner;
@@ -23,7 +24,8 @@ public class BudgetMenu {
             System.out.println("1. Εμφάνιση στοιχείων προυπολογισμού");
             System.out.println("2. Αλλαγή στοιχείου προυπολογισμού");
             System.out.println("3. Εμφάνιση αλλαγών");
-            System.out.println("4. Έξοδος");
+            System.out.println("4. Αλλαγή έτους προυπολογισμού");
+            System.out.println("5. Έξοδος");
             System.out.print("Επιλογή: ");
 
             int choice = scanner.nextInt();
@@ -34,6 +36,11 @@ public class BudgetMenu {
                 case 2 -> ChangeBudget();
                 case 3 -> manager.showChanges();
                 case 4 -> {
+                    String newURL = chooser.getURL();
+                    this.URL = newURL;
+                    manager.URL = newURL;
+                }
+                case 5 -> {
                     System.out.println("Έξοδος...");
                     scanner.close();
                     return;
