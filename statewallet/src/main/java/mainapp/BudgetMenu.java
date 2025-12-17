@@ -154,6 +154,7 @@ public class BudgetMenu {
         System.out.println("3. Κράτος");
         System.out.println("4. Υπουργεία");
         System.out.println("5. Αποκεντρωμένες Διοικήσεις");
+        System.out.print("Επιλογή: ");
 
         int tableChoice = scanner.nextInt();
         scanner.nextLine();

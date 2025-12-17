@@ -114,7 +114,7 @@ public class BudgetManager {
     public void printTotal(String tablename) {
         String sql = "SELECT SUM(amount) AS total_amount, SUM(original_amount) AS total_original FROM " + tablename;
 
-        // 3. Σύνδεση και εκτέλεση (χρήση try-with-resources για αυτόματο κλείσιμο σύνδεσης)
+
         try (Connection conn = DriverManager.getConnection(URL);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -123,7 +123,7 @@ public class BudgetManager {
                 double sumAmount = rs.getDouble("total_amount");
                 double sumOriginal = rs.getDouble("total_original");
 
-                // 4. Εκτύπωση αποτελεσμάτων
+
                 System.out.println("--- Αποτελέσματα για τον πίνακα: " + tablename + " ---");
                 System.out.printf("Συνολικό Ποσό(αρχικό): %,.2f%n", sumOriginal);
                 System.out.printf("Συνολικό Ποσό(επεξεργασμένο): %,.2f%n", sumAmount);
