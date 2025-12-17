@@ -24,8 +24,9 @@ public class BudgetMenu {
             System.out.println("1. Εμφάνιση στοιχείων προυπολογισμού");
             System.out.println("2. Αλλαγή στοιχείου προυπολογισμού");
             System.out.println("3. Εμφάνιση αλλαγών");
-            System.out.println("4. Αλλαγή έτους προυπολογισμού");
-            System.out.println("5. Έξοδος");
+            System.out.println("4. Εμφάνιση συνόλου");
+            System.out.println("5. Αλλαγή έτους προυπολογισμού");
+            System.out.println("6. Έξοδος");
             System.out.print("Επιλογή: ");
 
             int choice = scanner.nextInt();
@@ -35,12 +36,13 @@ public class BudgetMenu {
                 case 1 -> showBudgetSelection();
                 case 2 -> ChangeBudget();
                 case 3 -> manager.showChanges();
-                case 4 -> {
+                case 4 -> showTotalSelection();
+                case 5 -> {
                     String newURL = chooser.getURL();
                     this.URL = newURL;
                     manager.URL = newURL;
                 }
-                case 5 -> {
+                case 6 -> {
                     System.out.println("Έξοδος...");
                     scanner.close();
                     return;
@@ -143,6 +145,28 @@ public class BudgetMenu {
 
         } catch (NumberFormatException e) {
             System.out.println("Λάθος είσοδος (μόνο αριθμοί).");
+        }
+    }
+    private void showTotalSelection() {
+        System.out.println("\nΠοιανού πίνακα θέλετε να δείτε το σύνολο ;");
+        System.out.println("1. Έσοδα");
+        System.out.println("2. Έξοδα");
+        System.out.println("3. Κράτος");
+        System.out.println("4. Υπουργεία");
+        System.out.println("5. Αποκεντρωμένες Διοικήσεις");
+
+        int tableChoice = scanner.nextInt();
+        scanner.nextLine();
+        switch (tableChoice) {
+            case 1 -> manager.printTotal("esoda");
+            case 2 -> manager.printTotal("eksoda");
+            case 3 -> manager.printTotal("kratos");
+            case 4 -> manager.printTotal("ypourgeia");
+            case 5 -> manager.printTotal("apokentromenes");
+            default -> {
+                System.out.println("Άκυρη επιλογή."); 
+                return;
+            }
         }
     }
 }
