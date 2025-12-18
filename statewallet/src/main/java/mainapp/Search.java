@@ -28,7 +28,7 @@ public class Search {
         } catch (SQLException e) {
             System.err.println("Σφάλμα στη βάση: " + e.getMessage());
         }
-        return amount; //επιστρέφει το ποσό 
+        return amount; // επιστρέφει το ποσό 
     }
 
     public String searchString(double amount1) {
