@@ -19,7 +19,6 @@ public class Accounts {
                 stmt.execute(sql);
                 System.out.println("Ο πίνακας δημιουργήθηκε!");
             } catch (SQLException e) {
-            // Χειρισμός σφαλμάτων JDBC.
             System.err.println(e.getMessage());
         }
     }
