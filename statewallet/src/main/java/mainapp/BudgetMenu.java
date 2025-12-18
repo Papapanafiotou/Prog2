@@ -27,6 +27,7 @@ public class BudgetMenu {
             System.out.println("4. Εμφάνιση συνόλου");
             System.out.println("5. Αλλαγή έτους προυπολογισμού");
             System.out.println("6. Έξοδος");
+            System.out.println("7. Αναζήτηση στοιχείου");
             System.out.print("Επιλογή: ");
 
             int choice = scanner.nextInt();
@@ -46,6 +47,13 @@ public class BudgetMenu {
                     System.out.println("Έξοδος...");
                     scanner.close();
                     return;
+                }
+                case 7 -> {
+                    Search s = new Search();
+                    System.out.println("Εισάγετε το στοιχείο αναζήτησης");
+                    Scanner scan = new Scanner(System.in, "CP737");
+                    String name = scan.nextLine();
+                    s.searchAmount(name);
                 }
                     default -> System.out.println("Λάθος επιλογή.");
             }
