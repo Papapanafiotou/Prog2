@@ -7,9 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Search {
-    
-    private static final String url = "jdbc:sqlite:budget.db";
+    String url;
+    public Search(String database_url) {
+        this.url = database_url;
+    }
     private static final String Tables[] = {"esoda", "eksoda", "kratos","ypourgeia", "apokentromenes"};//ονόματα πινάκων
+    
     public double searchAmount(String name) { 
     double amount = 0;
         try (Connection conn = DriverManager.getConnection(url)) {
