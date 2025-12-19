@@ -26,8 +26,9 @@ public class BudgetMenu {
             System.out.println("3. Εμφάνιση αλλαγών");
             System.out.println("4. Εμφάνιση συνόλου");
             System.out.println("5. Αλλαγή έτους προυπολογισμού");
-            System.out.println("6. Έξοδος");
-            System.out.println("7. Αναζήτηση στοιχείου");
+            System.out.println("6. Αναζήτηση στοιχείου");
+            System.out.println("7. Χαρακτηρισμός προυπολογισμού");
+            System.out.println("8. Έξοδος");
             System.out.print("Επιλογή: ");
 
             int choice = scanner.nextInt();
@@ -44,16 +45,29 @@ public class BudgetMenu {
                     manager.URL = newURL;
                 }
                 case 6 -> {
+                    Search s = new Search();
+                    System.out.println("Εισάγετε το στοιχείο αναζήτησης");
+                    String name = scanner.nextLine();
+                    s.searchAmount(name);
+                }
+                case 7 -> {
+                    System.out.println("Θέλετε χαρακτηρισμό στα αρχικά ή στα επεξεργασμένα στοιχεία;");
+                    System.out.println("(1 για αρχικά 2 για επεξεργασμένα)");
+                    System.out.print("Επιλογή: ");
+                    int cho = scanner.nextInt();
+                    scanner.nextLine();
+                    double[] revenue = manager.getTotal("esoda");
+                    double[] expenses = manager.getTotal("eksoda");
+                    if(cho == 1) {
+                        manager.budgetCharacterism(revenue[0], expenses[0]);
+                    } else {
+                        manager.budgetCharacterism(revenue[1], expenses[1]);
+                    }
+                }
+                case 8 -> {
                     System.out.println("Έξοδος...");
                     scanner.close();
                     return;
-                }
-                case 7 -> {
-                    Search s = new Search();
-                    System.out.println("Εισάγετε το στοιχείο αναζήτησης");
-                    Scanner scan = new Scanner(System.in, "CP737");
-                    String name = scan.nextLine();
-                    s.searchAmount(name);
                 }
                     default -> System.out.println("Λάθος επιλογή.");
             }
@@ -163,19 +177,25 @@ public class BudgetMenu {
         System.out.println("4. Υπουργεία");
         System.out.println("5. Αποκεντρωμένες Διοικήσεις");
         System.out.print("Επιλογή: ");
-
+        double[] results = new double[2];
+        results[0] = 0;
+        results[1] = 0;
         int tableChoice = scanner.nextInt();
         scanner.nextLine();
         switch (tableChoice) {
-            case 1 -> manager.printTotal("esoda");
-            case 2 -> manager.printTotal("eksoda");
-            case 3 -> manager.printTotal("kratos");
-            case 4 -> manager.printTotal("ypourgeia");
-            case 5 -> manager.printTotal("apokentromenes");
+            case 1 -> { results = manager.getTotal("esoda"); }
+            case 2 -> { results = manager.getTotal("eksoda"); }
+            case 3 -> { results = manager.getTotal("kratos"); }
+            case 4 -> { results = manager.getTotal("ypourgeia"); }
+            case 5 -> { results = manager.getTotal("apokentromenes"); }
             default -> {
                 System.out.println("Άκυρη επιλογή."); 
                 return;
             }
         }
+            System.out.println("--- Αποτελέσματα για τον πίνακα: " + tableChoice + " ---");
+            System.out.printf("Συνολικό Ποσό(αρχικό): %,.2f%n", results[0]);
+            System.out.printf("Συνολικό Ποσό(επεξεργασμένο): %,.2f%n", results[1]);
     }
 }
+

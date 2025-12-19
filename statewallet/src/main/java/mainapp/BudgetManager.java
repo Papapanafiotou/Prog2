@@ -111,10 +111,11 @@ public class BudgetManager {
         return str;
     }
 
-    public void printTotal(String tablename) {
+    public double[] getTotal(String tablename) {
         String sql = "SELECT SUM(amount) AS total_amount, SUM(original_amount) AS total_original FROM " + tablename;
-
-
+        double[] results = new double[2];
+        results[0] = 0;
+        results[1] = 0;
         try (Connection conn = DriverManager.getConnection(URL);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -122,17 +123,23 @@ public class BudgetManager {
             if (rs.next()) {
                 double sumAmount = rs.getDouble("total_amount");
                 double sumOriginal = rs.getDouble("total_original");
-
-
-                System.out.println("--- Αποτελέσματα για τον πίνακα: " + tablename + " ---");
-                System.out.printf("Συνολικό Ποσό(αρχικό): %,.2f%n", sumOriginal);
-                System.out.printf("Συνολικό Ποσό(επεξεργασμένο): %,.2f%n", sumAmount);
-            } else {
-                System.out.println("Ο πίνακας είναι κενός.");
-            }
+                results[0] = sumOriginal;
+                results[1] = sumAmount;
+            } 
 
         } catch (SQLException e) {
             System.err.println("Σφάλμα κατά τη σύνδεση στη βάση δεδομένων: " + e.getMessage());
+        }
+        return results;
+    }
+
+    public void budgetCharacterism(double revenue, double expenses) {
+        if (revenue > expenses) {
+            System.out.println("Ο προϋπολογισμός είναι πλεονασματικός");
+        } else if (revenue < expenses) {
+            System.out.println("Ο προϋπολογισμός είναι ελλειματικός");
+        } else {
+            System.out.println("Ο προϋπολογισμός είναι ισοσκελισμένος");
         }
     }
 }
