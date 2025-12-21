@@ -29,7 +29,11 @@ public class Log {
             System.out.println("Ο κωδικός ειναι" + pass);
         } 
         else {
-        pass = scan.nextLine();
+            boolean valid;
+            do {
+            pass = scan.nextLine();
+            valid = acc.validatePassword(pass);
+        } while (valid = false);
         }
         acc.createAccount(name, pass);
         return true; 
@@ -43,7 +47,7 @@ public class Log {
         if (connect == true) {
             return true;
         }
-    } else{
+    } else {
         System.out.println("Εισάγετε το username σας");
         String name = scan.nextLine();
         String realpass = acc.getPassword(name);
@@ -51,7 +55,12 @@ public class Log {
         String userPass = scan.nextLine();
         boolean connect = acc.logIn(realpass, userPass);
         if (connect) {
-            String newP = scan.nextLine();
+            boolean valid;
+            String newP;
+            do {
+              newP = scan.nextLine();
+              valid = acc.validatePassword(newP);
+            } while (valid == false);
             acc.newPass(newP,name);
             return true;
         } else {
