@@ -34,6 +34,7 @@ public class Accounts {
             System.err.println(e.getMessage());
         }
     }
+    //εύρεση κωδικού με το username
     public String getPassword(String username) {
         String url = "jdbc:sqlite:accounts.db";
         String sql = "SELECT password FROM accounts WHERE username = " + username;
@@ -56,6 +57,7 @@ public class Accounts {
         }
         return password;
     }
+    //έλεγχος για την σύνδεση
     public boolean logIn(String pass1, String pass2) {
         if (pass1.equals(pass2)) {
             System.out.println("Επιτυχής σύνδεση! Καλωσορίσατε!");
@@ -65,6 +67,7 @@ public class Accounts {
             return false;
         }
     }
+    //μέθοδος για αλλαγή κωδικού
     public void newPass(String password, String name) {
         String url = "jdbc:sqlite:accounts.db";
         String sql = "UPDATE accounts SET password = ? WHERE usermame = ?";
@@ -77,6 +80,50 @@ public class Accounts {
         } catch (SQLException e) {
             System.err.println("Σφάλμα στη βάση δεδομένων: " + e.getMessage());
         }
+    }
+
+    //μεθοδος για έλεγχο εγκυρότητας κωδικού
+    public static boolean validatePassword(String password) {
+        // Έλεγχος μήκους (τουλάχιστον 8 χαρακτήρες)
+        if (password.length() < 8) {
+            System.out.println("Σφάλμα: Ο κωδικός πρέπει να έχει τουλάχιστον 8 χαρακτήρες.");
+            return false;
+        }
+
+        boolean hasUpper = false;
+        boolean hasLower = false;
+        boolean hasDigit = false;
+        boolean hasSpecial = false;
+        String specialChars = "#@$!%^&*()-_=+";
+
+        // Έλεγχος κάθε χαρακτήρα
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isLowerCase(c)) hasLower = true;
+            else if (Character.isDigit(c)) hasDigit = true;
+            else if (specialChars.contains(String.valueOf(c))) hasSpecial = true;
+        }
+
+        // Έλεγχος αν πληρούνται όλα τα κριτήρια
+        if (!hasUpper) {
+            System.out.println("Σφάλμα: Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα κεφαλαίο γράμμα.");
+            return false;
+        }
+        if (!hasLower) {
+            System.out.println("Σφάλμα: Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα πεζό γράμμα.");
+            return false;
+        }
+        if (!hasDigit) {
+            System.out.println("Σφάλμα: Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν αριθμό.");
+            return false;
+        }
+        if (!hasSpecial) {
+            System.out.println("Σφάλμα: Ο κωδικός πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα (#@$).");
+            return false;
+        }
+
+        System.out.println("Ο κωδικός είναι έγκυρος!");
+        return true;
     }
 }
 
