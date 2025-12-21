@@ -11,9 +11,11 @@ public class Log {
     Scanner scan = new Scanner(System.in);
     int answer = scan.nextInt();
     if (answer == 1) {
+        scan.nextLine();
         System.out.println("Εισάγετε το username");
         String name = scan.nextLine();
-        System.out.println("Για τυχαίο κωδικό πατήστε 1, αλλιώς εισάγετε κωδικό");
+        System.out.println("Για τυχαίο κωδικό πατήστε 1, "
+          + "οποιοδήποτε άλλο νούμερο για να εισάγετε κωδικό");
         String pass;
         int an = scan.nextInt();
         if (an == 1) {
@@ -29,8 +31,14 @@ public class Log {
             System.out.println("Ο κωδικός ειναι" + pass);
         } 
         else {
+            System.out.println("Εισάγετε τον κωδικό!");
+            System.out.println("Ο κωδικός πρόσβασης πρέπει να περιλαμβάνει:"
+            + " Τουλάχιστον 8 χαρακτήρες, ένα πεζό και ένα κεφαλαίο γράμμα, "
+            + " έναν αριθμό και έναν ειδικό χαρακτήρα.");
+            scan.nextLine();
             boolean valid;
             do {
+
             pass = scan.nextLine();
             valid = acc.validatePassword(pass);
         } while (valid = false);
@@ -38,6 +46,7 @@ public class Log {
         acc.createAccount(name, pass);
         return true; 
     } else if (answer == 2) {
+        scan.nextLine();
         System.out.println("Εισάγετε το username σας");
         String name = scan.nextLine();
         String realpass = acc.getPassword(name);
@@ -48,6 +57,7 @@ public class Log {
             return true;
         }
     } else {
+        scan.nextLine();
         System.out.println("Εισάγετε το username σας");
         String name = scan.nextLine();
         String realpass = acc.getPassword(name);
@@ -57,6 +67,10 @@ public class Log {
         if (connect) {
             boolean valid;
             String newP;
+            System.out.println("Εισάγετε τον νέο κωδικό πρόσβασης!");
+            System.out.println("Ο κωδικός πρόσβασης πρέπει να περιλαμβάνει:"
+            + " Τουλάχιστον 8 χαρακτήρες, ένα πεζό και ένα κεφαλαίο γράμμα, "
+            + " έναν αριθμό και έναν ειδικό χαρακτήρα.");
             do {
               newP = scan.nextLine();
               valid = acc.validatePassword(newP);

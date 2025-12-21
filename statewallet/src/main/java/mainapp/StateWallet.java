@@ -42,6 +42,11 @@ importer.importAll();
         Precentage p1 = new Precentage();
         double prec = p1.getPrecentage();
         break;
+    case 6:
+        Log log = new Log();
+        boolean a = log.logMenu();
+        System.out.println(a);
+        break;   
     default:
         break;
 }

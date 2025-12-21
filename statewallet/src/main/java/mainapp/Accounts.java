@@ -15,7 +15,7 @@ public class Accounts {
                          "password TEXT NOT NULL" +
                          ");";
         try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.prepareStatement(sql)) {
+            Statement stmt = conn.createStatement()) {
                 stmt.execute(sql);
                 System.out.println("Ο πίνακας δημιουργήθηκε!");
             } catch (SQLException e) {
@@ -30,6 +30,7 @@ public class Accounts {
                 pstmt.setString(1, name);
                 pstmt.setString(2, pass);
                 pstmt.executeUpdate();
+                System.out.println("Ο λογαριασμός σας δημιουργήθηκε!");
             } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -37,11 +38,12 @@ public class Accounts {
     //εύρεση κωδικού με το username
     public String getPassword(String username) {
         String url = "jdbc:sqlite:accounts.db";
-        String sql = "SELECT password FROM accounts WHERE username = " + username;
+        String sql = "SELECT password FROM accounts WHERE username = ?";
         String password = null;
          try (
             Connection conn = DriverManager.getConnection(url);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, username);
                 try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     password = rs.getString("password");
@@ -70,7 +72,7 @@ public class Accounts {
     //μέθοδος για αλλαγή κωδικού
     public void newPass(String password, String name) {
         String url = "jdbc:sqlite:accounts.db";
-        String sql = "UPDATE accounts SET password = ? WHERE usermame = ?";
+        String sql = "UPDATE accounts SET password = ? WHERE username = ?";
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, password); 

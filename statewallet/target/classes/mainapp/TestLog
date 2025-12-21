@@ -1,0 +1,9 @@
+package mainapp;
+
+public class TestLog {
+    public static void main(String[] args) {
+        Log log = new Log();
+        boolean a = log.logMenu();
+        System.out.println(a);
+    }
+}
