@@ -147,6 +147,28 @@ public class Accounts {
             return false;
         }  
     }
-    public String getID(String username) {}
+    public String getID(String username) {
+        String url = "jdbc:sqlite:accounts.db";
+        String sql = "SELECT numID FROM accounts WHERE username = ?";
+        String numID = null;
+         try (
+            Connection conn = DriverManager.getConnection(url);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, username);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    numID = rs.getString("numID");
+                    System.out.println("Βρέθηκε χρήστης: " + username);
+                } else {
+                    System.out.println("Ο χρήστης " + username + " δεν βρέθηκε.");
+                }
+            } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            }
+            } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return numID;
+    }
 }
 
