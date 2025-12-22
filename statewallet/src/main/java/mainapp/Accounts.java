@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Scanner;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 
@@ -13,6 +14,7 @@ public class Accounts {
         String sql = "CREATE TABLE IF NOT EXISTS accounts (" +
                          "username TEXT NOT NULL," +
                          "password TEXT NOT NULL" +
+                         "numID TEXT NOT NULL" +
                          ");";
         try (Connection conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement()) {
@@ -22,13 +24,14 @@ public class Accounts {
             System.err.println(e.getMessage());
         }
     }
-    public void createAccount(String name, String pass) {
+    public void createAccount(String name, String pass, String numID) {
         String url = "jdbc:sqlite:accounts.db";
-        String sql = "INSERT INTO accounts(username, password) VALUES(?, ?)";
+        String sql = "INSERT INTO accounts(username, password, numID) VALUES(?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, name);
                 pstmt.setString(2, pass);
+                pstmt.setString(3, numID);
                 pstmt.executeUpdate();
                 System.out.println("Ο λογαριασμός σας δημιουργήθηκε!");
             } catch (SQLException e) {
@@ -127,5 +130,23 @@ public class Accounts {
         System.out.println("Ο κωδικός είναι έγκυρος!");
         return true;
     }
+    public boolean forgotPass(String username) {
+        Scanner scan2 = new Scanner(System.in);
+        System.out.println("Για την ανάκτηση του κωδικού σας απαιτείται "
+            + "ταυτοποίηση μέσω του αριθμού ταυτότητας."
+            + " Εισάγετε τον αριθμό ταυτότητάς σας!"
+        );
+        String numID = scan2.nextLine();
+        String realID = getID(username);
+        if (realID .equals(numID)) {
+            String pass = getPassword(username);
+            System.out.println("Επιτυχής ανάκτηση! Ο κωδικός είναι: " + pass);
+            return true;
+        } else {
+            System.out.println("Αποτυχημένη προσπάθεια ανάκτησης!");
+            return false;
+        }  
+    }
+    public String getID(String username) {}
 }
 

@@ -14,6 +14,9 @@ public class Log {
         scan.nextLine();
         System.out.println("Εισάγετε το username");
         String name = scan.nextLine();
+        scan.nextLine();
+        System.out.println("Εισάγετε τον αριθμό ταυτότητάς σας.");
+        String numID = scan.nextLine(); 
         System.out.println("Για τυχαίο κωδικό πατήστε 1, "
           + "οποιοδήποτε άλλο νούμερο για να εισάγετε κωδικό");
         String pass;
@@ -43,7 +46,7 @@ public class Log {
             valid = acc.validatePassword(pass);
         } while (valid = false);
         }
-        acc.createAccount(name, pass);
+        acc.createAccount(name, pass, numID);
         return true; 
     } else if (answer == 2) {
         scan.nextLine();
@@ -52,10 +55,30 @@ public class Log {
         String realpass = acc.getPassword(name);
         System.out.println("Πληκτρολογήστε τον κωδικό πρόσβασης");
         String userPass = scan.nextLine();
-        boolean connect = acc.logIn(realpass, userPass);
-        if (connect == true) {
-            return true;
-        }
+        int count = 0;
+        boolean connect;
+        do {
+            connect = acc.logIn(realpass, userPass);
+            count++;
+            if (connect == true) {
+               return true;
+            }
+        } while (connect == false && count < 5);
+        if (count == 5) {
+            System.out.println("Αν ξεχάσατε τον κωδικό σας πατήστε 1"
+            + "αλλιώς άλλο ψηφίο");
+            int an = scan.nextInt();
+            if (an == 1) {
+                boolean a = acc.forgotPass(name);
+                if (a) {
+                    return; // εδώ θελω να γυρνάει στις επιλογές 
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } 
     } else {
         scan.nextLine();
         System.out.println("Εισάγετε το username σας");
