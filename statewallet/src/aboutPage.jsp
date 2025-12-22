@@ -1,10 +1,10 @@
-<%@ page contentType="text/html; charset=UTF-8" errorPage.jsp" %>
+<%@ page contentType="text/html; charset=UTF-8" errorPage="errorPage.jsp" %>
 <%
     request.setAttribute("currentPage", "About");
 %>
 <%@ include file="headerPage.jsp" %>
 
-<div class="main-container" style="margin-top:250px;">
+<div class="main-container" style="margin-top:120px;">
     <div class="team-section">
         <!-- Παράδειγμα ενός μέλους -->
          <div class="media">
@@ -23,7 +23,7 @@
           <img src="images/member1.png" alt="Axilleas Damianidis">
         </div>
         <div class="media-body">
-          <h4 class="media-heading">Axilleas Damianidis </Data> <small>8240241</small></h4>
+          <h4 class="media-heading">Axilleas Damianidis <small>8240241</small></h4>
           <p><i class="fa-solid fa-envelope"></i> t8240241@aueb.gr</p>
         </div>
       </div>
