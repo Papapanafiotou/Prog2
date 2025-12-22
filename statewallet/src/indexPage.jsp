@@ -1,8 +1,8 @@
-<%@ page contentType="text/html; charset=UTF-8" errorPage="error_ex2_8230118.jsp" %>
+<%@ page contentType="text/html; charset=UTF-8" errorPage="errorPage.jsp" %>
 <%
     request.setAttribute("currentPage", "Home");
 %>
-<jsp:include page="header.jsp" />
+<jsp:include page="headerPage.jsp" />
 
 <div class="main-container" style="margin: 20px;">
     <h2>Κεντρική Σελίδα - "StateWallet"</h2>
@@ -47,4 +47,4 @@
     </p>
 </div>
 
-<jsp:include page="footer.jsp" />
+<jsp:include page="footerPage.jsp" />
