@@ -13,7 +13,7 @@ public class BudgetMenu {
     public BudgetMenu(String url) {
         this.URL = url;
         this.manager = new BudgetManager(URL);
-        this.scanner = new Scanner(System.in,"CP737");
+        this.scanner = new Scanner(System.in, "CP737");
     }
 
     public void start() {
@@ -47,7 +47,7 @@ public class BudgetMenu {
                 case 6 -> {
                     Search s = new Search(URL);
                     System.out.println("Εισάγετε το στοιχείο αναζήτησης");
-                    String name = scanner.nextLine();
+                    String name = scanner.nextLine().trim();
                     s.searchAmount(name);
                 }
                 case 7 -> {

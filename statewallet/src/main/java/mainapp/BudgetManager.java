@@ -134,10 +134,11 @@ public class BudgetManager {
     }
 
     public void budgetCharacterism(double revenue, double expenses) {
+        System.out.println("\n--------------------------------------------------");
         if (revenue > expenses) {
-            System.out.println("Ο προϋπολογισμός είναι πλεονασματικός κατα +" + (long)( revenue - expenses));
+            System.out.println("Ο προϋπολογισμός είναι πλεονασματικός κατα +" + (long)( revenue - expenses) +"€");
         } else if (revenue < expenses) {
-            System.out.println("Ο προϋπολογισμός είναι ελλειματικός κατα -" + (long)(expenses - revenue));
+            System.out.println("Ο προϋπολογισμός είναι ελλειματικός κατα -" + (long)(expenses - revenue)+"€");
         } else {
             System.out.println("Ο προϋπολογισμός είναι ισοσκελισμένος");
         }

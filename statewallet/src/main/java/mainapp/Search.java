@@ -13,8 +13,12 @@ public class Search {
     }
     private static final String Tables[] = {"esoda", "eksoda", "kratos","ypourgeia", "apokentromenes"};//ονόματα πινάκων
     
-    public double searchAmount(String name) { 
-    double amount = 0;
+    public double searchAmount(String name) {
+        if (name == null || name.trim().isEmpty()) {
+        System.out.println("Σφάλμα: Δεν δόθηκε όνομα για αναζήτηση.");
+        return 0;
+        } 
+        double amount = 0;
         try (Connection conn = DriverManager.getConnection(url)) {
             for (String table : Tables) { // αναζητεί σε όλους τους πίνακες μέχρι να βρεί τον λογαριασμό
                 String sql = "SELECT amount FROM " + table + " WHERE name LIKE ? "; // εντολή SQL
@@ -23,7 +27,7 @@ public class Search {
                     ResultSet rs = stmt.executeQuery();
                     if (rs.next()) {
                         amount = rs.getDouble("amount"); // εκχωρεί το ποσό όταν βρεθεί
-                        System.out.println(" ΒΡΕΘΗΚΕ στον πίνακα " + table + "! Ποσό: " + amount);
+                        System.out.println(" ΒΡΕΘΗΚΕ στον πίνακα " + table + "! Ποσό: " + (long)amount);
                         return amount; 
                 }
             }

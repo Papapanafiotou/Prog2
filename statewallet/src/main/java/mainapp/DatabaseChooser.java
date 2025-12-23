@@ -23,6 +23,7 @@ public class DatabaseChooser {
                 } else {
                     System.out.println("Έχει γίνει επεξεργασία του συγκεκριμένου έτους στο παρελθόν. Θέλετε να ξεκινήσετε από την αρχή; (1 για ΝΑΙ --- 2 για ΟΧΙ)");
                     int answer = scanner.nextInt();
+                    scanner.nextLine();
                     if (answer == 1) {
                         System.out.println("Έγινε διαγραφή των παλιών στοιχείων");
                         Csvtopdf.run(year);
