@@ -4,99 +4,118 @@
 %>
 <%@ include file="headerPage.jsp" %>
 
-<div class="main-container" style="margin-top:120px;">
-    <div class="team-section">
-        <!-- Παράδειγμα ενός μέλους -->
-         <div class="media">
-        <div class="media-right">
-          <img src="images/member1.png" alt="Konstantina Papapanagiotou">
+<div class="container" style="margin-top:40px; margin-bottom:80px;">
+
+  <h3>Ακαδημαϊκό Πλαίσιο</h3>
+  <p>
+    Η παρούσα διαδικτυακή εφαρμογή αναπτύχθηκε στο πλαίσιο ακαδημαϊκής
+εργασίας του μαθήματος Προγραμματισμός 2 και αποσκοπεί στην προσομοίωση του ρόλου του Πρωθυπουργού
+της Ελληνικής Δημοκρατίας, μέσω της ανάλυσης και παρουσίασης
+επίσημων στατιστικών δεδομένων της Ελληνικής Στατιστικής Αρχής (ΕΛΣΤΑΤ).
+  </p>
+
+  <div class="panel panel-default" style="margin-top:40px;">
+    <div class="panel-heading">
+      <h3 class="panel-title">Μέλη Ομαδικής Εργασίας:</h3>
+    </div>
+
+    <div class="panel-body">
+
+      <!-- Μέλος -->
+      <div class="row" style="padding:10px 0; border-bottom:1px solid #eee;">
+        <div class="col-sm-8">
+          <strong>Konstantina Papapanagiotou</strong><br>
+          <small>ΑΜ: 8230118</small>
         </div>
-        <div class="media-body">
-          <h4 class="media-heading">Konstantina Papapanagiotou <small>8230118</small></h4>
-          <p><i class="fa-solid fa-envelope"></i> t8230118@aueb.gr</p>
+        <div class="col-sm-4 text-right">
+          t8230118@aueb.gr
         </div>
       </div>
-      <hr>
 
-      <div class="media">
-        <div class="media-right">
-          <img src="images/member1.png" alt="Axilleas Damianidis">
+      <!-- Αντέγραψε αυτό το block για κάθε μέλος -->
+
+      <div class="row" style="padding:10px 0; border-bottom:1px solid #eee;">
+        <div class="col-sm-8">
+          <strong>Axilleas Damianidis</strong><br>
+          <small>ΑΜ: 8240241</small>
         </div>
-        <div class="media-body">
-          <h4 class="media-heading">Axilleas Damianidis <small>8240241</small></h4>
-          <p><i class="fa-solid fa-envelope"></i> t8240241@aueb.gr</p>
+        <div class="col-sm-4 text-right">
+          t8240241@aueb.gr
         </div>
       </div>
-      <hr>
+<div class="row" style="padding:10px 0; border-bottom:1px solid #eee;">
+  <div class="col-sm-8">
+    <strong>Iasonas Damianidis</strong><br>
+    <small>ΑΜ: 8240240</small>
+  </div>
+  <div class="col-sm-4 text-right">
+    t8240240@aueb.gr
+  </div>
+</div>
 
-      <div class="media">
-        <div class="media-right">
-          <img src="images/member1.png" alt="Iasonas Damianidis">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Iasonas Damianidis <small>8240240</small></h4>
-          <p><i class="fa-solid fa-envelope"></i> t8240240@aueb.gr</p>
-        </div>
-      </div>
-      <hr>
+<div class="row" style="padding:10px 0; border-bottom:1px solid #eee;">
+  <div class="col-sm-8">
+    <strong>Chris Karahalios</strong><br>
+    <small>ΑΜ: 8240060</small>
+  </div>
+  <div class="col-sm-4 text-right">
+    t8240060@aueb.gr
+  </div>
+</div>
 
-      <div class="media">
-        <div class="media-right">
-          <img src="images/member1.png" alt="Chris Karahalios">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Chris Karahalios <small>8240060</small></h4>
-          <p><i class="fa-solid fa-envelope"></i> t8240060@aueb.gr</p>
-        </div>
-      </div>
-      <hr>
+<div class="row" style="padding:10px 0; border-bottom:1px solid #eee;">
+  <div class="col-sm-8">
+    <strong>Maximos Denaxas</strong><br>
+    <small>ΑΜ: 8240039</small>
+  </div>
+  <div class="col-sm-4 text-right">
+    t8240039@aueb.gr
+  </div>
+</div>
 
-      <div class="media">
-        <div class="media-right">
-          <img src="images/member1.png" alt="Maximos Denaxas">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Maximos Denaxas <small>8240039</small></h4>
-          <p><i class="fa-solid fa-envelope"></i> t8240039@aueb.gr</p>
-        </div>
-      </div>
-      <hr>
+<div class="row" style="padding:10px 0; border-bottom:1px solid #eee;">
+  <div class="col-sm-8">
+    <strong>Giannis Mpalomenos</strong><br>
+    <small>ΑΜ: 8240084</small>
+  </div>
+  <div class="col-sm-4 text-right">
+    t8240084@aueb.gr
+  </div>
+</div>
 
-      <div class="media">
-        <div class="media-right">
-          <img src="images/member1.png" alt="Giannis Mpalomenos">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Giannis Mpalomenos <small>8240084</small></h4>
-          <p><i class="fa-solid fa-envelope"></i> t8240084@aueb.gr</p>
-        </div>
-      </div>
-      <hr>
+<div class="row" style="padding:10px 0; border-bottom:1px solid #eee;">
+  <div class="col-sm-8">
+    <strong>Marios Voutsas</strong><br>
+    <small>ΑΜ: 8240020</small>
+  </div>
+  <div class="col-sm-4 text-right">
+    t8240020@aueb.gr
+  </div>
+</div>
 
-      <div class="media">
-        <div class="media-right">
-          <img src="images/member1.png" alt="Marios Voutsas">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Marios Voutsas <small>8240020</small></h4>
-          <p><i class="fa-solid fa-envelope"></i> t8240020@aueb.gr</p>
-        </div>
-      </div>
-      <hr>
+<div class="row" style="padding:10px 0;">
+  <div class="col-sm-8">
+    <strong>Christina Gallou</strong><br>
+    <small>ΑΜ: 8240025</small>
+  </div>
+  <div class="col-sm-4 text-right">
+    t8240025@aueb.gr
+  </div>
+</div>
 
-      <div class="media">
-        <div class="media-right">
-          <img src="images/member1.png" alt="Christina Gallou">
-        </div>
-        <div class="media-body">
-          <h4 class="media-heading">Christina Gallou <small>8240025</small></h4>
-          <p><i class="fa-solid fa-envelope"></i> t8240025@aueb.gr</p>
-        </div>
-      </div>
-      <hr>
+    </div>
+  </div>
 
-
+  <p style="margin-top:50px; font: size 18px; color:#777;">
+    Τα δεδομένα που χρησιμοποιούνται στην εφαρμογή προέρχονται από
+    βάση δεδομένων η οποία τροφοδοτείται με επίσημα στατιστικά στοιχεία
+    της Ελληνικής Στατιστικής Αρχής (ΕΛΣΤΑΤ).
+  </p>
 
 </div>
+<p style="margin-top:-60px;font-size:14px; color:#888;">
+Η εφαρμογή δεν αποτελεί επίσημο πληροφοριακό σύστημα δημόσιου φορέα.
+</p>
+
 
 <%@ include file="footerPage.jsp" %>
