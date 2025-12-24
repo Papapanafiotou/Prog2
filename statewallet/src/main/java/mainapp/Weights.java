@@ -23,7 +23,7 @@ public class Weights {
     }
 /* Μέθοδος υπολογισμού και εμφάνισης των ποσοστών επίδρασης όλων των στοιχείων
 που συμμετέχουν στον υπολογισμό του τελικού βαθμού*/  
-    public void showTotalWeights(double[] a, double w1, double w2, double w3) {
+    public double[] showTotalWeights(double[] a, double w1, double w2, double w3) {
         double[] totalPercentage = new double[10];
         for(int i = 0; i < 10; i++) {
             if (i < 3) {
@@ -54,5 +54,38 @@ public class Weights {
                 System.out.println("Στοιχείο: " + names[i] +
                 " Ποσοστό: " + totalPercentage[i] );
             }
-    } 
+            return totalPercentage;
+        }
+        public void getAllGrades(double[] a) {
+            int[] years = {2020, 2021, 2022, 2023, 2024};
+            double[] grades = new double[5];
+            for (int year : years) {
+                DataforGrade d = new DataforGrade();
+                double[] data = d.getData(year); 
+                int[] elemGrade = new int[10];
+                EnvElemGrades e = new EnvElemGrades();
+                EconElemGrades ec = new EconElemGrades();
+                SocElemGrades s = new SocElemGrades();
+                elemGrade[0] = ec.getGDPGrowthGrade(data[0]);
+                elemGrade[1] = ec.getpublicDebtGrade(data[1]);
+                elemGrade[2] = ec.getSurplusGrade(data[2]);
+                elemGrade[3] = e.getRESGrade(data[3]);
+                elemGrade[4] = e.getRecycleGrade(data[4]);
+                elemGrade[5] = e.getEmmisionGrade(data[5]);
+                elemGrade[6] = s.getGINIGrade(data[6]);
+                elemGrade[7] = s.getHealthEduGrade(data[7]);
+                elemGrade[8] = s.getMentalHealthGrade(data[8]);
+                elemGrade[9] = s.getCrimeGrade(data[9]);
+                double totalGrade = 0;
+                for (int i = 0; i < 10; i++) {
+                    totalGrade += (elemGrade[i] * a[i]);
+                }
+                grades[year] = totalGrade;
+            }
+            double[] differencies = new double[4];
+            differencies[0] = grades[1] - grades[0];
+            differencies[1] = grades[2] - grades[1];
+            differencies[2] = grades[3] - grades[2];
+            differencies[3] = grades[4] - grades[3]; 
+        } 
 }

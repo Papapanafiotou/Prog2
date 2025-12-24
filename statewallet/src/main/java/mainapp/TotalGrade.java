@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class TotalGrade {
 //Μέθοδος υπολογισμού του συνολικού βαθμού για το κράτος
-    public double getTotalGrade() {
+    public void getTotalGrade() {
         Scanner scan = new Scanner(System.in);
         EconElemGrades ec = new EconElemGrades();
         SocElemGrades soc = new SocElemGrades();
@@ -117,8 +117,14 @@ public class TotalGrade {
         double wSoc = w.getWeight();
         double finalGrade = (wEcon * econGrade) + (wEnv * envGrade) + (wSoc * socGrade);
         System.out.println("O τελικός βαθμός για το κράτος για το έτος" + year 
-            + " με βάση τα στοιχεία είναι " + finalGrade);
-        w.showTotalWeights(weights, wEcon, wEnv, wSoc);
-            return finalGrade;
+        + " με βάση τα στοιχεία είναι " + finalGrade);
+        double[] totalWeights = w.showTotalWeights(weights, wEcon, wEnv, wSoc);
+        System.out.println("Για εμφάνιση των βαθμών του κράτους τα "
+            + "τελευταία 5 έτη με βάση τα βάρη που δώσατε πατήστε 1."
+        );
+        int anwser = scan.nextInt();
+        if (anwser == 1) {
+            w.getAllGrades(totalWeights);
+        }    
     }
 }
