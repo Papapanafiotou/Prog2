@@ -18,7 +18,8 @@ public class Log {
             System.out.println("1. Δημιουργία λογαριασμού");
             System.out.println("2. Σύνδεση");
             System.out.println("3. Αλλαγή κωδικού");
-            System.out.println("4. Έξοδος");
+            System.out.println("4. Ξέχασα τον κωδικό");
+            System.out.println("5. Έξοδος");
     int answer = scan.nextInt();
     if (answer == 1) {
         scan.nextLine();
@@ -56,7 +57,7 @@ public class Log {
             do {
 
             pass = scan.nextLine();
-            valid = acc.validatePassword(pass);
+            valid = Accounts.validatePassword(pass);
         } while (!valid);
         }
         acc.createAccount(name, pass, numID);
@@ -103,15 +104,21 @@ public class Log {
             + " έναν αριθμό και έναν ειδικό χαρακτήρα.");
             do {
               newP = scan.nextLine();
-              valid = acc.validatePassword(newP);
+              valid = Accounts.validatePassword(newP);
             } while (valid == false);
             acc.newPass(newP,name);
         } else {
             System.out.println("Λάθος κωδικός! Προσπαθήστε ξανά!");
-        }   
+        }
     } else if (answer == 4) {
-                return false;
-            }
+        scan.nextLine();
+        System.out.println("Εισάγετε το username σας");
+        String name = scan.nextLine();
+        acc.forgotPass(name);
+    } else if (answer == 5) {
+        return false;
+    }
+        
     }
     }
 }

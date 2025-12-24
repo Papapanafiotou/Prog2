@@ -28,7 +28,7 @@ public class BudgetManager {
 
             while (rs.next()) {
                 System.out.printf(
-                    "%-5d | %-40s | %12.2f € | %12.2f "+"€\n",
+                    "%-5d | %-40s | %12.2f EUR | %12.2f "+"EUR\n",
                     rs.getInt(idColumnName),
                     limitString(rs.getString("name"), 40),
                     rs.getDouble("original_amount"),
@@ -136,9 +136,9 @@ public class BudgetManager {
     public void budgetCharacterism(double revenue, double expenses) {
         System.out.println("\n--------------------------------------------------");
         if (revenue > expenses) {
-            System.out.println("Ο προϋπολογισμός είναι πλεονασματικός κατα +" + (long)( revenue - expenses) +"€");
+            System.out.println("Ο προϋπολογισμός είναι πλεονασματικός κατα +" + (long)( revenue - expenses) +" EUR");
         } else if (revenue < expenses) {
-            System.out.println("Ο προϋπολογισμός είναι ελλειματικός κατα -" + (long)(expenses - revenue)+"€");
+            System.out.println("Ο προϋπολογισμός είναι ελλειματικός κατα -" + (long)(expenses - revenue)+" EUR");
         } else {
             System.out.println("Ο προϋπολογισμός είναι ισοσκελισμένος");
         }
