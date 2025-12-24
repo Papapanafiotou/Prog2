@@ -8,6 +8,12 @@ public class Log {
     acc.createTable();
     Scanner scan = new Scanner(System.in);
     while (true) {
+            System.out.println("================================================");
+            System.out.println("ENTER THESE FOR TESTING IN ORDER TO NOT AFFECT DATABASE");
+            System.out.println("================================================");
+            System.out.println("USERNAME: test1");
+            System.out.println("PASSWORD: Test12345!");
+            System.out.println("================================================");
             System.out.println("\n--- Μενού ---");
             System.out.println("1. Δημιουργία λογαριασμού");
             System.out.println("2. Σύνδεση");
@@ -18,7 +24,6 @@ public class Log {
         scan.nextLine();
         System.out.println("Εισάγετε το username");
         String name = scan.nextLine();
-        scan.nextLine();
         System.out.println("Εισάγετε τον αριθμό ταυτότητάς "
             + "με λατινικούς χαρακτήρες και χωρίς κενό. Ο αριθμός ταυτότητας"
             + "είναι απαρραίτητος για την ανάκτηση του κωδικόυ σας σε "
