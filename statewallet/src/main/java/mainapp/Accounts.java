@@ -11,9 +11,9 @@ import java.sql.PreparedStatement;
 public class Accounts {
     public void createTable() {
         String url = "jdbc:sqlite:accounts.db";
-        String sql = "CREATE TABLE IF NOT EXISTS accounts (" +
-                         "username TEXT NOT NULL," +
-                         "password TEXT NOT NULL" +
+        String sql = "CREATE TABLE account (" +
+                         "username TEXT NOT NULL, " +
+                         "password TEXT NOT NULL, " +
                          "numID TEXT NOT NULL" +
                          ");";
         try (Connection conn = DriverManager.getConnection(url);
@@ -26,7 +26,7 @@ public class Accounts {
     }
     public void createAccount(String name, String pass, String numID) {
         String url = "jdbc:sqlite:accounts.db";
-        String sql = "INSERT INTO accounts(username, password, numID) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO account(username, password, numID) VALUES(?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, name);
@@ -41,7 +41,7 @@ public class Accounts {
     //εύρεση κωδικού με το username
     public String getPassword(String username) {
         String url = "jdbc:sqlite:accounts.db";
-        String sql = "SELECT password FROM accounts WHERE username = ?";
+        String sql = "SELECT password FROM account WHERE username = ?";
         String password = null;
          try (
             Connection conn = DriverManager.getConnection(url);
@@ -50,7 +50,6 @@ public class Accounts {
                 try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     password = rs.getString("password");
-                    System.out.println("Βρέθηκε χρήστης: " + username);
                 } else {
                     System.out.println("Ο χρήστης " + username + " δεν βρέθηκε.");
                 }
@@ -75,7 +74,7 @@ public class Accounts {
     //μέθοδος για αλλαγή κωδικού
     public void newPass(String password, String name) {
         String url = "jdbc:sqlite:accounts.db";
-        String sql = "UPDATE accounts SET password = ? WHERE username = ?";
+        String sql = "UPDATE account SET password = ? WHERE username = ?";
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, password); 
@@ -147,7 +146,7 @@ public class Accounts {
     }
     public String getID(String username) {
         String url = "jdbc:sqlite:accounts.db";
-        String sql = "SELECT numID FROM accounts WHERE username = ?";
+        String sql = "SELECT numID FROM account WHERE username = ?";
         String numID = null;
          try (
             Connection conn = DriverManager.getConnection(url);
@@ -156,7 +155,6 @@ public class Accounts {
                 try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     numID = rs.getString("numID");
-                    System.out.println("Βρέθηκε χρήστης: " + username);
                 } else {
                     System.out.println("Ο χρήστης " + username + " δεν βρέθηκε.");
                 }

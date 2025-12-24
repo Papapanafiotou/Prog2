@@ -51,7 +51,6 @@ public class Log {
         } while (!valid);
         }
         acc.createAccount(name, pass, numID);
-        System.out.println("Ο λογαριασμός δημιουργήθηκε!");
     } else if (answer == 2) {
         scan.nextLine();
         System.out.println("Εισάγετε το username σας");
@@ -66,12 +65,10 @@ public class Log {
             count++;
             if (connect == true) {
                return true;
-            } else {
-                System.out.println("Λάθος κωδικός! Προσπαθήστε ξανά");
             }
         } while (connect == false && count < 5);
         if (count == 5) {
-            System.out.println("Αν ξεχάσατε τον κωδικό σας πατήστε 1"
+            System.out.println("Αν ξεχάσατε τον κωδικό σας πατήστε 1 "
             + "αλλιώς άλλο ψηφίο");
             int an = scan.nextInt();
             if (an == 1) {
