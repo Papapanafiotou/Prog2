@@ -130,7 +130,7 @@ public class Accounts {
         System.out.println("Ο κωδικός είναι έγκυρος!");
         return true;
     }
-    public boolean forgotPass(String username) {
+    public void forgotPass(String username) {
         Scanner scan2 = new Scanner(System.in);
         System.out.println("Για την ανάκτηση του κωδικού σας απαιτείται "
             + "ταυτοποίηση μέσω του αριθμού ταυτότητας."
@@ -141,10 +141,8 @@ public class Accounts {
         if (realID .equals(numID)) {
             String pass = getPassword(username);
             System.out.println("Επιτυχής ανάκτηση! Ο κωδικός είναι: " + pass);
-            return true;
         } else {
             System.out.println("Αποτυχημένη προσπάθεια ανάκτησης!");
-            return false;
         }  
     }
     public String getID(String username) {

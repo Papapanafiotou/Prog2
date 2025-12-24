@@ -6,9 +6,13 @@ public class Log {
     public boolean logMenu() {
     Accounts acc = new Accounts();
     acc.createTable();
-    System.out.println("Για δημιουργία λογαριασμού πατήστε 1, για σύνδεση 2," 
-    + "για αλλαγή κωδικού 3");
     Scanner scan = new Scanner(System.in);
+    while (true) {
+            System.out.println("\n--- Μενού ---");
+            System.out.println("1. Δημιουργία λογαριασμού");
+            System.out.println("2. Σύνδεση");
+            System.out.println("3. Αλλαγή κωδικού");
+            System.out.println("4. Έξοδος");
     int answer = scan.nextInt();
     if (answer == 1) {
         scan.nextLine();
@@ -44,24 +48,26 @@ public class Log {
 
             pass = scan.nextLine();
             valid = acc.validatePassword(pass);
-        } while (valid = false);
+        } while (!valid);
         }
         acc.createAccount(name, pass, numID);
-        return true; 
+        System.out.println("Ο λογαριασμός δημιουργήθηκε!");
     } else if (answer == 2) {
         scan.nextLine();
         System.out.println("Εισάγετε το username σας");
         String name = scan.nextLine();
         String realpass = acc.getPassword(name);
-        System.out.println("Πληκτρολογήστε τον κωδικό πρόσβασης");
-        String userPass = scan.nextLine();
         int count = 0;
         boolean connect;
         do {
-            connect = acc.logIn(realpass, userPass);
+            System.out.println("Πληκτρολογήστε τον κωδικό πρόσβασης");
+            String userPass = scan.nextLine();
+            connect =acc.logIn(realpass, userPass);
             count++;
             if (connect == true) {
                return true;
+            } else {
+                System.out.println("Λάθος κωδικός! Προσπαθήστε ξανά");
             }
         } while (connect == false && count < 5);
         if (count == 5) {
@@ -69,17 +75,12 @@ public class Log {
             + "αλλιώς άλλο ψηφίο");
             int an = scan.nextInt();
             if (an == 1) {
-                boolean a = acc.forgotPass(name);
-                if (a) {
-                    return; // εδώ θελω να γυρνάει στις επιλογές 
-                } else {
-                    return false;
-                }
+                acc.forgotPass(name);
             } else {
                 return false;
             }
         } 
-    } else {
+    } else if (answer == 3) {
         scan.nextLine();
         System.out.println("Εισάγετε το username σας");
         String name = scan.nextLine();
@@ -99,11 +100,12 @@ public class Log {
               valid = acc.validatePassword(newP);
             } while (valid == false);
             acc.newPass(newP,name);
-            return true;
         } else {
             System.out.println("Λάθος κωδικός! Προσπαθήστε ξανά!");
         }   
+    } else if (answer == 4) {
+                return false;
+            }
     }
-    return false;
     }
 }
