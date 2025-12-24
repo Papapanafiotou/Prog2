@@ -19,7 +19,11 @@ public class Log {
         System.out.println("Εισάγετε το username");
         String name = scan.nextLine();
         scan.nextLine();
-        System.out.println("Εισάγετε τον αριθμό ταυτότητάς σας.");
+        System.out.println("Εισάγετε τον αριθμό ταυτότητάς "
+            + "με λατινικούς χαρακτήρες και χωρίς κενό. Ο αριθμός ταυτότητας"
+            + "είναι απαρραίτητος για την ανάκτηση του κωδικόυ σας σε "
+            + "περίπτωση που τον ξεχάσετε!"
+        );
         String numID = scan.nextLine(); 
         System.out.println("Για τυχαίο κωδικό πατήστε 1, "
           + "οποιοδήποτε άλλο νούμερο για να εισάγετε κωδικό");
