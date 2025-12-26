@@ -39,6 +39,7 @@ public class BudgetGUI extends JFrame {
     private JTextField idField;
     private JTextField amountField;
     private JButton updateButton;
+    private JButton backButton;
 
     //εμφανιση αλλαγών
     private JButton showChangesButton;
@@ -58,6 +59,7 @@ public class BudgetGUI extends JFrame {
         initListeners();
     }
     private void initComponents() {
+        backButton = new JButton("⬅ Πίσω");
         // Μενου επιλογης πινακα και συνδεση με τη βαση δεδομενων (αντιστοιχια ονοματων στηλων)
         tableSelector = new JComboBox<>();
         tableSelector.addItem(new TableInfo("Έσοδα", "esoda", "code"));
@@ -97,6 +99,7 @@ public class BudgetGUI extends JFrame {
         setLayout(new BorderLayout(8, 8));  //χωριζει την περιοχη σε τμηματα
         
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(backButton); 
         topPanel.add(new JLabel("Πίνακας:"));
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
@@ -130,6 +133,11 @@ public class BudgetGUI extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
     }
     private void initListeners() {
+
+        backButton.addActionListener(e -> {
+            this.dispose(); // Κλείνει το τρέχον παράθυρο (BudgetGUI)
+            new StateWalletLauncher().setVisible(true); // Δημιουργεί και ανοίγει ξανά τον Launcher
+        });
         // Εμφάνιση επιλεγμένου πίνακα
         loadTableButton.addActionListener(e -> loadSelectedTable());
         // Διπλό κλικ σε γραμμή -> γέμισμα ID & ποσού
