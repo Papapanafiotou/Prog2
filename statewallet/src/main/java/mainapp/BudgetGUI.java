@@ -27,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
 public class BudgetGUI extends JFrame {
 
     private final BudgetManager manager;     // χρηση του manager που φτιαξαμε
-    private final DatabaseChooser dbChooser; // συνδεση μεταξυ βασης δεδομενων και UI
+    private final String dbPath; 
     //επιλογη πινακα
     private JComboBox<TableInfo> tableSelector; 
     private JButton loadTableButton;
@@ -45,10 +45,11 @@ public class BudgetGUI extends JFrame {
     //εμφανιση αλλαγών
     private JButton showChangesButton;
     private JTextArea changesArea;
-     private String dbPath;
-    public BudgetGUI(int year) {
-        this.dbChooser = new DatabaseChooser();
-        String dbPath = dbChooser.getURL();
+    
+
+    public BudgetGUI(String dbPath) {
+
+        this.dbPath = dbPath;
         this.manager = new BudgetManager(dbPath);
         
 

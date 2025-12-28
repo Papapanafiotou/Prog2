@@ -96,7 +96,8 @@ public class StateWalletLauncher extends JFrame {
                     statusLabel.setText("Ολοκληρώθηκε!");
                     Timer timer = new Timer(100, e -> {
         dispose(); // Κλείνει τον Launcher
-        new BudgetGUI(year).setVisible(true); // Ανοίγει το κεντρικό παράθυρο
+       String dbPath = "jdbc:sqlite:budget_" + year + ".db";
+        new BudgetGUI(dbPath).setVisible(true); // Ανοίγει το κεντρικό παράθυρο
     });
     timer.setRepeats(false); 
     timer.start();
