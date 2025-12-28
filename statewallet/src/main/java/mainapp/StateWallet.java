@@ -1,7 +1,5 @@
 package mainapp;
 
-import javax.swing.SwingUtilities;
-
 public class StateWallet {
     
     public static void main(String[] args) {
@@ -13,10 +11,7 @@ public class StateWallet {
             DatabaseChooser chooser = new DatabaseChooser();
             String DATABASE_URL = chooser.getURL();
             BudgetMenu budgetmenu = new BudgetMenu(DATABASE_URL);
-           SwingUtilities.invokeLater(() -> {
-            StateWalletLauncher launcher = new StateWalletLauncher();
-            launcher.setVisible(true);
-        });
+          
             // 3. Εκκίνηση της εφαρμογής
             budgetmenu.start();
             }
