@@ -57,8 +57,8 @@ public class Weights {
             return totalPercentage;
         }
         public void getAllGrades(double[] a) {
-            int[] years = {2020, 2021, 2022, 2023, 2024};
-            double[] grades = new double[5];
+            int[] years = {2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025};
+            double[] grades = new double[8];
             for (int year : years) {
                 DataforGrade d = new DataforGrade();
                 double[] data = d.getData(year); 
@@ -82,10 +82,56 @@ public class Weights {
                 }
                 grades[year] = totalGrade;
             }
-            double[] differencies = new double[4];
-            differencies[0] = grades[1] - grades[0];
-            differencies[1] = grades[2] - grades[1];
-            differencies[2] = grades[3] - grades[2];
-            differencies[3] = grades[4] - grades[3]; 
-        } 
+            double[] differences = new double[7];
+            differences[0] = grades[1] - grades[0];
+            differences[1] = grades[2] - grades[1];
+            differences[2] = grades[3] - grades[2];
+            differences[3] = grades[4] - grades[3];
+            differences[4] = grades[5] - grades[4];
+            differences[5] = grades[6] - grades[5];
+            differences[6] = grades[7] - grades[6];
+            String diffYears[] = {"2019-2018","2020-2019", "2021-2020",
+            "2022-2021", "2023-2022", "2024-2023", "2025-2024"};
+            double maxDiff = differences[0];
+            double minDiff = differences[0];
+            int maxIndex = 0;
+            int minIndex = 0;
+            for (int i = 1; i < differences.length; i++) {
+            if (differences[i] > maxDiff) {
+                maxDiff = Math.max(maxDiff, differences[i]);
+                maxIndex = i;
+            }
+            if (differences[i] < minDiff) {
+                minDiff = Math.min(minDiff, differences[i]);
+                minIndex = i; 
+            }
+        }
+        double totaldiff = 0;
+        for (int i =0; i < differences.length; i++) {
+            totaldiff += differences[i];
+        }
+        double avg = totaldiff / 7;
+        System.out.println("--ΑΠΟΤΕΛΕΣΜΑΤΑ ΣΥΓΚΡΙΣΕΙΣ ΒΑΘΜΩΝ");
+        System.out.println("Ο βαθμός του κράτους την τελευταία χρονιά πριν" +
+            " αναλάβει η κυβέρνηση ήταν " + grades[0]);
+        System.out.println("O πιο πρόσφατος βαθμός για το κράτος (2025) " +
+            "με βάσει τις προβλέψεις είναι " + grades[7]);
+        if (avg > 0) {
+            System.out.println("Κατά μέσο όρο, ο βαθμός του κράτους με βάση"
+                + "τα βάρη που δώθηκαν αυξανόταν κατά " + avg + 
+                "την περίοδο 2018-2025. Οι βαθμοί απόδοσης παρουσίασαν"
+                + " ανοδική πορεία!"
+            );
+        } else {
+            System.out.println("Κατά μέσο όρο, ο βαθμός του κράτους με βάση"
+                + "τα βάρη που δώθηκαν μειωνόταν κατά " + avg + 
+                "την περίοδο 2018-2025. Οι βαθμοί απόδοσης παρουσίασαν" +
+                " πτωτική πορεία"
+            );
+        }
+        System.out.println("Η μεγαλύτερη αύξηση βαθμού παρατηρήθηκε τις χρονιές"
+            + diffYears[maxIndex] + " ενώ η μεγαλύτερη μείωση τις χρονιές" 
+            + diffYears[minIndex] 
+        );        
+    } 
 }
