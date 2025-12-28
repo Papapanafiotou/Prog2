@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
 public class BudgetGUI extends JFrame {
 
     private final BudgetManager manager;     // χρηση του manager που φτιαξαμε
-    private final DatabaseHandler dbHandler; // συνδεση μεταξυ βασης δεδομενων και UI
+    private final DatabaseChooser dbChooser; // συνδεση μεταξυ βασης δεδομενων και UI
     //επιλογη πινακα
     private JComboBox<TableInfo> tableSelector; 
     private JButton loadTableButton;
@@ -44,10 +45,12 @@ public class BudgetGUI extends JFrame {
     //εμφανιση αλλαγών
     private JButton showChangesButton;
     private JTextArea changesArea;
-
+     private String dbPath;
     public BudgetGUI(int year) {
-        this.manager = new BudgetManager();
-        this.dbHandler = new DatabaseHandler();
+        this.dbChooser = new DatabaseChooser();
+        String dbPath = dbChooser.getURL();
+        this.manager = new BudgetManager(dbPath);
+        
 
         setTitle("Διαχείριση Προϋπολογισμού");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  //κλεινει το προγραμμα με το Χ
@@ -168,7 +171,7 @@ public class BudgetGUI extends JFrame {
         tableModel.setRowCount(0);     // Σβήνουμε όλες τις υπάρχουσες γραμμές από το JTable
         String sql = "SELECT " + info.idColumnName + ", name, original_amount, amount FROM " + info.tableName;
     // Φτιάχνουμε το SQL query: παίρνουμε ID στήλη, όνομα, αρχικό ποσό και τρέχον ποσό από τον σωστό πίνακα
-        try (Connection conn = dbHandler.connect();                   // Ανοίγουμε σύνδεση με τη βάση μέσω του DatabaseHandler
+        try (Connection conn = DriverManager.getConnection(dbPath);                   // Ανοίγουμε σύνδεση με τη βάση μέσω του DatabaseHandler
          Statement stmt = conn.createStatement();                 // Δημιουργούμε Statement για να εκτελέσουμε το SQL
          ResultSet rs = stmt.executeQuery(sql)) 
          {                
@@ -253,7 +256,7 @@ public class BudgetGUI extends JFrame {
                 + info.tableName + " WHERE amount != original_amount";
         // Φτιάχνουμε SQL που παίρνει μόνο τις γραμμές όπου το amount είναι διαφορετικό από original_amount
     
-            try (Connection conn = dbHandler.connect();               // Ανοίγουμε σύνδεση με βάση
+            try (Connection conn = DriverManager.getConnection(dbPath);               // Ανοίγουμε σύνδεση με βάση
                 Statement stmt = conn.createStatement();            
                 ResultSet rs = stmt.executeQuery(sql)) {             // Εκτελούμε το query και παίρνουμε τις γραμμές που έχουν αλλαγές
 
