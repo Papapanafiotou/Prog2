@@ -111,6 +111,10 @@ public class Weights {
             totaldiff += differences[i];
         }
         double avg = totaldiff / 7;
+        System.out.println("Οι βαθμοί για το κράτος ανά έτος είναι:");
+        for (int i =0; i < grades.length; i++) {
+            System.out.println("ΧΡΟΝΙΑ: " + years[i] + "ΒΑΘΜΟΣ: " + grades[i]);
+        }        
         System.out.println("--ΑΠΟΤΕΛΕΣΜΑΤΑ ΣΥΓΚΡΙΣΕΙΣ ΒΑΘΜΩΝ");
         System.out.println("Ο βαθμός του κράτους την τελευταία χρονιά πριν" +
             " αναλάβει η κυβέρνηση ήταν " + grades[0]);
