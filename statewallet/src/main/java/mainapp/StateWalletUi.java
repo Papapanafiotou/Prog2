@@ -12,10 +12,7 @@ public class StateWalletUi {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
         e.printStackTrace();
         }
-
-        SwingUtilities.invokeLater(() -> {
-            StateWalletLauncher launcher = new StateWalletLauncher();
-            launcher.setVisible(true);
-        });
+       SwingUtilities.invokeLater(() -> new LogUi().setVisible(true));
+        
     }
 }
