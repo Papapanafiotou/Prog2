@@ -40,4 +40,37 @@ public class LogUi extends JFrame {
         welcomeLabel.setForeground(new Color(45, 52, 54));
         panel.add(welcomeLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 35)));
+        // Δημιουργία Κουμπιών 
+        JButton btnLogin = createStyledButton("Σύνδεση");
+        JButton btnCreate = createStyledButton("Δημιουργία Λογαριασμού");
+        JButton btnChange = createStyledButton("Αλλαγή Κωδικού");
+        JButton btnForgot = createStyledButton("Ξέχασα Κωδικό");
+        JButton btnExit = createStyledButton("Έξοδος");
+        panel.add(btnLogin);
+        panel.add(Box.createRigidArea(new Dimension(0, 13)));
+        panel.add(btnCreate);
+        panel.add(Box.createRigidArea(new Dimension(0, 13)));
+        panel.add(btnChange);
+        panel.add(Box.createRigidArea(new Dimension(0, 13)));
+        panel.add(btnForgot);
+        panel.add(Box.createRigidArea(new Dimension(0, 40)));
+        panel.add(btnExit);
+        add(panel);
+        // Listeners
+        btnLogin.addActionListener(e -> login());
+        btnCreate.addActionListener(e -> createAccount());
+        btnChange.addActionListener(e -> changePassword());
+        btnForgot.addActionListener(e -> forgotPassword());
+        btnExit.addActionListener(e -> System.exit(0));
+    }
+    private JButton createStyledButton(String text) {
+        JButton btn = new JButton(text);
+        btn.setMaximumSize(new Dimension(230, 35));
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn.setFocusPainted(false);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btn.setBackground(Color.WHITE);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
+    }
 
