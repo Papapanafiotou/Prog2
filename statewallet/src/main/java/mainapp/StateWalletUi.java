@@ -14,8 +14,8 @@ public class StateWalletUi {
         }
 
         SwingUtilities.invokeLater(() -> {
-            StateWalletLauncher launcher = new StateWalletLauncher();
-            launcher.setVisible(true);
+           StateWalletLauncher launcher = new StateWalletLauncher();
+           launcher.setVisible(true);
         });
     }
 }
