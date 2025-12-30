@@ -1,5 +1,7 @@
 package mainapp;
 
+import java.util.Scanner;
+
 public class DataforGrade {
 
     // 1. Οι γραμμές αντιπροσωπεύουν τα έτη (από το 2020 έως το 2024)
@@ -35,5 +37,33 @@ public class DataforGrade {
             }
         }
         return null;
+    }
+    public int chooseYear() {
+        Scanner scan = new Scanner(System.in);
+        boolean flag = true;
+        int year;
+        do {
+        System.out.println("Ποιο έτος θέλετε να χρησιμοποιήσετε");
+        year = scan.nextInt();
+        if (year > 2025 || year < 2018) {
+            System.out.println("Επιλέξτε ένα έτος ανάμεσα στο 2018 και 2025");
+        } else {
+            flag = false;
+        }
+        } while (flag);
+        //Προειδοποιήσεις στον χρήστη για το 2020 και 2025
+        if (year == 2020) {
+            System.out.println("Κάποια στοιχεία είναι πολύ εππηρεαμσένα "
+                + "από το ξέσπασμα της πανδημίας, όπως ο ρυθμός αύξησης του "
+                + "ΑΕΠ και η μεταβολή των ρύπων, οπότε ο τελικός βαθμος "
+                + "δεν είναι 100% αξιόπιστος!"
+            );
+        }
+        if (year == 2025) {
+            System.out.println("Κάποιες τιμές δεδομένων προέρχονται από"
+                + " προβλέψεις. Ενδεχεται να υπάρχουν αποκλίσεις από τα πραγματικά"
+            );
+        }
+        return year;
     }
 }
