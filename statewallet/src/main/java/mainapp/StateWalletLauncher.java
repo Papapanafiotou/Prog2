@@ -90,7 +90,6 @@ private void startProcess() {
     new Thread(() -> {
         try {
             boolean reProcess = false;
-
             // Έλεγχος αν η βάση υπάρχει ήδη
             if (finder.findYearbase(year)) {
                 int choice = JOptionPane.showConfirmDialog(

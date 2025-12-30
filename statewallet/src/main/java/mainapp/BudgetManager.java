@@ -1,6 +1,6 @@
 package mainapp;
-import java.sql.DriverManager;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -133,14 +133,13 @@ public class BudgetManager {
         return results;
     }
 
-    public void budgetCharacterism(double revenue, double expenses) {
-        System.out.println("\n--------------------------------------------------");
+    public String getBudgetCharacterism(double revenue, double expenses) {
         if (revenue > expenses) {
-            System.out.println("Ο προϋπολογισμός είναι πλεονασματικός κατα +" + (long)( revenue - expenses) +" EUR");
+            return "Πλεονασματικός (+" + (long)(revenue - expenses) + " EUR)";
         } else if (revenue < expenses) {
-            System.out.println("Ο προϋπολογισμός είναι ελλειματικός κατα -" + (long)(expenses - revenue)+" EUR");
+            return "Ελλειμματικός (-" + (long)(expenses - revenue) + " EUR)";
         } else {
-            System.out.println("Ο προϋπολογισμός είναι ισοσκελισμένος");
-        }
+            return "Ισοσκελισμένος";
     }
+}
 }
