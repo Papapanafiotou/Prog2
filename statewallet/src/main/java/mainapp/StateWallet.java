@@ -12,7 +12,7 @@ public class StateWallet {
             String DATABASE_URL = chooser.getURL();
             BudgetMenu budgetmenu = new BudgetMenu(DATABASE_URL);
           
-            // 3. Εκκίνηση της εφαρμογής
+            // 3. Εκκίνη2ση της εφαρμογής
             budgetmenu.start();
             }
         }
