@@ -51,18 +51,18 @@ public class BudgetMenu {
                     s.searchAmount(name);
                 }
                 case 7 -> {
-                    System.out.println("Θέλετε χαρακτηρισμό στα αρχικά ή στα επεξεργασμένα στοιχεία;");
-                    System.out.println("(1 για αρχικά 2 για επεξεργασμένα)");
-                    System.out.print("Επιλογή: ");
-                    int cho = scanner.nextInt();
-                    scanner.nextLine();
-                    double[] revenue = manager.getTotal("esoda");
-                    double[] expenses = manager.getTotal("eksoda");
-                    if(cho == 1) {
-                        manager.budgetCharacterism(revenue[0], expenses[0]);
-                    } else {
-                        manager.budgetCharacterism(revenue[1], expenses[1]);
-                    }
+                System.out.println("Θέλετε χαρακτηρισμό στα αρχικά ή στα επεξεργασμένα στοιχεία;");
+                System.out.println("(1 για αρχικά 2 για επεξεργασμένα)");
+                System.out.print("Επιλογή: ");
+                int cho = scanner.nextInt();
+                scanner.nextLine();
+                double[] revenue = manager.getTotal("esoda");
+                double[] expenses = manager.getTotal("eksoda");
+                if(cho == 1) {
+                System.out.println(manager.getBudgetCharacterism(revenue[0], expenses[0]));
+                } else {
+                System.out.println(manager.getBudgetCharacterism(revenue[1], expenses[1]));
+                }
                 }
                 case 8 -> {
                     System.out.println("Έξοδος...");
