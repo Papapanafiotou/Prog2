@@ -5,6 +5,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Random;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -147,6 +148,10 @@ public class LogUi extends JFrame {
             JOptionPane.showMessageDialog(null, "Τα στοιχεία δεν ταυτίζονται.");
         }
     }
+        public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new LogUi().setVisible(true));
+    }
+}
 
 
 
