@@ -2,6 +2,8 @@ package mainapp;
 
 //βιβλιοθηκες για τα στοιχεια του UI
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.sql.Connection;
@@ -12,6 +14,7 @@ import java.sql.Statement;
 import java.util.Objects;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -45,7 +48,7 @@ public class BudgetGUI extends JFrame {
     //εμφανιση αλλαγών
     private JButton showChangesButton;
     private JTextArea changesArea;
-    
+    private JLabel budgetStatusLabel;    
 
     public BudgetGUI(String dbPath) {
 
@@ -73,6 +76,8 @@ public class BudgetGUI extends JFrame {
         tableSelector.addItem(new TableInfo("Αποκεντρωμένες Διοικήσεις", "apokentromenes", "number"));
 
        loadTableButton = new JButton("Εμφάνιση Πίνακα");  //κουμπι εμφανισης πινακα
+       budgetStatusLabel = new JLabel("Χαρακτηρισμός: -");
+       budgetStatusLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
          // Πίνακας δεδομένων (δομη)
         tableModel = new DefaultTableModel(
@@ -107,6 +112,8 @@ public class BudgetGUI extends JFrame {
         topPanel.add(new JLabel("Πίνακας:"));
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
+        topPanel.add(Box.createRigidArea(new Dimension(20, 0))); // Λίγο κενό
+        topPanel.add(budgetStatusLabel);
 
     
         JScrollPane tableScroll = new JScrollPane(dataTable); //προσθηκη scroll bar
@@ -193,6 +200,7 @@ public class BudgetGUI extends JFrame {
                 "Σφάλμα",
                 JOptionPane.ERROR_MESSAGE);
         }
+        updateBudgetUI();
     }
 // Χρησιμοποιούμε τον ΥΠΑΡΧΟΝ BudgetManager.updateAmount για να αλλάξουμε ποσό σε γραμμή
     private void updateAmount() {
@@ -226,6 +234,7 @@ public class BudgetGUI extends JFrame {
                     "Επιτυχία",
                     JOptionPane.INFORMATION_MESSAGE);
             loadSelectedTable();                                  // Ξαναφορτώνουμε τον πίνακα για να δούμε τα νέα ποσά
+            updateBudgetUI();
             } else {                                                  // Αν η ενημέρωση δεν πέτυχε 
                 JOptionPane.showMessageDialog(this,                   // Εμφανίζουμε προειδοποίηση στον χρήστη
                     "Αποτυχία: Δεν βρέθηκε το ID.",
@@ -289,6 +298,20 @@ public class BudgetGUI extends JFrame {
         }
         changesArea.setText(sb.toString());      // Βάζουμε όλο το κείμενο που φτιάξαμε στο JTextArea
         changesArea.setCaretPosition(0);
+    }
+    private void updateBudgetUI() {
+    double[] rev = manager.getTotal("esoda");
+    double[] exp = manager.getTotal("eksoda");
+
+    // Παίρνουμε το κείμενο από τη μέθοδο που ήδη έφτιαξες στον Manager
+    String statusText = manager.getBudgetCharacterism(rev[1], exp[1]);
+
+    budgetStatusLabel.setText("Χαρακτηρισμός: " + statusText);
+
+    // Αλλαγή χρώματος
+    if (rev[1] > exp[1]) budgetStatusLabel.setForeground(new Color(34, 139, 34)); // Πράσινο
+    else if (rev[1] < exp[1]) budgetStatusLabel.setForeground(Color.RED);        // Κόκκινο
+    else budgetStatusLabel.setForeground(Color.BLUE);                           // Μπλε
     }
 // Βοηθητική κλάση για το comboBox: κρατάει όνομα εμφάνισης και στοιχεία πίνακα
     private static class TableInfo {
