@@ -79,38 +79,68 @@ public class StateWalletLauncher extends JFrame {
         p.add(c);
         if (gap > 0) p.add(Box.createRigidArea(new Dimension(0, gap)));
     }
-    private void startProcess() {
-        int year = Integer.parseInt((String) yearSelector.getSelectedItem());
-        statusLabel.setText("Επεξεργασία δεδομένων...");
-        startButton.setEnabled(false);
-        progressBar.setVisible(true);
-        progressBar.setIndeterminate(true);
-        new Thread(() -> {
-            try {
-                
+private void startProcess() {
+    int year = Integer.parseInt((String) yearSelector.getSelectedItem());
+    DatabaseFinder finder = new DatabaseFinder();
+    
+    startButton.setEnabled(false);
+    progressBar.setVisible(true);
+    progressBar.setIndeterminate(true);
+
+    new Thread(() -> {
+        try {
+            boolean reProcess = false;
+            // Έλεγχος αν η βάση υπάρχει ήδη
+            if (finder.findYearbase(year)) {
+                int choice = JOptionPane.showConfirmDialog(
+                    null, 
+                    "Η βάση δεδομένων για το έτος " + year + " βρέθηκε.\nΘέλετε να ξεκινήσετε την επεξεργασία από την αρχή;", 
+                    "Υπάρχουσα Βάση", 
+                    JOptionPane.YES_NO_OPTION
+                );
+
+                if (choice == JOptionPane.YES_OPTION) {
+                    reProcess = true;
+                }
+            } else {
+                // Αν δεν υπάρχει η βάση, η επεξεργασία είναι υποχρεωτική
+                reProcess = true;
+            }
+
+            if (reProcess) {
+                SwingUtilities.invokeLater(() -> statusLabel.setText("Επεξεργασία δεδομένων (από την αρχή)..."));
+                // Εκτέλεση επεξεργασίας
                 Csvtopdf.run(year);
                 new PinakesImporter("jdbc:sqlite:budget.db").importAll(); 
-
-                SwingUtilities.invokeLater(() -> {
-                    progressBar.setValue(100);
-                    statusLabel.setText("Ολοκληρώθηκε!");
-                    Timer timer = new Timer(100, e -> {
-        dispose(); // Κλείνει τον Launcher
-        new BudgetGUI(year).setVisible(true); // Ανοίγει το κεντρικό παράθυρο
-    });
-    timer.setRepeats(false); 
-    timer.start();
-                });
-            } catch (Exception ex) {
-                SwingUtilities.invokeLater(() -> {
-                    progressBar.setVisible(false);
-                    statusLabel.setText("Σφάλμα!");
-                    startButton.setEnabled(true);
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                });
+            } else {
+                SwingUtilities.invokeLater(() -> statusLabel.setText("Φόρτωση υπάρχουσας βάσης..."));
+                Thread.sleep(500); // Μικρή παύση για την εμπειρία χρήστη
             }
-        }).start();
-    }
+
+            SwingUtilities.invokeLater(() -> {
+                progressBar.setIndeterminate(false);
+                progressBar.setValue(100);
+                statusLabel.setText("Ολοκληρώθηκε!");
+
+                Timer timer = new Timer(500, e -> {
+                    dispose();
+                    String dbPath = "jdbc:sqlite:budget_" + year + ".db";
+                    new BudgetGUI(dbPath).setVisible(true);
+                });
+                timer.setRepeats(false);
+                timer.start();
+            });
+
+        } catch (Exception ex) {
+            SwingUtilities.invokeLater(() -> {
+                progressBar.setVisible(false);
+                statusLabel.setText("Σφάλμα!");
+                startButton.setEnabled(true);
+                JOptionPane.showMessageDialog(this, "Σφάλμα: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            });
+        }
+    }).start();
+}
 }
 
    
