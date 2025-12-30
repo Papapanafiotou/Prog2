@@ -23,7 +23,7 @@ public class TotalGrade {
             flag = false;
         }
         } while (flag);
-        //Προειδοποίησησ στον χρήστη για το 2020
+        //Προειδοποιήσεις στον χρήστη για το 2020 και 2025
         if (year == 2020) {
             System.out.println("Κάποια στοιχεία είναι πολύ εππηρεαμσένα "
                 + "από το ξέσπασμα της πανδημίας, όπως ο ρυθμός αύξησης του "
@@ -125,7 +125,7 @@ public class TotalGrade {
         + " με βάση τα στοιχεία είναι " + finalGrade);
         double[] totalWeights = w.showTotalWeights(weights, wEcon, wEnv, wSoc);
         System.out.println("Για εμφάνιση των βαθμών του κράτους τα "
-            + "τελευταία 5 έτη με βάση τα βάρη που δώσατε πατήστε 1."
+            + "τελευταία 7 έτη με βάση τα βάρη που δώσατε πατήστε 1."
         );
         int anwser = scan.nextInt();
         if (anwser == 1) {

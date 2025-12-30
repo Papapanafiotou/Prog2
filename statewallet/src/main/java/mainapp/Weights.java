@@ -137,5 +137,70 @@ public class Weights {
             + diffYears[maxIndex] + " ενώ η μεγαλύτερη μείωση τις χρονιές" 
             + diffYears[minIndex] 
         );        
-    } 
+    }
+    
+    public double[] addWeights() {
+        double[] weights = new double[10]; //KΑΤΑΧΩΡΗΣΗ ΒΑΡΩΝ ΣΤΟΝ ΠΙΝΑΚΑ
+        int i = 0;
+        System.out.println("Εισάγετε τo βάρος για τη μεταβολή του ΑΕΠ");
+        double wGDP = getWeight();
+        weights[i] = wGDP;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Εισάγετε το" 
+            + " βάρος για το δημόσιο χρέος ως ποσοστό του ΑΕΠ."
+        );
+        double wPubDebt = getWeight();
+        weights[i] = wPubDebt;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για "
+            + "το πρωτογενές πλεόνασμα ως ποσοστό του ΑΕΠ."
+        );
+        double wSurp = getWeight();
+        weights[i] = wSurp;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για το"
+            + " ποσοστό αξιοποίησης ανανεώσιμων πηγών ενέργειας."
+        );
+        double wRES = getWeight();
+        weights[i] = wRES;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για"
+            + " το ποσοστό ανακύκλωσης αστικών αποβλήτων."
+        );
+        double wRecRate = getWeight();
+        weights[i] = wRecRate;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για την"
+            + " ποσοστίαια μεταβολή τησ εκπομπής ρύπων θερμοκηπίου."
+        );
+        double wEmm = getWeight();
+        weights[i] = wEmm;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για τον"
+            + " κοινωνικό δείκτη GINI"
+        );
+        double wGini = getWeight();
+        weights[i] = wGini;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος"
+           + " για τις δαπάνες υγείας και παιδείας ως ποσοστό του ΑΕΠ"
+        );
+        double wEdHealExp = getWeight();
+        weights[i] = wEdHealExp;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε βάρος για "
+            + " την εκτίμηση του ποσοστού ανθρώπων με προβλήματα ψυχικής υγείας"
+        );
+        double wMentHealPer = getWeight();
+        weights[i] = wMentHealPer;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος"
+            + " για την ποσοστιαία μεταβολή της εγκληματικότητας (σοβαρά αδικήματα ανά 10000)."
+        );
+        double wCrimeRate = getWeight();
+        weights[i] = wCrimeRate;
+        i+= 1;
+        System.out.println("Το βάρος καταχωρήθηκε! Όλα τα βάρη έχουν εισαχθεί");
+        return weights;
+    }
 }
