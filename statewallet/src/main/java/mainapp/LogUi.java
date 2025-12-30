@@ -122,6 +122,22 @@ public class LogUi extends JFrame {
         }
     }
     
+        private void changePassword() {
+        String user = JOptionPane.showInputDialog("Username:");
+        if (user == null) return;
+        String oldP = JOptionPane.showInputDialog("Τρέχων κωδικός:");
+        if (oldP == null) return;
+        if (acc.logIn(acc.getPassword(user), oldP)) {
+            String newP = JOptionPane.showInputDialog("Νέος κωδικός:");
+            if (newP != null && acc.validatePassword(newP)) {
+                acc.newPass(newP, user);
+                JOptionPane.showMessageDialog(null, "Ο κωδικός ενημερώθηκε!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Λάθος στοιχεία!");
+        }
+    }
+
 
 
 
