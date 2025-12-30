@@ -121,7 +121,7 @@ public class LogUi extends JFrame {
             JOptionPane.showMessageDialog(null, "Λάθος κωδικός.");
         }
     }
-    
+
         private void changePassword() {
         String user = JOptionPane.showInputDialog("Username:");
         if (user == null) return;
@@ -135,6 +135,16 @@ public class LogUi extends JFrame {
             }
         } else {
             JOptionPane.showMessageDialog(null, "Λάθος στοιχεία!");
+        }
+    }
+
+    private void forgotPassword() {
+        String user = JOptionPane.showInputDialog("Username:");
+        String id = JOptionPane.showInputDialog("Αριθμός Ταυτότητας:");
+        if (user != null && id != null && id.equals(acc.getID(user))) {
+            JOptionPane.showMessageDialog(null, "Ο κωδικός σας είναι: " + acc.getPassword(user));
+        } else {
+            JOptionPane.showMessageDialog(null, "Τα στοιχεία δεν ταυτίζονται.");
         }
     }
 
