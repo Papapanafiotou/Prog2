@@ -93,7 +93,6 @@ private void startProcess() {
 
             // Έλεγχος αν η βάση υπάρχει ήδη
             if (finder.findYearbase(year)) {
-                // Ερώτηση στο χρήστη (Πρέπει να γίνει στο UI Thread)
                 int choice = JOptionPane.showConfirmDialog(
                     null, 
                     "Η βάση δεδομένων για το έτος " + year + " βρέθηκε.\nΘέλετε να ξεκινήσετε την επεξεργασία από την αρχή;", 
