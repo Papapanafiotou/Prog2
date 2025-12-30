@@ -103,5 +103,25 @@ public class LogUi extends JFrame {
         JOptionPane.showMessageDialog(null, "Επιτυχής δημιουργία λογαριασμού!");
     }
 
+     private void login() {
+        String user = JOptionPane.showInputDialog("Username:");
+        if (user == null) return;
+        String realPass = acc.getPassword(user);
+        if (realPass == null) {
+            JOptionPane.showMessageDialog(null, "Ο χρήστης δεν βρέθηκε.");
+            return;
+        }
+        String pass = JOptionPane.showInputDialog("Κωδικός:");
+        if (pass == null) return;
+        if (acc.logIn(realPass, pass)) {
+            JOptionPane.showMessageDialog(null, "Επιτυχής σύνδεση!");
+            this.dispose();
+            new StateWalletLauncher().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Λάθος κωδικός.");
+        }
+    }
+    
+
 
 
