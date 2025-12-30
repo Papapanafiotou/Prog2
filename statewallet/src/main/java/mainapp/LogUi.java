@@ -74,3 +74,34 @@ public class LogUi extends JFrame {
         return btn;
     }
 
+    private void createAccount() {
+        String username = JOptionPane.showInputDialog("Username:");
+        if (username == null || username.trim().isEmpty()) return;
+        if (acc.getPassword(username) != null) {
+            JOptionPane.showMessageDialog(null, "Το όνομα χρήστη υπάρχει ήδη!", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String id = JOptionPane.showInputDialog("Αριθμός Ταυτότητας:");
+        if (id == null) return;
+        String password = "";
+        String[] options = {"Τυχαίος", "Χειροκίνητος"};
+        int choice = JOptionPane.showOptionDialog(null, "Επιλογή κωδικού", "Κωδικός", 0, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if (choice == 0) {
+            String chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$";
+            Random r = new Random();
+            for (int i = 0; i < 10; i++) password += chars.charAt(r.nextInt(chars.length()));
+            JOptionPane.showMessageDialog(null, "Ο κωδικός σας: " + password);
+        } else {
+            password = JOptionPane.showInputDialog("Δώστε κωδικό (8+ χαρακτήρες):");
+            if (password == null) return;
+            if (!acc.validatePassword(password)) {
+                JOptionPane.showMessageDialog(null, "Αδύναμος κωδικός!");
+                return;
+            }
+        }
+        acc.createAccount(username, password, id);
+        JOptionPane.showMessageDialog(null, "Επιτυχής δημιουργία λογαριασμού!");
+    }
+
+
+
