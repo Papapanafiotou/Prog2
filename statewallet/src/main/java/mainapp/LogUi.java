@@ -38,6 +38,7 @@ public class LogUi extends JFrame {
         JLabel welcomeLabel = new JLabel("Καλώς ορίσατε!");
         welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 20)); 
         welcomeLabel.setForeground(new Color(45, 52, 54));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(welcomeLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 35)));
         // Δημιουργία Κουμπιών 
