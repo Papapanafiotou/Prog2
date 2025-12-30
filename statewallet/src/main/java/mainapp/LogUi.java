@@ -14,3 +14,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+
+public class LogUi extends JFrame {
+    private Accounts acc = new Accounts();
+    public LogUi() {
+        acc.createTable();
+        setTitle("Σύστημα Χρηστών");
+        setSize(400, 550);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(new EmptyBorder(30, 50, 30, 50));
+        panel.setBackground(new Color(245, 245, 250));
