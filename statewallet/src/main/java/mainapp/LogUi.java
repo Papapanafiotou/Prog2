@@ -13,16 +13,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 public class LogUi extends JFrame {
-
-    private Accounts acc = new Accounts();  //create account
-
+    private Accounts acc = new Accounts();
     public LogUi() {
         acc.createTable();
-
         setTitle("Σύστημα Χρηστών");
         setSize(400, 550);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -32,32 +28,24 @@ public class LogUi extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(new EmptyBorder(30, 50, 30, 50));
         panel.setBackground(new Color(245, 245, 250));
-
         // Εικονίδιο
         JLabel userIcon = new JLabel("👤");
-        userIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 60)); // Ελαφρώς μικρότερο εικονίδιο
+        userIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 60)); 
         userIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(userIcon);
-
         panel.add(Box.createRigidArea(new Dimension(0, 8)));
-
         // Τίτλος
-        JLabel welcomeLabel = new JLabel("Καλώς ήρθατε!");
-        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 20)); // Ελαφρώς μικρότερη γραμματοσειρά
-        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel welcomeLabel = new JLabel("Καλώς ορίσατε!");
+        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 20)); 
         welcomeLabel.setForeground(new Color(45, 52, 54));
         panel.add(welcomeLabel);
-
         panel.add(Box.createRigidArea(new Dimension(0, 35)));
-
-        // Δημιουργία Κουμπιών με το νέο μέγεθος
+        // Δημιουργία Κουμπιών 
         JButton btnLogin = createStyledButton("Σύνδεση");
         JButton btnCreate = createStyledButton("Δημιουργία Λογαριασμού");
         JButton btnChange = createStyledButton("Αλλαγή Κωδικού");
-        JButton btnForgot = createStyledButton("Ξέχασα Κωδικό");
+        JButton btnForgot = createStyledButton("Ξέχασα τον Κωδικό");
         JButton btnExit = createStyledButton("Έξοδος");
-
-        // Προσθήκη κουμπιών
         panel.add(btnLogin);
         panel.add(Box.createRigidArea(new Dimension(0, 13)));
         panel.add(btnCreate);
@@ -65,11 +53,9 @@ public class LogUi extends JFrame {
         panel.add(btnChange);
         panel.add(Box.createRigidArea(new Dimension(0, 13)));
         panel.add(btnForgot);
-        panel.add(Box.createRigidArea(new Dimension(0, 40))); 
+        panel.add(Box.createRigidArea(new Dimension(0, 40)));
         panel.add(btnExit);
-
         add(panel);
-
         // Listeners
         btnLogin.addActionListener(e -> login());
         btnCreate.addActionListener(e -> createAccount());
@@ -77,12 +63,9 @@ public class LogUi extends JFrame {
         btnForgot.addActionListener(e -> forgotPassword());
         btnExit.addActionListener(e -> System.exit(0));
     }
-
-    // Η μέθοδος για τα ελαφρώς μικρότερα κουμπιά
     private JButton createStyledButton(String text) {
         JButton btn = new JButton(text);
-        // Μικρότερο πλάτος και ύψος για πιο κομψή εμφάνιση
-        btn.setMaximumSize(new Dimension(230, 35)); 
+        btn.setMaximumSize(new Dimension(230, 35));
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -91,24 +74,18 @@ public class LogUi extends JFrame {
         return btn;
     }
 
-    // --- Οι υπόλοιπες μέθοδοι παραμένουν ίδιες ---
-
     private void createAccount() {
         String username = JOptionPane.showInputDialog("Username:");
         if (username == null || username.trim().isEmpty()) return;
-
         if (acc.getPassword(username) != null) {
             JOptionPane.showMessageDialog(null, "Το όνομα χρήστη υπάρχει ήδη!", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
         String id = JOptionPane.showInputDialog("Αριθμός Ταυτότητας:");
         if (id == null) return;
-
         String password = "";
         String[] options = {"Τυχαίος", "Χειροκίνητος"};
         int choice = JOptionPane.showOptionDialog(null, "Επιλογή κωδικού", "Κωδικός", 0, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
         if (choice == 0) {
             String chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$";
             Random r = new Random();
@@ -126,7 +103,7 @@ public class LogUi extends JFrame {
         JOptionPane.showMessageDialog(null, "Επιτυχής δημιουργία λογαριασμού!");
     }
 
-    private void login() {
+     private void login() {
         String user = JOptionPane.showInputDialog("Username:");
         if (user == null) return;
         String realPass = acc.getPassword(user);
@@ -145,7 +122,7 @@ public class LogUi extends JFrame {
         }
     }
 
-    private void changePassword() {
+        private void changePassword() {
         String user = JOptionPane.showInputDialog("Username:");
         if (user == null) return;
         String oldP = JOptionPane.showInputDialog("Τρέχων κωδικός:");
@@ -170,8 +147,6 @@ public class LogUi extends JFrame {
             JOptionPane.showMessageDialog(null, "Τα στοιχεία δεν ταυτίζονται.");
         }
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new LogUi().setVisible(true));
-    }
+    
+    
 }
