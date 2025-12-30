@@ -28,3 +28,10 @@ public class LogUi extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(new EmptyBorder(30, 50, 30, 50));
         panel.setBackground(new Color(245, 245, 250));
+        // Εικονίδιο
+        JLabel userIcon = new JLabel("👤");
+        userIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 60)); 
+        userIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(userIcon);
+        panel.add(Box.createRigidArea(new Dimension(0, 8)));
+
