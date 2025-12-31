@@ -110,6 +110,51 @@
                 </execution>
             </executions>
         </plugin>
+        <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>exec-maven-plugin</artifactId>
+    <version>3.1.0</version>
+    <executions>
+        <execution>
+            <id>count-lines-powershell</id>
+            <phase>validate</phase>
+            <goals>
+                <goal>exec</goal>
+            </goals>
+            <configuration>
+                <executable>powershell</executable>
+                <arguments>
+                    <argument>-Command</argument>
+                    <argument>
+                        Get-ChildItem -Recurse -Filter *.java | ForEach-Object { git blame $_.FullName } | Select-String "^author " | Group-Object | Sort-Object Count -Descending | Select-Object Count, Name
+                    </argument>
+                </arguments>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+                <execution>
+                    <id>count-lines-per-author</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>bash</executable>
+                        <arguments>
+                            <argument>-c</argument>
+                            <argument>git ls-files | xargs -n1 git blame --line-porcelain 2>/dev/null | grep "^author " | sort | uniq -c | sort -nr</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
 
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
