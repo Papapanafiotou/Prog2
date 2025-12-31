@@ -17,7 +17,7 @@ public class MinMaX {
         long value = 0;
         Scanner scan = new Scanner(System.in, "CP737");
         String name;
-        Search s = new Search();
+        Search s = new Search(null);
         System.out.println("Θα θέλατε να υπολογίσετε μέγιστο ή ελάχιστο;");
         String answer = scan.nextLine();
         boolean flag3 = false;
