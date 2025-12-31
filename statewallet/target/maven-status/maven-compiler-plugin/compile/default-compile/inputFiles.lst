@@ -1,8 +1,15 @@
-<<<<<<< HEAD
+D:\programs\Prog2\statewallet\src\main\java\mainapp\Accounts.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetGUI.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetManager.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetMenu.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\Constrains.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\Csvtopdf.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\DatabaseChooser.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\DatabaseFinder.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\Log.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\LogUi.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\PinakesImporter.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\Search.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\StateWallet.java
-=======
-C:\Users\30697\OneDrive - aueb.gr\Τρίτο εξάμηνο\Programming 2\Εργασία\Prog2\statewallet\src\main\java\mainapp\Constrains.java
-C:\Users\30697\OneDrive - aueb.gr\Τρίτο εξάμηνο\Programming 2\Εργασία\Prog2\statewallet\src\main\java\mainapp\MockDataBase.java
-C:\Users\30697\OneDrive - aueb.gr\Τρίτο εξάμηνο\Programming 2\Εργασία\Prog2\statewallet\src\main\java\mainapp\StateWallet.java
->>>>>>> BasicTest
+D:\programs\Prog2\statewallet\src\main\java\mainapp\StateWalletLauncher.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\StateWalletUi.java
