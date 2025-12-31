@@ -1,17 +1,21 @@
 package mainapp;
+
 import java.io.File;
 
-public class DatabaseFinder {
-    public boolean findYearbase(int year) {
+/**
+ * Βοηθητική κλάση για τον εντοπισμό αρχείων βάσης δεδομένων.
+ */
+public final class DatabaseFinder {
+
+    /**
+     * Ελέγχει αν υπάρχει το αρχείο βάσης για το συγκεκριμένο έτος.
+     *
+     * @param year Το έτος προς έλεγχο.
+     * @return true αν υπάρχει το αρχείο, false διαφορετικά.
+     */
+    public boolean findYearbase(final int year) {
         String dbName = "budget_" + year + ".db";
         File dbFile = new File(dbName);
-        boolean dbExists = dbFile.exists();
-        if (dbExists) {
-            System.out.println("Η βάση δεδομένων '" + dbName + "' βρέθηκε.");
-            return true;
-        } else {
-            System.out.println(">> Η βάση δεδομένων δεν υπάρχει. Δημιουργία νέας: '" + dbName + "'...");
-            return false;
-        }
+        return dbFile.exists();
     }
 }
