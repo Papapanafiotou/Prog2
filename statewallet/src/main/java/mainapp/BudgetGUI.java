@@ -1,18 +1,19 @@
 package mainapp;
 
-//βιβλιοθηκες για τα στοιχεια του UI
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -27,103 +28,146 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class BudgetGUI extends JFrame {
+/**
+ * Η γραφική διεπαφή χρήστη (GUI) για την επεξεργασία του προϋπολογισμού.
+ */
+public final class BudgetGUI extends JFrame {
 
-    private final BudgetManager manager;     // χρηση του manager που φτιαξαμε
-    private final String dbPath; 
-    //επιλογη πινακα
-    private JComboBox<TableInfo> tableSelector; 
+    /** Serial Version UID. */
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /** Πλάτος παραθύρου. */
+    private static final int WINDOW_WIDTH = 950;
+    /** Ύψος παραθύρου. */
+    private static final int WINDOW_HEIGHT = 600;
+    /** Μέγεθος πεδίου ID. */
+    private static final int ID_FIELD_SIZE = 8;
+    /** Μέγεθος πεδίου ποσού. */
+    private static final int AMOUNT_FIELD_SIZE = 10;
+    /** Γραμμές περιοχής κειμένου. */
+    private static final int TEXT_AREA_ROWS = 8;
+    /** Στήλες περιοχής κειμένου. */
+    private static final int TEXT_AREA_COLS = 50;
+    /** Μέγεθος κενού. */
+    private static final int GAP_SIZE = 20;
+    /** Δείκτης στήλης ποσού στον πίνακα. */
+    private static final int TABLE_COL_AMOUNT = 3;
+    /** Μέγεθος γραμματοσειράς κατάστασης. */
+    private static final int STATUS_FONT_SIZE = 14;
+    /** Μέγεθος γραμματοσειράς κονσόλας. */
+    private static final int CONSOLE_FONT_SIZE = 12;
+    /** Κενό Border Layout. */
+    private static final int BORDER_GAP = 8;
+    /** Κενό Panel Layout. */
+    private static final int PANEL_GAP = 5;
+
+    /** Χρώμα για θετικό προϋπολογισμό. */
+    private static final Color SUCCESS_COLOR = new Color(34, 139, 34);
+
+    /** Διαχειριστής προϋπολογισμού. */
+    private final BudgetManager manager;
+    /** Διαδρομή βάσης δεδομένων. */
+    private final String dbPath;
+    /** Dropdown επιλογής πίνακα. */
+    private JComboBox<TableInfo> tableSelector;
+    /** Κουμπί φόρτωσης. */
     private JButton loadTableButton;
-
-    //πινακας που θα εμφανιστει
+    /** Πίνακας δεδομένων. */
     private JTable dataTable;
+    /** Μοντέλο πίνακα. */
     private DefaultTableModel tableModel;
-
-    //κουμπι και πεδιο εισαγωγης αλλαγων
+    /** Πεδίο κειμένου ID. */
     private JTextField idField;
+    /** Πεδίο κειμένου ποσού. */
     private JTextField amountField;
+    /** Κουμπί ενημέρωσης. */
     private JButton updateButton;
+    /** Κουμπί επιστροφής. */
     private JButton backButton;
-
-    //εμφανιση αλλαγών
+    /** Κουμπί εμφάνισης αλλαγών. */
     private JButton showChangesButton;
+    /** Περιοχή κειμένου αλλαγών. */
     private JTextArea changesArea;
-    private JLabel budgetStatusLabel;    
+    /** Ετικέτα κατάστασης προϋπολογισμού. */
+    private JLabel budgetStatusLabel;
 
-    public BudgetGUI(String dbPath) {
-
-        this.dbPath = dbPath;
-        this.manager = new BudgetManager(dbPath);
-        
+    /**
+     * Κατασκευαστής του BudgetGUI.
+     *
+     * @param path Η διαδρομή της βάσης δεδομένων.
+     */
+    public BudgetGUI(final String path) {
+        this.dbPath = path;
+        this.manager = new BudgetManager(path);
 
         setTitle("Διαχείριση Προϋπολογισμού");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  //κλεινει το προγραμμα με το Χ
-        setSize(950, 600); //ορισμος του αρχικου μεγεθους του παραθυρου
-        setLocationRelativeTo(null); // τοποθετηση του παραθυρου στο κεντρο της οθονης
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        setLocationRelativeTo(null);
 
         initComponents();
         initLayout();
         initListeners();
     }
+
     private void initComponents() {
         backButton = new JButton("⬅ Πίσω");
-        // Μενου επιλογης πινακα και συνδεση με τη βαση δεδομενων (αντιστοιχια ονοματων στηλων)
         tableSelector = new JComboBox<>();
         tableSelector.addItem(new TableInfo("Έσοδα", "esoda", "code"));
         tableSelector.addItem(new TableInfo("Έξοδα", "eksoda", "code"));
         tableSelector.addItem(new TableInfo("Κράτος", "kratos", "number"));
-        tableSelector.addItem(new TableInfo("Υπουργεία", "ypourgeia", "number"));
-        tableSelector.addItem(new TableInfo("Αποκεντρωμένες Διοικήσεις", "apokentromenes", "number"));
+        tableSelector.addItem(new TableInfo(
+                "Υπουργεία", "ypourgeia", "number"));
+        tableSelector.addItem(new TableInfo(
+                "Αποκεντρωμένες Διοικήσεις", "apokentromenes", "number"));
 
-       loadTableButton = new JButton("Εμφάνιση Πίνακα");  //κουμπι εμφανισης πινακα
-       budgetStatusLabel = new JLabel("Χαρακτηρισμός: -");
-       budgetStatusLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        loadTableButton = new JButton("Εμφάνιση Πίνακα");
+        budgetStatusLabel = new JLabel("Χαρακτηρισμός: -");
+        budgetStatusLabel.setFont(new Font("Segoe UI", Font.BOLD,
+                STATUS_FONT_SIZE));
 
-         // Πίνακας δεδομένων (δομη)
         tableModel = new DefaultTableModel(
-                new Object[]{"ID", "Περιγραφή", "Αρχικό Ποσό", "Τρέχον Ποσό"}, //ονοματα στηλων της δομης
+                new Object[]{"ID", "Περιγραφή", "Αρχικό Ποσό", "Τρέχον Ποσό"},
                 0
         ) {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // ο πινακας ειναι μονο για αναγνωση
+            public boolean isCellEditable(final int row, final int column) {
+                return false;
             }
         };
-        dataTable = new JTable(tableModel); //δεδομενα που θα μπουν στο μοντελο πινακα που φτιαξαμε
+        dataTable = new JTable(tableModel);
         dataTable.setFillsViewportHeight(true);
 
-         // Πεδία για αλλαγή ποσού
-        idField = new JTextField(8); //id που θα αλλαξουμε
-        amountField = new JTextField(10); // νεο ποσο
-        updateButton = new JButton("Αλλαγή Ποσού"); //πραγματοποιηση αλλαγης
+        idField = new JTextField(ID_FIELD_SIZE);
+        amountField = new JTextField(AMOUNT_FIELD_SIZE);
+        updateButton = new JButton("Αλλαγή Ποσού");
 
-         // Περιοχή εμφάνισης αλλαγών
         showChangesButton = new JButton("Εμφάνιση Αλλαγών");
-        changesArea = new JTextArea(8, 50);
+        changesArea = new JTextArea(TEXT_AREA_ROWS, TEXT_AREA_COLS);
         changesArea.setEditable(false);
-        changesArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        changesArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN,
+                CONSOLE_FONT_SIZE));
     }
 
     private void initLayout() {
-        setLayout(new BorderLayout(8, 8));  //χωριζει την περιοχη σε τμηματα
-        
+        setLayout(new BorderLayout(BORDER_GAP, BORDER_GAP));
+
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(backButton); 
+        topPanel.add(backButton);
         topPanel.add(new JLabel("Πίνακας:"));
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
-        topPanel.add(Box.createRigidArea(new Dimension(20, 0))); // Λίγο κενό
+        topPanel.add(Box.createRigidArea(new Dimension(GAP_SIZE, 0)));
         topPanel.add(budgetStatusLabel);
 
-    
-        JScrollPane tableScroll = new JScrollPane(dataTable); //προσθηκη scroll bar
+        JScrollPane tableScroll = new JScrollPane(dataTable);
 
-        // Κάτω: αλλαγή ποσού + αλλαγές
-        JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
+        JPanel bottomPanel = new JPanel(new BorderLayout(PANEL_GAP, PANEL_GAP));
 
-        //ενημερωση στοιχειων
         JPanel updatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        updatePanel.setBorder(BorderFactory.createTitledBorder("Αλλαγή στοιχείου προϋπολογισμού"));
+        updatePanel.setBorder(BorderFactory.createTitledBorder(
+                "Αλλαγή στοιχείου προϋπολογισμού"));
         updatePanel.add(new JLabel("ID:"));
         updatePanel.add(idField);
         updatePanel.add(new JLabel("Νέο ποσό:"));
@@ -131,203 +175,221 @@ public class BudgetGUI extends JFrame {
         updatePanel.add(updateButton);
 
         JPanel changesPanel = new JPanel(new BorderLayout());
-        changesPanel.setBorder(BorderFactory.createTitledBorder("Αλλαγές προϋπολογισμού"));
+        changesPanel.setBorder(
+                BorderFactory.createTitledBorder("Αλλαγές προϋπολογισμού"));
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         btnPanel.add(showChangesButton);
         changesPanel.add(btnPanel, BorderLayout.NORTH);
         changesPanel.add(new JScrollPane(changesArea), BorderLayout.CENTER);
 
         bottomPanel.add(updatePanel, BorderLayout.NORTH);
-        bottomPanel.add(changesPanel, BorderLayout.CENTER); 
+        bottomPanel.add(changesPanel, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
         add(tableScroll, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
     }
-    private void initListeners() {
 
+    private void initListeners() {
         backButton.addActionListener(e -> {
-            this.dispose(); // Κλείνει το τρέχον παράθυρο (BudgetGUI)
-            new StateWalletLauncher().setVisible(true); // Δημιουργεί και ανοίγει ξανά τον Launcher
+            this.dispose();
+            new StateWalletLauncher().setVisible(true);
         });
-        // Εμφάνιση επιλεγμένου πίνακα
+
         loadTableButton.addActionListener(e -> loadSelectedTable());
-        // Διπλό κλικ σε γραμμή -> γέμισμα ID & ποσού
-        dataTable.addMouseListener(new java.awt.event.MouseAdapter() {
+
+        dataTable.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mouseClicked(final MouseEvent evt) {
                 if (evt.getClickCount() == 2) {
                     int row = dataTable.getSelectedRow();
                     if (row >= 0) {
                         Object idVal = tableModel.getValueAt(row, 0);
-                        Object amountVal = tableModel.getValueAt(row, 3);
+                        Object amountVal = tableModel.getValueAt(
+                                row, TABLE_COL_AMOUNT);
                         idField.setText(Objects.toString(idVal, ""));
                         amountField.setText(Objects.toString(amountVal, ""));
                     }
                 }
             }
         });
-        // Κουμπί αλλαγής ποσού
-        updateButton.addActionListener(e -> updateAmount());
 
-        // Κουμπί εμφάνισης αλλαγών
+        updateButton.addActionListener(e -> updateAmount());
         showChangesButton.addActionListener(e -> loadChangesFromDb());
     }
-    // Μέθοδος που φορτώνει τον επιλεγμένο πίνακα από τη βάση και τον δείχνει στο JTable
-    private void loadSelectedTable() { 
-        TableInfo info = (TableInfo) tableSelector.getSelectedItem(); // Παίρνουμε ποιο στοιχείο έχει επιλεγεί από το ComboBox
-        if (info == null) return;                                    // Αν για κάποιο λόγο δεν έχει επιλεγεί τίποτα, βγαίνουμε από τη μέθοδο
-        tableModel.setRowCount(0);     // Σβήνουμε όλες τις υπάρχουσες γραμμές από το JTable
-        String sql = "SELECT " + info.idColumnName + ", name, original_amount, amount FROM " + info.tableName;
-    // Φτιάχνουμε το SQL query: παίρνουμε ID στήλη, όνομα, αρχικό ποσό και τρέχον ποσό από τον σωστό πίνακα
-        try (Connection conn = DriverManager.getConnection(dbPath);                   // Ανοίγουμε σύνδεση με τη βάση μέσω του DatabaseHandler
-         Statement stmt = conn.createStatement();                 // Δημιουργούμε Statement για να εκτελέσουμε το SQL
-         ResultSet rs = stmt.executeQuery(sql)) 
-         {                
-            while (rs.next()) {                                       // Επαναλαμβάνουμε για κάθε γραμμή που επιστρέφει η βάση
-            Object[] row = new Object[]{                          // Δημιουργούμε ένα object array που αντιπροσωπεύει μια γραμμή του πίνακα
-                    rs.getInt(info.idColumnName),                 
-                    rs.getString("name"),                         
-                    rs.getDouble("original_amount"),              
-                    rs.getDouble("amount")                       
-            };
-            tableModel.addRow(row);                               // Προσθέτουμε αυτή τη γραμμή στο JTable
-        }
 
-        }  
-        catch (SQLException ex) {                                   // Αν συμβεί κάποιο SQL σφάλμα
-        JOptionPane.showMessageDialog(this,                       // Εμφανίζουμε ένα μήνυμα λάθους
-                "Σφάλμα κατά την εμφάνιση του πίνακα " + info.tableName + ":\n" + ex.getMessage(),
-                "Σφάλμα",
-                JOptionPane.ERROR_MESSAGE);
+    private void loadSelectedTable() {
+        TableInfo info = (TableInfo) tableSelector.getSelectedItem();
+        if (info == null) {
+            return;
+        }
+        tableModel.setRowCount(0);
+        String sql = "SELECT " + info.idColumnName
+                + ", name, original_amount, amount FROM " + info.tableName;
+
+        try (Connection conn = DriverManager.getConnection(dbPath);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Object[] row = new Object[]{
+                    rs.getInt(info.idColumnName),
+                    rs.getString("name"),
+                    rs.getDouble("original_amount"),
+                    rs.getDouble("amount")
+                };
+                tableModel.addRow(row);
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Σφάλμα: " + ex.getMessage(),
+                    "Σφάλμα",
+                    JOptionPane.ERROR_MESSAGE);
         }
         updateBudgetUI();
     }
-// Χρησιμοποιούμε τον ΥΠΑΡΧΟΝ BudgetManager.updateAmount για να αλλάξουμε ποσό σε γραμμή
+
     private void updateAmount() {
-        TableInfo info = (TableInfo) tableSelector.getSelectedItem(); // Ξαναπαίρνουμε τον επιλεγμένο πίνακα από το ComboBox
-        if (info == null) return;                                     // Αν δεν υπάρχει επιλογή, σταματάμε
-        String idText = idField.getText().trim();                     // Διαβάζουμε το κείμενο που έγραψε ο χρήστης στο πεδίο ID
-        String amountText = amountField.getText().trim();             // Διαβάζουμε το κείμενο που έγραψε ο χρήστης στο πεδίο Νέο Ποσό
-        if (idText.isEmpty() || amountText.isEmpty()) {               // Αν κάποιο από τα δύο πεδία είναι άδειο 
-        JOptionPane.showMessageDialog(this,                       // Εμφανίζουμε προειδοποίηση ότι πρέπει να τα συμπληρώσει
-                "Συμπλήρωσε ID και νέο ποσό.",
-                "Προειδοποίηση",
-                JOptionPane.WARNING_MESSAGE);
-        return;                                                   // Και σταματάμε τη μέθοδο
-    }
+        TableInfo info = (TableInfo) tableSelector.getSelectedItem();
+        if (info == null) {
+            return;
+        }
+        String idText = idField.getText().trim();
+        String amountText = amountField.getText().trim();
+        if (idText.isEmpty() || amountText.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Συμπλήρωσε ID και νέο ποσό.",
+                    "Προειδοποίηση",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         try {
-            int id = Integer.parseInt(idText);                        // Μετατρέπουμε το κείμενο του ID σε ακέραιο
-            double newAmount = Double.parseDouble(amountText);        // Μετατρέπουμε το κείμενο του ποσού σε double 
-            if (newAmount < 0) {                                      // Αν το νέο ποσό είναι αρνητικό
-                int option = JOptionPane.showConfirmDialog(this,      // Ρωτάμε τον χρήστη αν θέλει σίγουρα να συνεχίσει
-                    "Το νέο ποσό είναι αρνητικό. Θέλεις να συνεχίσεις;",
-                    "Επιβεβαίωση",
-                    JOptionPane.YES_NO_OPTION);
-                if (option != JOptionPane.YES_OPTION) {               // Αν απαντήσει όχι
-                return;                                           // Σταματάμε χωρίς να κάνουμε την αλλαγή
+            int id = Integer.parseInt(idText);
+            double newAmount = Double.parseDouble(amountText);
+            if (newAmount < 0) {
+                int option = JOptionPane.showConfirmDialog(this,
+                        "Το νέο ποσό είναι αρνητικό. Συνέχεια;",
+                        "Επιβεβαίωση",
+                        JOptionPane.YES_NO_OPTION);
+                if (option != JOptionPane.YES_OPTION) {
+                    return;
                 }
             }
-            boolean success = manager.updateAmount(info.tableName, info.idColumnName, id, newAmount);                                       
-            if (success) {                                             // Αν η μέθοδος επέστρεψε true
-            JOptionPane.showMessageDialog(this,                   // Εμφανίζουμε μήνυμα επιτυχίας
-                    "Επιτυχής ενημέρωση!",
-                    "Επιτυχία",
-                    JOptionPane.INFORMATION_MESSAGE);
-            loadSelectedTable();                                  // Ξαναφορτώνουμε τον πίνακα για να δούμε τα νέα ποσά
-            updateBudgetUI();
-            } else {                                                  // Αν η ενημέρωση δεν πέτυχε 
-                JOptionPane.showMessageDialog(this,                   // Εμφανίζουμε προειδοποίηση στον χρήστη
-                    "Αποτυχία: Δεν βρέθηκε το ID.",
-                    "Αποτυχία",
-                    JOptionPane.WARNING_MESSAGE);
+            boolean success = manager.updateAmount(
+                    info.tableName, info.idColumnName, id, newAmount);
+            if (success) {
+                JOptionPane.showMessageDialog(this,
+                        "Επιτυχής ενημέρωση!",
+                        "Επιτυχία",
+                        JOptionPane.INFORMATION_MESSAGE);
+                loadSelectedTable();
+                updateBudgetUI();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Αποτυχία: Δεν βρέθηκε το ID.",
+                        "Αποτυχία",
+                        JOptionPane.WARNING_MESSAGE);
             }
-         } 
-        catch (NumberFormatException ex) {                          // Αν γίνει λάθος στη μετατροπή string → αριθμό (ID ή ποσό)
-            JOptionPane.showMessageDialog(this,                       // Εμφανίζουμε μήνυμα λάθους για λάθος μορφή αριθμών
-                "Λάθος μορφή αριθμών. To ID πρέπει να είναι ακέραιος και το ποσό αριθμός.",
-                "Σφάλμα",
-                JOptionPane.ERROR_MESSAGE);
-     }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Λάθος μορφή αριθμών.",
+                    "Σφάλμα",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
+
     private void loadChangesFromDb() {
-        StringBuilder sb = new StringBuilder();                       // Δημιουργούμε ένα StringBuilder για να φτιάξουμε μεγάλο κείμενο
-        sb.append("--- Αλλαγές Προϋπολογισμού (σε όλους τους πίνακες) ---\n"); 
-        boolean foundAny = false;                                     // αν βρέθηκε έστω μία αλλαγή
+        StringBuilder sb = new StringBuilder();
+        sb.append("--- Αλλαγές Προϋπολογισμού ---\n");
+        boolean foundAny = false;
 
-        TableInfo[] tables = new TableInfo[]{                         // Ορίζουμε έναν πίνακα με όλους τους πίνακες που θα ελέγξουμε
-            new TableInfo("Έσοδα", "esoda", "code"),              // Πίνακας esoda με στήλη ID "code"
-            new TableInfo("Έξοδα", "eksoda", "code"),             // Πίνακας eksoda με στήλη ID "code"
-            new TableInfo("Κράτος", "kratos", "number"),          // Πίνακας kratos με στήλη ID "number"
-            new TableInfo("Υπουργεία", "ypourgeia", "number"),    // Πίνακας ypourgeia με στήλη ID "number"
-            new TableInfo("Αποκεντρωμένες Διοικήσεις", "apokentromenes", "number") // Πίνακας apokentromenes με στήλη ID "number"
+        TableInfo[] tables = new TableInfo[]{
+            new TableInfo("Έσοδα", "esoda", "code"),
+            new TableInfo("Έξοδα", "eksoda", "code"),
+            new TableInfo("Κράτος", "kratos", "number"),
+            new TableInfo("Υπουργεία", "ypourgeia", "number"),
+            new TableInfo("Αποκεντρωμένες", "apokentromenes", "number")
         };
-        for (TableInfo info : tables) {                               // Για κάθε πίνακα στη λίστα...
-            String sql = "SELECT " + info.idColumnName + ", name, amount, original_amount FROM "
-                + info.tableName + " WHERE amount != original_amount";
-        // Φτιάχνουμε SQL που παίρνει μόνο τις γραμμές όπου το amount είναι διαφορετικό από original_amount
-    
-            try (Connection conn = DriverManager.getConnection(dbPath);               // Ανοίγουμε σύνδεση με βάση
-                Statement stmt = conn.createStatement();            
-                ResultSet rs = stmt.executeQuery(sql)) {             // Εκτελούμε το query και παίρνουμε τις γραμμές που έχουν αλλαγές
+        for (TableInfo info : tables) {
+            String sql = "SELECT " + info.idColumnName
+                    + ", name, amount, original_amount FROM "
+                    + info.tableName + " WHERE amount != original_amount";
 
-                boolean tableHasChanges = false;                      //αν ο συγκεκριμένος πίνακας έχει αλλαγές
-                while (rs.next()) {                                   // Διατρέχουμε κάθε γραμμή του ResultSet
-                    if (!tableHasChanges) {                           // Αν βρίσκουμε αλλαγή σε αυτόν τον πίνακα
-                        sb.append("\nAλλαγές στον πίνακα: ")          
-                        .append(info.displayName).append("\n");
-                        tableHasChanges = true;                       // Σημειώνουμε ότι αυτός ο πίνακας έχει αλλαγές
-                        foundAny = true;                              // Και ότι γενικά βρήκαμε τουλάχιστον μία αλλαγή
+            try (Connection conn = DriverManager.getConnection(dbPath);
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery(sql)) {
+
+                boolean tableHasChanges = false;
+                while (rs.next()) {
+                    if (!tableHasChanges) {
+                        sb.append("\nAλλαγές στον πίνακα: ")
+                                .append(info.displayName).append("\n");
+                        tableHasChanges = true;
+                        foundAny = true;
                     }
-                    sb.append(String.format(                          // Προσθέτουμε μια γραμμή με λεπτομέρειες της αλλαγής
-                        "ID: %-3d | %-30s | Αρχικό: %10.2f | Νέο: %10.2f%n",
-                        rs.getInt(info.idColumnName),             
-                        rs.getString("name"),                     
-                        rs.getDouble("original_amount"),          
-                        rs.getDouble("amount")                    
+                    sb.append(String.format(
+                            "ID: %-3d | %-20s | Αρχικό: %.2f | Νέο: %.2f%n",
+                            rs.getInt(info.idColumnName),
+                            rs.getString("name"),
+                            rs.getDouble("original_amount"),
+                            rs.getDouble("amount")
                     ));
                 }
 
             } catch (SQLException e) {
-                sb.append("Σφάλμα ελέγχου αλλαγών στο ")
-                .append(info.displayName).append(": ")
-                .append(e.getMessage()).append("\n");
+                sb.append("Σφάλμα: ").append(e.getMessage()).append("\n");
             }
         }
-            if (!foundAny) {
-                sb.append("Δεν βρέθηκαν αλλαγές σε κανέναν πίνακα.\n");
+        if (!foundAny) {
+            sb.append("Δεν βρέθηκαν αλλαγές.\n");
         }
-        changesArea.setText(sb.toString());      // Βάζουμε όλο το κείμενο που φτιάξαμε στο JTextArea
+        changesArea.setText(sb.toString());
         changesArea.setCaretPosition(0);
     }
+
     private void updateBudgetUI() {
-    double[] rev = manager.getTotal("esoda");
-    double[] exp = manager.getTotal("eksoda");
+        double[] rev = manager.getTotal("esoda");
+        double[] exp = manager.getTotal("eksoda");
+        String statusText = manager.getBudgetCharacterism(rev[1], exp[1]);
+        budgetStatusLabel.setText("Χαρακτηρισμός: " + statusText);
 
-    // Παίρνουμε το κείμενο από τη μέθοδο που ήδη έφτιαξες στον Manager
-    String statusText = manager.getBudgetCharacterism(rev[1], exp[1]);
-
-    budgetStatusLabel.setText("Χαρακτηρισμός: " + statusText);
-
-    // Αλλαγή χρώματος
-    if (rev[1] > exp[1]) budgetStatusLabel.setForeground(new Color(34, 139, 34)); // Πράσινο
-    else if (rev[1] < exp[1]) budgetStatusLabel.setForeground(Color.RED);        // Κόκκινο
-    else budgetStatusLabel.setForeground(Color.BLUE);                           // Μπλε
+        if (rev[1] > exp[1]) {
+            budgetStatusLabel.setForeground(SUCCESS_COLOR);
+        } else if (rev[1] < exp[1]) {
+            budgetStatusLabel.setForeground(Color.RED);
+        } else {
+            budgetStatusLabel.setForeground(Color.BLUE);
+        }
     }
-// Βοηθητική κλάση για το comboBox: κρατάει όνομα εμφάνισης και στοιχεία πίνακα
+
+    /**
+     * Εσωτερική κλάση που κρατά πληροφορίες για κάθε πίνακα.
+     */
     private static class TableInfo {
-    final String displayName;                                     // Όνομα που θα εμφανίζεται στο GUI 
-    final String tableName;                                       // Όνομα πίνακα στη βάση 
-    final String idColumnName;                                    // Όνομα στήλης ID στη βάση 
 
-    TableInfo(String displayName, String tableName, String idColumnName) {
-        this.displayName = displayName;                           
-        this.tableName = tableName;                               
-        this.idColumnName = idColumnName;                         
-    }
+        /** Το εμφανιζόμενο όνομα. */
+        private final String displayName;
+        /** Το όνομα του πίνακα στη βάση. */
+        private final String tableName;
+        /** Το όνομα της στήλης ID. */
+        private final String idColumnName;
 
-    @Override
-    public String toString() {
-        return displayName;                                       // Αυτό θα εμφανίζεται στο ComboBox όταν δείχνει το αντικείμενο
-    }
+        /**
+         * Κατασκευαστής.
+         *
+         * @param display Το εμφανιζόμενο όνομα.
+         * @param table   Το όνομα πίνακα.
+         * @param idCol   Το όνομα στήλης ID.
+         */
+        TableInfo(final String display, final String table,
+                  final String idCol) {
+            this.displayName = display;
+            this.tableName = table;
+            this.idColumnName = idCol;
+        }
+
+        @Override
+        public String toString() {
+            return displayName;
+        }
     }
 }

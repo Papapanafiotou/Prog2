@@ -4,15 +4,32 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class StateWalletUi {
+/**
+ * Η κλάση εκκίνησης της εφαρμογής με GUI (Launcher).
+ */
+public final class StateWalletUi {
 
-    public static void main(String[] args) {
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private StateWalletUi() {
+        // Utility class
+    }
+
+    /**
+     * Η μέθοδος main.
+     *
+     * @param args Τα ορίσματα της γραμμής εντολών.
+     */
+    public static void main(final String[] args) {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-        e.printStackTrace();
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException
+                 | IllegalAccessException
+                 | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
         }
-       SwingUtilities.invokeLater(() -> new LogUi().setVisible(true));
-        
+        SwingUtilities.invokeLater(() -> new LogUi().setVisible(true));
     }
 }
