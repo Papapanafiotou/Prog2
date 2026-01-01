@@ -23,3 +23,15 @@ public final class TotalsPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Σύνολα Πίνακα"));
 
         Font font = new Font("Segoe UI", Font.BOLD, 13);
+         originalLabel = new JLabel("Αρχικό Σύνολο: -");
+        currentLabel  = new JLabel("Τρέχον Σύνολο: -");
+        diffLabel     = new JLabel("Διαφορά: -");
+
+        originalLabel.setFont(font);
+        currentLabel.setFont(font);
+        diffLabel.setFont(font);
+
+        add(originalLabel);
+        add(currentLabel);
+        add(diffLabel);
+    }
