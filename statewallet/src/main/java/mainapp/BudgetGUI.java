@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -91,7 +92,7 @@ public final class BudgetGUI extends JFrame {
     private JTextArea changesArea;
     /** Ετικέτα κατάστασης προϋπολογισμού. */
     private JLabel budgetStatusLabel;
-
+    private TotalsPanel totalsPanel;
     /**
      * Κατασκευαστής του BudgetGUI.
      *
@@ -162,7 +163,7 @@ public final class BudgetGUI extends JFrame {
         topPanel.add(budgetStatusLabel);
 
         JScrollPane tableScroll = new JScrollPane(dataTable);
-
+        totalsPanel = new TotalsPanel(manager);
         JPanel bottomPanel = new JPanel(new BorderLayout(PANEL_GAP, PANEL_GAP));
 
         JPanel updatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -186,7 +187,11 @@ public final class BudgetGUI extends JFrame {
         bottomPanel.add(changesPanel, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
         add(tableScroll, BorderLayout.CENTER);
-        add(bottomPanel, BorderLayout.SOUTH);
+        JPanel southPanel = new JPanel(new BorderLayout());
+        southPanel.add(totalsPanel, BorderLayout.NORTH);
+        southPanel.add(bottomPanel, BorderLayout.CENTER);
+
+        add(southPanel, BorderLayout.SOUTH);
     }
 
     private void initListeners() {
@@ -246,6 +251,7 @@ public final class BudgetGUI extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
         updateBudgetUI();
+        totalsPanel.updateTotals(info.tableName);
     }
 
     private void updateAmount() {
