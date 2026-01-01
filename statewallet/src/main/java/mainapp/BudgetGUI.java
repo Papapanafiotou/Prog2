@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -91,6 +92,8 @@ public final class BudgetGUI extends JFrame {
     private JTextArea changesArea;
     /** Ετικέτα κατάστασης προϋπολογισμού. */
     private JLabel budgetStatusLabel;
+    /** Κουμπί εμφάνισης συνόλων. */
+    private JButton showTotalsButton;
 
     /**
      * Κατασκευαστής του BudgetGUI.
@@ -113,6 +116,7 @@ public final class BudgetGUI extends JFrame {
 
     private void initComponents() {
         backButton = new JButton("⬅ Πίσω");
+        showTotalsButton = new JButton("📊 Εμφάνιση Συνόλων");
         tableSelector = new JComboBox<>();
         tableSelector.addItem(new TableInfo("Έσοδα", "esoda", "code"));
         tableSelector.addItem(new TableInfo("Έξοδα", "eksoda", "code"));
@@ -158,6 +162,7 @@ public final class BudgetGUI extends JFrame {
         topPanel.add(new JLabel("Πίνακας:"));
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
+        topPanel.add(showTotalsButton);
         topPanel.add(Box.createRigidArea(new Dimension(GAP_SIZE, 0)));
         topPanel.add(budgetStatusLabel);
 
@@ -215,6 +220,27 @@ public final class BudgetGUI extends JFrame {
 
         updateButton.addActionListener(e -> updateAmount());
         showChangesButton.addActionListener(e -> loadChangesFromDb());
+        showTotalsButton.addActionListener(e -> {
+    TableInfo info = (TableInfo) tableSelector.getSelectedItem();
+
+    if (info == null) {
+        JOptionPane.showMessageDialog(this,
+                "Δεν έχει επιλεγεί πίνακας.",
+                "Προειδοποίηση",
+                JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    TotalsPanel panel = new TotalsPanel(manager);
+    panel.updateTotals(info.tableName);
+
+    JOptionPane.showMessageDialog(
+            this,
+            panel,
+            "Σύνολα Πίνακα: " + info.displayName,
+            JOptionPane.PLAIN_MESSAGE
+    );
+});
     }
 
     private void loadSelectedTable() {
