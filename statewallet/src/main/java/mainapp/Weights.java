@@ -16,7 +16,7 @@ public class Weights {
             } else {
                 flag =true;
             } 
-        } while (flag = false);
+        } while (flag == false);
         return weight;
     }
 /* Μέθοδος υπολογισμού και εμφάνισης των ποσοστών επίδρασης όλων των στοιχείων
@@ -33,16 +33,16 @@ public class Weights {
             }
         }
             String[] names = {
-               "gdpGrowth",
-               "publicDebt",
-               "surplus",
-               "res",
-               "recycleRate",
-               "emmisionsDiff",
-               "gini",
-               "eduHealthExp",
-               "mentalHealthPer",
-               "crimeRateDiff"
+               "MΕΤΑΒΟΛΗ ΑΕΠ",
+               "ΔΗΜΟΣΙΟ ΧΡΕΟΣ ΩΣ ΠΟΣΟΣΤΟ ΑΕΠ",
+               "ΠΡΩΤΟΓΕΝΕΣ ΠΛΕΟΝΑΣΜΑ",
+               "ΑΝΑΝΕΩΣΙΜΕΣ ΠΗΓΕΣ ΕΝΕΡΓΕΙΑΣ",
+               "ΠΟΣΟΣΤΟ ΑΝΑΚΥΚΛΩΣΗΣ",
+               "ΜΕΤΑΒΟΛΗ ΡΥΠΩΝ",
+               "ΔΕΙΚΤΗΣ GINI",
+               "ΕΞΟΔΑ ΓΙΑ ΥΓΕΙΑ ΚΑΙ ΠΑΙΔΕΙΑ",
+               "ΠΟΣΟΣΤΟ ΑΝΘΡΩΠΩΝ ΜΕ ΠΡΟΒΛΗΜΑΤΑ ΨΥΧΙΚΗΣ ΥΓΕΙΑΣ",
+               "ΜΕΤΑΒΟΛΗ ΕΓΚΛΗΜΑΤΙΚΟΤΗΤΑΣ"
             };
             System.out.println("Τα επιμέρους στοιχεία που χρησιμοποιήθηκαν "
                 + "για τον υπολογισμό του τελικού βαθμού και οι τελικές " +
@@ -50,13 +50,14 @@ public class Weights {
             );
             for (int i = 0; i < 10; i++) {
                 System.out.println("Στοιχείο: " + names[i] +
-                " Ποσοστό: " + totalPercentage[i] );
+                " Ποσοστό: " + String.format("%.2f", totalPercentage[i]) );
             }
             return totalPercentage;
         }
         public void getAllGrades(double[] a) {
             int[] years = {2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025};
             double[] grades = new double[8];
+            int index = 0;
             for (int year : years) {
                 DataforGrade d = new DataforGrade();
                 double[] data = d.getData(year); 
@@ -78,7 +79,8 @@ public class Weights {
                 for (int i = 0; i < 10; i++) {
                     totalGrade += (elemGrade[i] * a[i]);
                 }
-                grades[year] = totalGrade;
+                grades[index] = totalGrade;
+                index++;
             }
             double[] differences = new double[7];
             differences[0] = grades[1] - grades[0];
@@ -111,28 +113,35 @@ public class Weights {
         double avg = totaldiff / 7;
         System.out.println("Οι βαθμοί για το κράτος ανά έτος είναι:");
         for (int i =0; i < grades.length; i++) {
-            System.out.println("ΧΡΟΝΙΑ: " + years[i] + "ΒΑΘΜΟΣ: " + grades[i]);
+            int j = -1; 
+            System.out.println("ΧΡΟΝΙΑ: " + years[i] + " ΒΑΘΜΟΣ: " + String.format("%.2f", grades[i]));
+            if (j > -1) {
+                System.out.print(" ΜΕΤΑΒΟΛΗ ΒΑΘΜΟΥ ΑΠΟ ΤΟ ΠΡΟΗΓΟΥΜΕΝΟ ΕΤΟΣ "
+                    +  String.format("%.2f", differences[j])
+                );
+            }
+            j++;
         }        
-        System.out.println("--ΑΠΟΤΕΛΕΣΜΑΤΑ ΣΥΓΚΡΙΣΕΙΣ ΒΑΘΜΩΝ");
+        System.out.println("--ΑΠΟΤΕΛΕΣΜΑΤΑ ΣΥΓΚΡΙΣΕΙΣ ΒΑΘΜΩΝ--");
         System.out.println("Ο βαθμός του κράτους την τελευταία χρονιά πριν" +
             " αναλάβει η κυβέρνηση ήταν " + grades[0]);
         System.out.println("O πιο πρόσφατος βαθμός για το κράτος (2025) " +
             "με βάσει τις προβλέψεις είναι " + grades[7]);
         if (avg > 0) {
             System.out.println("Κατά μέσο όρο, ο βαθμός του κράτους με βάση"
-                + "τα βάρη που δώθηκαν αυξανόταν κατά " + avg + 
+                + " τα βάρη που δώθηκαν αυξανόταν κατά " + String.format("%.3f", avg) + 
                 "την περίοδο 2018-2025. Οι βαθμοί απόδοσης παρουσίασαν"
                 + " ανοδική πορεία!"
             );
         } else {
             System.out.println("Κατά μέσο όρο, ο βαθμός του κράτους με βάση"
-                + "τα βάρη που δώθηκαν μειωνόταν κατά " + avg + 
+                + "τα βάρη που δώθηκαν μειωνόταν κατά " + String.format("%.3f", avg) + 
                 "την περίοδο 2018-2025. Οι βαθμοί απόδοσης παρουσίασαν" +
                 " πτωτική πορεία"
             );
         }
-        System.out.println("Η μεγαλύτερη αύξηση βαθμού παρατηρήθηκε τις χρονιές"
-            + diffYears[maxIndex] + " ενώ η μεγαλύτερη μείωση τις χρονιές" 
+        System.out.println("Η μεγαλύτερη αύξηση βαθμού παρατηρήθηκε τις χρονιές "
+            + diffYears[maxIndex] + " ενώ η μεγαλύτερη μείωση τις χρονιές " 
             + diffYears[minIndex] 
         );
         EconomicsChart e = new EconomicsChart();
