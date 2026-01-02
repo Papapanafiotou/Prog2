@@ -50,7 +50,7 @@ public class EconElemGrades {
             gradeChar.surplusChar(g3);    
             double grade = w1 *g1 + w2 *g2 + w3 *g3;
             System.out.println("O βαθμός για το κράτος στον οικονομικό"
-                + " τομέα με βάση τα στοιχεία είναι " + grade);
+                + " τομέα με βάση τα στοιχεία είναι " + String.format("%.2f", grade));
             return grade;
         }
 }

@@ -61,7 +61,7 @@ public class SocElemGrades {
             gradeChar.edHealthChar(g4);
             double grade = g1 * w1 + g2 * w2 + g3 * w3 + g4 * w4;
             System.out.println("O βαθμός για το κράτος στον κοινωνικό"
-                + " τομέα με βάση τα στοιχεία είναι " + grade);
+                + " τομέα με βάση τα στοιχεία είναι " +String.format("%.2f", grade));
             return grade;
          }
 }

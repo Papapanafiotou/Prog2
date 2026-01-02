@@ -21,17 +21,17 @@ public class EconomicsChart {
     public static void showEconomicPie(double[] percentages) {
         // Ο πίνακας με τα ονόματα που ζήτησες
         String[] names = {
-            "gdpGrowth",
-            "publicDebt",
-            "surplus",
-            "res",
-            "recycleRate",
-            "emmisionsDiff",
-            "gini",
-            "eduHealthExp",
-            "mentalHealthPer",
-            "crimeRateDiff"
-        };
+               "MΕΤΑΒΟΛΗ ΑΕΠ",
+               "ΔΗΜΟΣΙΟ ΧΡΕΟΣ ΩΣ ΠΟΣΟΣΤΟ ΑΕΠ",
+               "ΠΡΩΤΟΓΕΝΕΣ ΠΛΕΟΝΑΣΜΑ",
+               "ΑΝΑΝΕΩΣΙΜΕΣ ΠΗΓΕΣ ΕΝΕΡΓΕΙΑΣ",
+               "ΠΟΣΟΣΤΟ ΑΝΑΚΥΚΛΩΣΗΣ",
+               "ΜΕΤΑΒΟΛΗ ΡΥΠΩΝ",
+               "ΔΕΙΚΤΗΣ GINI",
+               "ΕΞΟΔΑ ΓΙΑ ΥΓΕΙΑ ΚΑΙ ΠΑΙΔΕΙΑ",
+               "ΠΟΣΟΣΤΟ ΑΝΘΡΩΠΩΝ ΜΕ ΠΡΟΒΛΗΜΑΤΑ ΨΥΧΙΚΗΣ ΥΓΕΙΑΣ",
+               "ΜΕΤΑΒΟΛΗ ΕΓΚΛΗΜΑΤΙΚΟΤΗΤΑΣ"
+            };
 
         JFrame frame = new JFrame("Economic Indicators Chart");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

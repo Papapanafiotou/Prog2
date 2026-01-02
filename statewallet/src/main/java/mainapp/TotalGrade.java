@@ -59,8 +59,8 @@ public class TotalGrade {
         System.out.println("Κοινωνικός τομέας");    
         double wSoc = w.getWeight();
         double finalGrade = (wEcon * econGrade) + (wEnv * envGrade) + (wSoc * socGrade);
-        System.out.println("O τελικός βαθμός για το κράτος για το έτος" + year 
-        + " με βάση τα στοιχεία είναι " + finalGrade);
+        System.out.println("O τελικός βαθμός για το κράτος για το έτος " + year 
+        + " με βάση τα στοιχεία είναι " + String.format("%.2f", finalGrade));
         double[] totalWeights = w.showTotalWeights(weights, wEcon, wEnv, wSoc);
         e.showEconomicPie(totalWeights);
         } else if (answer == 1) {
