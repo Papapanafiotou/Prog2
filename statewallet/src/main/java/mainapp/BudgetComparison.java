@@ -5,11 +5,14 @@ import java.util.Scanner;
 
 public class BudgetComparison {
 
-    
+    // Ορίζουμε τους πίνακες που θέλουμε να ελέγξουμε (όπως στην κλάση Search)
+    private static final String[] TABLES = {
+        "esoda", "eksoda", "kratos", "ypourgeia", "apokentromenes"
+    };
+
     public void startComparison() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n ΕΚΚΙΝΗΣΗ ΛΕΙΤΟΥΡΓΙΑΣ ΣΥΓΚΡΙΣΗΣ");
-        System.out.println("----------------------------------");
+        System.out.println("\n--- ΕΚΚΙΝΗΣΗ ΛΕΙΤΟΥΡΓΙΑΣ ΣΥΓΚΡΙΣΗΣ ΠΡΟΫΠΟΛΟΓΙΣΜΩΝ ---");
 
         System.out.print("-> Δώσε το 1ο έτος (π.χ. 2025): ");
         String year1 = scanner.nextLine();
@@ -20,73 +23,78 @@ public class BudgetComparison {
         compareDatabases(year1, year2);
     }
 
-    // Συγκριση των βασεων //
     private void compareDatabases(String year1, String year2) {
-       
         String url1 = "jdbc:sqlite:budget_" + year1 + ".db";
         String url2 = "jdbc:sqlite:budget_" + year2 + ".db";
-        
-        // Αν στη βάση σας ο πίνακας λέγεται "ypourgeia" και οι στήλες "name", "amount"
-        // Αν λέγονται αλλιώς, άλλαξέ τα εδώ!
-        String sql = "SELECT name, amount FROM ypourgeia"; 
-
-        System.out.println("\n======================================================================");
-        System.out.printf("%-30s | %-12s | %-12s | %-10s\n", "ΥΠΟΥΡΓΕΙΟ", year1, year2, "ΔΙΑΦΟΡΑ");
-        System.out.println("----------------------------------------------------------------------");
 
         try (Connection conn1 = DriverManager.getConnection(url1);
-             Connection conn2 = DriverManager.getConnection(url2);
-             Statement stmt1 = conn1.createStatement();
-             Statement stmt2 = conn2.createStatement();
-             ResultSet rs1 = stmt1.executeQuery(sql)) {
+             Connection conn2 = DriverManager.getConnection(url2)) {
 
-            boolean foundData = false;
+            // Διατρέχουμε κάθε πίνακα της λίστας TABLES
+            for (String table : TABLES) {
+                System.out.println("\n======================================================================");
+                System.out.println(" ΚΑΤΗΓΟΡΙΑ: " + table.toUpperCase());
+                System.out.printf("%-35s | %-12s | %-12s | %-10s\n", "ΟΝΟΜΑΣΙΑ", year1, year2, "ΔΙΑΦΟΡΑ");
+                System.out.println("----------------------------------------------------------------------");
 
-            // Διαβάζουμε γραμμή-γραμμή το 1ο έτος
-            while (rs1.next()) {
-                foundData = true;
-                String name = rs1.getString("name"); 
-                double val1 = rs1.getDouble("amount");
+                String sqlSelect = "SELECT name, amount FROM " + table;
                 
-                // Ψάχνουμε το αντίστοιχο ποσό στο 2ο έτος
-                // Χρησιμοποιούμε PreparedStatement για ασφάλεια
-                String sql2 = "SELECT amount FROM ypourgeia WHERE name = ?";
-                PreparedStatement pstmt2 = conn2.prepareStatement(sql2);
-                pstmt2.setString(1, name);
-                ResultSet rs2 = pstmt2.executeQuery();
-                
-                double val2 = 0.0;
-                if (rs2.next()) {
-                    val2 = rs2.getDouble("amount");
+                try (Statement stmt1 = conn1.createStatement();
+                     ResultSet rs1 = stmt1.executeQuery(sqlSelect)) {
+
+                    boolean foundData = false;
+
+                    while (rs1.next()) {
+                        foundData = true;
+                        String name = rs1.getString("name");
+                        double val1 = rs1.getDouble("amount");
+
+                        // Αναζήτηση στον ίδιο πίνακα στη βάση του 2ου έτους
+                        double val2 = getAmountFromTable(conn2, table, name);
+
+                        double diff = val2 - val1;
+                        String sign = (diff > 0) ? "+" : "";
+
+                        System.out.printf("%-35s | %,12.0f | %,12.0f | %s%,10.0f\n", 
+                                          name, val1, val2, sign, diff);
+                    }
+
+                    if (!foundData) {
+                        System.out.println(" (Δεν βρέθηκαν δεδομένα στον πίνακα " + table + ")");
+                    }
+                } catch (SQLException e) {
+                    System.out.println("⚠️  Πρόβλημα κατά την ανάγνωση του πίνακα: " + table);
                 }
-                rs2.close();
-                pstmt2.close();
-
-                // Υπολογισμός διαφοράς
-                double diff = val2 - val1;
-                String sign = (diff > 0) ? "+" : ""; // Αν θετικό, βάλε +
-
-                // Εκτύπωση γραμμής στον πίνακα
-                System.out.printf("%-30s | %,12.0f | %,12.0f | %s%,10.0f\n", 
-                        name, val1, val2, sign, diff);
-            }
-
-            if (!foundData) {
-                System.out.println("⚠️  Δεν βρέθηκαν εγγραφές στον πίνακα 'ypourgeia'.");
             }
 
         } catch (SQLException e) {
             System.out.println("\n❌ ΣΦΑΛΜΑ ΣΥΝΔΕΣΗΣ:");
-            System.out.println("   Δεν βρέθηκαν τα αρχεία: budget_" + year1 + ".db ή budget_" + year2 + ".db");
-            System.out.println("   ή ο πίνακας/στήλες έχουν άλλο όνομα.");
-            System.out.println("   (Τεχνικό μήνυμα: " + e.getMessage() + ")");
+            System.out.println("   Βεβαιωθείτε ότι υπάρχουν τα αρχεία budget_" + year1 + ".db και budget_" + year2 + ".db");
+            System.out.println("   Τεχνικό σφάλμα: " + e.getMessage());
         }
-        System.out.println("======================================================================\n");
+        System.out.println("\n======================================================================\n");
     }
 
-    // --- ΠΡΟΣΩΡΙΝΗ MAIN (ΓΙΑ ΝΑ ΤΟ ΤΡΕΞΕΙΣ ΤΩΡΑ) ---
+    /**
+     * Βοηθητική μέθοδος που ψάχνει ένα ποσό σε συγκεκριμένο πίνακα βάσει ονόματος.
+     */
+    private double getAmountFromTable(Connection conn, String table, String name) {
+        String sql = "SELECT amount FROM " + table + " WHERE name = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("amount");
+                }
+            }
+        } catch (SQLException e) {
+            // Αν δεν βρει τον πίνακα ή το όνομα, επιστρέφει 0
+        }
+        return 0.0;
+    }
+
     public static void main(String[] args) {
-        BudgetComparison test = new BudgetComparison();
-        test.startComparison();
+        BudgetComparison comparison = new BudgetComparison();
+        comparison.startComparison();
     }
 }
