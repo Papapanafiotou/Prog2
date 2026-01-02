@@ -13,6 +13,7 @@ public class TotalGrade {
         EnvElemGrades env = new EnvElemGrades();
         Weights w = new Weights();
         DataforGrade d = new DataforGrade();
+        EconomicsChart e = new EconomicsChart();
         int answer = scan.nextInt();
         if (answer == 0) {
         //Εύρεση δεδομένων για το έτος που ζητάει ο χρήστης
@@ -61,6 +62,7 @@ public class TotalGrade {
         System.out.println("O τελικός βαθμός για το κράτος για το έτος" + year 
         + " με βάση τα στοιχεία είναι " + finalGrade);
         double[] totalWeights = w.showTotalWeights(weights, wEcon, wEnv, wSoc);
+        e.showEconomicPie(totalWeights);
         } else if (answer == 1) {
           double[] weights = w.addWeights();
           double wGDP = weights[0];

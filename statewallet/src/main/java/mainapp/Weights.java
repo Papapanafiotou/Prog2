@@ -9,8 +9,6 @@ public class Weights {
         boolean flag = false;
         double weight;
         do {
-            System.out.println("Παρακαλώ εισάγετε το"
-             + " ποσοστό επίδρασης στον βαθμό");
             weight = scan.nextDouble();
             if (weight < 0 || weight > 1) {
                 System.out.println("Παρακαλώ εισάγετε αριθμό"
@@ -136,7 +134,10 @@ public class Weights {
         System.out.println("Η μεγαλύτερη αύξηση βαθμού παρατηρήθηκε τις χρονιές"
             + diffYears[maxIndex] + " ενώ η μεγαλύτερη μείωση τις χρονιές" 
             + diffYears[minIndex] 
-        );        
+        );
+        EconomicsChart e = new EconomicsChart();
+        String[] xronies = {"2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"};
+        e.displayGraph("ΠΟΡΕΙΑ ΒΑΘΜΩΝ ΚΡΑΤΟΥΣ 2018 - 2025", xronies, grades);        
     }
     
     public double[] addWeights() {
