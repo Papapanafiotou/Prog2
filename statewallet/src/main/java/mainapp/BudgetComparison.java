@@ -57,7 +57,8 @@ public class BudgetComparison {
         try (Connection conn1 = DriverManager.getConnection(url1);
              Statement stmt1 = conn1.createStatement();
              ResultSet rs1 = stmt1.executeQuery("SELECT name, amount FROM " + tableName)) {
-
+            double totalYear1 = 0;
+            double totalYear2 = 0;
             boolean found = false;
             while (rs1.next()) {
                 found = true;
@@ -67,13 +68,26 @@ public class BudgetComparison {
                 // Χρήση της έτοιμης Search για το 2ο έτος
                 // Σημείωση: Η searchAmount της Search επιστρέφει το ποσό αν το βρει σε ΟΠΟΙΟΝΔΗΠΟΤΕ πίνακα
                 double val2 = searchYear2.searchAmount(name, true);
-
+                // Αθροισμα των γραμμων για εμφανισει συνολου καθε ετους και κατηγοριας
+                totalYear1 += val1;
+                totalYear2 += val2;
+                
                 double diff = val2 - val1;
                 String sign = (diff > 0) ? "+" : "";
 
                 System.out.printf("%-35s | %,12.0f | %,12.0f | %s%,10.0f\n", 
                                   name, val1, val2, sign, diff);
             }
+            // Εμφανιση συνολου
+            if (found) {
+    double totalDiff = totalYear2 - totalYear1;
+    String tSign = (totalDiff > 0) ? "+" : "";
+    
+    System.out.println("----------------------------------------------------------------------");
+    System.out.printf("%-35s | %,12.0f | %,12.0f | %s%,10.0f\n", 
+                      "ΣΥΝΟΛΑ ΚΑΤΗΓΟΡΙΑΣ", totalYear1, totalYear2, tSign, totalDiff);
+}
+            
             if (!found) System.out.println("Δεν βρέθηκαν δεδομένα.");
 
         } catch (SQLException e) {
