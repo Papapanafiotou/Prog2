@@ -29,38 +29,43 @@ public final class Search {
     }
 
     /**
-     * Αναζητά το ποσό βάσει ονόματος.
-     *
-     * @param name Το όνομα προς αναζήτηση.
-     * @return Το ποσό που βρέθηκε ή 0.
-     */
-    public double searchAmount(final String name) {
-        if (name == null || name.trim().isEmpty()) {
-            System.out.println("Σφάλμα: Δεν δόθηκε όνομα για αναζήτηση.");
-            return 0;
-        }
-        double amount = 0;
-        try (Connection conn = DriverManager.getConnection(url)) {
-            for (String table : TABLES) {
-                String sql = "SELECT amount FROM " + table
-                        + " WHERE name LIKE ?";
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setString(1, "%" + name.trim() + "%");
-                    try (ResultSet rs = stmt.executeQuery()) {
-                        if (rs.next()) {
-                            amount = rs.getDouble("amount");
-                            System.out.println(" ΒΡΕΘΗΚΕ στον πίνακα "
-                                    + table + "! Ποσό: " + (long) amount);
-                            return amount;
+ * Αναζητά το ποσό βάσει ονόματος.
+ * @param name Το όνομα προς αναζήτηση.
+ * @param silent Αν είναι true, δεν τυπώνει το μήνυμα "ΒΡΕΘΗΚΕ".
+ * @return Το ποσό που βρέθηκε ή 0.
+ */
+public double searchAmount(final String name, boolean silent) {
+    if (name == null || name.trim().isEmpty()) {
+        return 0;
+    }
+    double amount = 0;
+    try (Connection conn = DriverManager.getConnection(url)) {
+        for (String table : TABLES) {
+            String sql = "SELECT amount FROM " + table + " WHERE name LIKE ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, "%" + name.trim() + "%");
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        amount = rs.getDouble("amount");
+                        // Εδώ είναι ο έλεγχος! Τυπώνει μόνο αν ΔΕΝ είναι silent
+                        if (!silent) {
+                            System.out.println(" ΒΡΕΘΗΚΕ στον πίνακα " + table + "! Ποσό: " + (long) amount);
                         }
+                        return amount;
                     }
                 }
             }
-        } catch (SQLException e) {
-            System.err.println("Σφάλμα στη βάση: " + e.getMessage());
         }
-        return amount;
+    } catch (SQLException e) {
+        System.err.println("Σφάλμα στη βάση: " + e.getMessage());
     }
+    return amount;
+}
+
+// Κρατάμε και την αρχική μέθοδο για να μη χαλάσει ο υπόλοιπος κώδικας
+public double searchAmount(final String name) {
+    return searchAmount(name, false); // Η αρχική αναζήτηση θα συνεχίσει να τυπώνει
+}
 
     /**
      * Αναζητά το όνομα βάσει ποσού.

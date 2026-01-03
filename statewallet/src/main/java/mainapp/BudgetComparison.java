@@ -66,7 +66,7 @@ public class BudgetComparison {
 
                 // Χρήση της έτοιμης Search για το 2ο έτος
                 // Σημείωση: Η searchAmount της Search επιστρέφει το ποσό αν το βρει σε ΟΠΟΙΟΝΔΗΠΟΤΕ πίνακα
-                double val2 = searchYear2.searchAmount(name);
+                double val2 = searchYear2.searchAmount(name, true);
 
                 double diff = val2 - val1;
                 String sign = (diff > 0) ? "+" : "";
