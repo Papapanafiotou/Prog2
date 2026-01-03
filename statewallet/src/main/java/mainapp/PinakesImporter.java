@@ -2,276 +2,274 @@ package mainapp;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class PinakesImporter {
+/**
+ * Εισάγει δεδομένα από αρχεία CSV στη βάση δεδομένων.
+ */
+public final class PinakesImporter {
 
+    /** URL βάσης. */
     private final String dbUrl;
+    /** Min ID Κράτους. */
+    private static final int MIN_KRATOS = 1000;
+    /** Max ID Κράτους. */
+    private static final int MAX_KRATOS = 1005;
+    /** Min ID Υπουργείων. */
+    private static final int MIN_YPOURGEIA = 1007;
+    /** Max ID Υπουργείων. */
+    private static final int MAX_YPOURGEIA = 1070;
+    /** Min ID Αποκεντρωμένων. */
+    private static final int MIN_APOK = 1800;
+    /** Max ID Αποκεντρωμένων. */
+    private static final int MAX_APOK = 2000;
 
-    public PinakesImporter(String dbUrl) {
-        this.dbUrl = dbUrl;
+    /**
+     * Κατασκευαστής.
+     *
+     * @param url Το URL της βάσης δεδομένων.
+     */
+    public PinakesImporter(final String url) {
+        this.dbUrl = url;
     }
 
+    /**
+     * Εκτελεί την εισαγωγή όλων των πινάκων.
+     */
     public void importAll() {
+        Path currentWorkingDir = Paths.get(".").toAbsolutePath().normalize();
+        Path baseDir;
+        if (Files.exists(currentWorkingDir.resolve("statewallet"))) {
+            baseDir = currentWorkingDir.resolve("statewallet");
+        } else {
+            baseDir = currentWorkingDir;
+        }
+        Path sourcesDir = baseDir.resolve(Paths.get("src", "main", "sources"));
         try (Connection conn = DriverManager.getConnection(dbUrl)) {
             createTables(conn);
-            importEsoda(conn, "statewallet\\src\\main\\sources\\income.csv");
-            importEksoda(conn, "statewallet\\src\\main\\sources\\expenses.csv");
-            importMinistries(conn, "statewallet\\src\\main\\sources\\ministries.csv");
+            importEsoda(conn, sourcesDir.resolve("income.csv").toString());
+            importEksoda(conn, sourcesDir.resolve("expenses.csv").toString());
+            importMinistries(conn,
+                    sourcesDir.resolve("ministries.csv").toString());
             System.out.println(" Όλοι οι πίνακες εισήχθησαν επιτυχώς.");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-// ---------------------------------------------------------
-    //  CREATE TABLES (ΔΙΟΡΘΩΜΕΝΟ)
-    // ---------------------------------------------------------
-    private void createTables(Connection conn) throws SQLException {
 
+    private void createTables(final Connection conn) throws SQLException {
         Statement st = conn.createStatement();
-
-        // 1. ΠΡΩΤΑ ΣΒΗΝΟΥΜΕ ΤΟΥΣ ΠΑΛΙΟΥΣ ΠΙΝΑΚΕΣ (ΑΝ ΥΠΑΡΧΟΥΝ)
-        // Έτσι είμαστε σίγουροι ότι θα ξαναφτιαχτούν με τις ΝΕΕΣ στήλες.
         st.executeUpdate("DROP TABLE IF EXISTS esoda");
         st.executeUpdate("DROP TABLE IF EXISTS eksoda");
         st.executeUpdate("DROP TABLE IF EXISTS ypourgeia");
         st.executeUpdate("DROP TABLE IF EXISTS kratos");
         st.executeUpdate("DROP TABLE IF EXISTS apokentromenes");
 
-        // 2. ΤΩΡΑ ΤΟΥΣ ΔΗΜΙΟΥΡΓΟΥΜΕ ΑΠΟ ΤΗΝ ΑΡΧΗ
         st.executeUpdate("""
-                CREATE TABLE esoda(
-                    code INTEGER,
-                    name TEXT,
-                    amount REAL,
-                    original_amount REAL
-                );
-            """);
-
+                 CREATE TABLE esoda(
+                     code INTEGER, name TEXT,
+                     amount REAL, original_amount REAL
+                 );
+             """);
         st.executeUpdate("""
-                CREATE TABLE eksoda(
-                    code INTEGER,
-                    name TEXT,
-                    amount REAL,
-                    original_amount REAL
-                );
-            """);
-
+                 CREATE TABLE eksoda(
+                     code INTEGER, name TEXT,
+                     amount REAL, original_amount REAL
+                 );
+             """);
         st.executeUpdate("""
-                CREATE TABLE ypourgeia(
-                    number INTEGER,
-                    name TEXT,
-                    amount1 REAL,
-                    amount2 REAL,
-                    amount REAL,
-                    original_amount1 REAL,
-                    original_amount2 REAL,
-                    original_amount REAL
-                );
-            """);
-
+                 CREATE TABLE ypourgeia(
+                     number INTEGER, name TEXT,
+                     amount1 REAL, amount2 REAL, amount REAL,
+                     original_amount1 REAL, original_amount2 REAL,
+                     original_amount REAL
+                 );
+             """);
         st.executeUpdate("""
-                CREATE TABLE kratos(
-                    number INTEGER,
-                    name TEXT,
-                    amount1 REAL,
-                    amount2 REAL,
-                    amount REAL,
-                    original_amount1 REAL,
-                    original_amount2 REAL,
-                    original_amount REAL
-                );
-            """);
-
+                 CREATE TABLE kratos(
+                     number INTEGER, name TEXT,
+                     amount1 REAL, amount2 REAL, amount REAL,
+                     original_amount1 REAL, original_amount2 REAL,
+                     original_amount REAL
+                 );
+             """);
         st.executeUpdate("""
-                CREATE TABLE apokentromenes(
-                    number INTEGER,
-                    name TEXT,
-                    amount1 REAL,
-                    amount2 REAL,
-                    amount REAL,
-                    original_amount1 REAL,
-                    original_amount2 REAL,
-                    original_amount REAL
-                );
-            """);
+                 CREATE TABLE apokentromenes(
+                     number INTEGER, name TEXT,
+                     amount1 REAL, amount2 REAL, amount REAL,
+                     original_amount1 REAL, original_amount2 REAL,
+                     original_amount REAL
+                 );
+             """);
     }
 
-    // ---------------------------------------------------------
-    //  IMPORT ESODA
-    // ---------------------------------------------------------
-    private void importEsoda(Connection conn, String csvPath) throws Exception {
-
-        String sql = "INSERT INTO esoda (code, name, amount, original_amount) VALUES (?, ?, ?, ?)";
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(csvPath));
+    private void importEsoda(final Connection conn, final String csvPath)
+            throws Exception {
+        String sql = "INSERT INTO esoda VALUES (?, ?, ?, ?)";
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader(csvPath));
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String line;
             boolean skipHeader = true;
 
+            // Indices
+            final int idx1 = 1;
+            final int idx2 = 2;
+            final int idx3 = 3;
+            final int idx4 = 4;
+            final int maxlen = 3;
+
             while ((line = reader.readLine()) != null) {
-
-                if (skipHeader) { skipHeader = false; continue; }
-
+                if (skipHeader) {
+                    skipHeader = false;
+                    continue;
+                }
                 String[] p = line.split(",");
-                if (p.length < 3) continue;
-
+                if (p.length < maxlen) {
+                    continue;
+                }
                 int code = Integer.parseInt(p[0]);
                 String name = p[1];
                 double amount1 = Double.parseDouble(p[2]);
 
-                ps.setInt(1, code);
-                ps.setString(2, name);
-                ps.setDouble(3, amount1);
-                ps.setDouble(4, amount1);  // original_amount = amount1
+                ps.setInt(idx1, code);
+                ps.setString(idx2, name);
+                ps.setDouble(idx3, amount1);
+                ps.setDouble(idx4, amount1);
                 ps.addBatch();
             }
-
             ps.executeBatch();
         }
     }
 
-    // ---------------------------------------------------------
-    //  IMPORT EKSODA
-    // ---------------------------------------------------------
-    private void importEksoda(Connection conn, String csvPath) throws Exception {
-
-        String sql = "INSERT INTO eksoda (code, name, amount, original_amount) VALUES (?, ?, ?, ?)";
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(csvPath));
+    private void importEksoda(final Connection conn, final String csvPath)
+            throws Exception {
+        String sql = "INSERT INTO eksoda VALUES (?, ?, ?, ?)";
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader(csvPath));
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String line;
             boolean skipHeader = true;
 
+            // Indices
+            final int idx1 = 1;
+            final int idx2 = 2;
+            final int idx3 = 3;
+            final int idx4 = 4;
+            final int maxlen = 3;
+
             while ((line = reader.readLine()) != null) {
-
-                if (skipHeader) { skipHeader = false; continue; }
-
+                if (skipHeader) {
+                    skipHeader = false;
+                    continue;
+                }
                 String[] p = line.split(",");
-                if (p.length < 3) continue;
-
+                if (p.length < maxlen) {
+                    continue;
+                }
                 int code = Integer.parseInt(p[0]);
                 String name = p[1];
                 double amount1 = Double.parseDouble(p[2]);
 
-                ps.setInt(1, code);
-                ps.setString(2, name);
-                ps.setDouble(3, amount1);
-                ps.setDouble(4, amount1);  // original_amount = amount1
+                ps.setInt(idx1, code);
+                ps.setString(idx2, name);
+                ps.setDouble(idx3, amount1);
+                ps.setDouble(idx4, amount1);
                 ps.addBatch();
             }
-
             ps.executeBatch();
         }
     }
 
-
-    // ---------------------------------------------------------
-    //  IMPORT MINISTRIES → split into 3 tables
-    // ---------------------------------------------------------
-    private void importMinistries(Connection conn, String csvPath) throws Exception {
-
-        // --------------------------------------------------------------------------------
-        // ministries.csv columns:
-        // number, name, amount1, amount2, amount3
-        // --------------------------------------------------------------------------------
-
+    private void importMinistries(final Connection conn, final String csvPath)
+            throws Exception {
         String sqlYp = "INSERT INTO ypourgeia VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String sqlKr = "INSERT INTO kratos VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        String sqlAp = "INSERT INTO apokentromenes VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlAp =
+        "INSERT INTO apokentromenes VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement psYp = conn.prepareStatement(sqlYp);
         PreparedStatement psKr = conn.prepareStatement(sqlKr);
         PreparedStatement psAp = conn.prepareStatement(sqlAp);
 
-       try (BufferedReader reader = new BufferedReader(new FileReader(csvPath))) {
-
+        try (BufferedReader reader = new BufferedReader(
+            new FileReader(csvPath))) {
             String line;
             boolean skipHeader = true;
-
+            final int minCols = 5;
+            final int offset1 = 3;
+            final int offset2 = 2;
+            final int offset3 = 1;
+            final int offsetName = 4;
 
             while ((line = reader.readLine()) != null) {
-
-                if (skipHeader) { skipHeader = false; continue; }
-
-
-
-                // Κόβουμε τη γραμμή στα κόμματα
+                if (skipHeader) {
+                    skipHeader = false;
+                    continue;
+                }
                 String[] p = line.split(",");
-                
-                // Έλεγχος αν έχουμε αρκετά δεδομένα
-                if (p.length < 5) continue;
-
+                if (p.length < minCols) {
+                    continue;
+                }
                 int len = p.length;
-
-                // 1. Διαβάζουμε τον Κωδικό (πάντα στην αρχή)
                 int number = Integer.parseInt(p[0].trim());
+                double amount3 = Double.parseDouble(p[len - offset3].trim());
+                double amount2 = Double.parseDouble(p[len - offset2].trim());
+                double amount1 = Double.parseDouble(p[len - offset1].trim());
 
-                // 2. Διαβάζουμε τα Ποσά (πάντα στο τέλος του πίνακα)
-                // Παίρνουμε τα 3 τελευταία στοιχεία ως αριθμούς
-                double amount3 = Double.parseDouble(p[len - 1].trim()); // original
-                double amount2 = Double.parseDouble(p[len - 2].trim());
-                double amount1 = Double.parseDouble(p[len - 3].trim());
-
-                // 3. Φτιάχνουμε το Όνομα
-                // Ενώνουμε όλα τα ενδιάμεσα κομμάτια (αν το όνομα είχε κόμματα, έσπασε σε πολλά κομμάτια)
                 StringBuilder nameBuilder = new StringBuilder();
-                for (int i = 1; i <= len - 4; i++) {
+                for (int i = 1; i <= len - offsetName; i++) {
                     nameBuilder.append(p[i]);
-                    if (i < len - 4) nameBuilder.append(" "); // Βάζουμε κενό εκεί που ήταν το κόμμα
+                    if (i < len - offsetName) {
+                        nameBuilder.append(" ");
+                    }
                 }
                 String name = nameBuilder.toString().trim();
 
-
-                // --- rows 1–3 → kratos
-                if (number >= 1000 && number <= 1005) {
-                    psKr.setInt(1, number);
-                    psKr.setString(2, name);
-                    psKr.setDouble(3, amount1);
-                    psKr.setDouble(4, amount2);
-                    psKr.setDouble(5, amount3);
-                    psKr.setDouble(6, amount1);
-                    psKr.setDouble(7, amount2);
-                    psKr.setDouble(8, amount3);
-                    psKr.addBatch();
-                }
-
-                // --- rows 4–23 → ypourgeia
-                else if (number >= 1007 && number <= 1070) {
-                    psYp.setInt(1, number);
-                    psYp.setString(2, name);
-                    psYp.setDouble(3, amount1);
-                    psYp.setDouble(4, amount2);
-                    psYp.setDouble(5, amount3);
-                    psYp.setDouble(6, amount1);
-                    psYp.setDouble(7, amount2);
-                    psYp.setDouble(8, amount3);
-                    psYp.addBatch();
-                }
-
-                // --- rows 24–30 → apokentromenes
-                else if (number >= 1800 && number <= 2000) {
-                    psAp.setInt(1, number);
-                    psAp.setString(2, name);
-                    psAp.setDouble(3, amount1);
-                    psAp.setDouble(4, amount2);
-                    psAp.setDouble(5, amount3);
-                    psAp.setDouble(6, amount1);
-                    psAp.setDouble(7, amount2);
-                    psAp.setDouble(8, amount3);
-                    psAp.addBatch();
+                if (number >= MIN_KRATOS && number <= MAX_KRATOS) {
+                    setParams(psKr, number, name, amount1, amount2, amount3);
+                } else if (number >= MIN_YPOURGEIA && number <= MAX_YPOURGEIA) {
+                    setParams(psYp, number, name, amount1, amount2, amount3);
+                } else if (number >= MIN_APOK && number <= MAX_APOK) {
+                    setParams(psAp, number, name, amount1, amount2, amount3);
                 }
             }
-
             psKr.executeBatch();
             psYp.executeBatch();
             psAp.executeBatch();
         }
-        }
     }
+
+    private void setParams(final PreparedStatement ps, final int num,
+                           final String name, final double a1, final double a2,
+                           final double a3) throws SQLException {
+        // Indices
+        final int idx1 = 1;
+        final int idx2 = 2;
+        final int idx3 = 3;
+        final int idx4 = 4;
+        final int idx5 = 5;
+        final int idx6 = 6;
+        final int idx7 = 7;
+        final int idx8 = 8;
+
+        ps.setInt(idx1, num);
+        ps.setString(idx2, name);
+        ps.setDouble(idx3, a1);
+        ps.setDouble(idx4, a2);
+        ps.setDouble(idx5, a3);
+        ps.setDouble(idx6, a1);
+        ps.setDouble(idx7, a2);
+        ps.setDouble(idx8, a3);
+        ps.addBatch();
+    }
+}
