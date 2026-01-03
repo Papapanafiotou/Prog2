@@ -22,7 +22,13 @@ public final class BudgetMenu {
     /** Επιλογή: Χαρακτηρισμός. */
     private static final int OPTION_CHAR = 7;
     /** Επιλογή: Έξοδος. */
-    private static final int OPTION_EXIT = 8;
+
+    private static final int OPTION_MINMAX = 8;
+
+    private static final int OPTION_PERCENTANCE = 9;
+
+    private static final int OPTION_EXIT = 10;
+
 
     /** Πίνακας: Έσοδα. */
     private static final int TABLE_ESODA = 1;
@@ -73,7 +79,9 @@ public final class BudgetMenu {
             System.out.println("5. Αλλαγή έτους");
             System.out.println("6. Αναζήτηση στοιχείου");
             System.out.println("7. Χαρακτηρισμός προϋπολογισμού");
-            System.out.println("8. Έξοδος");
+            System.out.println("8. Εμφάνιση Μέγιστου-Ελάχιστου");
+            System.out.println("9. Εμφάνιση Ποσοστού σε σχέση με σύνολο");
+            System.out.println("10. Έξοδος");
             System.out.print("Επιλογή: ");
 
             int choice = scanner.nextInt();
@@ -101,6 +109,11 @@ public final class BudgetMenu {
                     scanner.close();
                     return;
                 }
+                case OPTION_MINMAX -> {
+                    MinMaX minmaxfinder = new MinMaX(url);
+                    minmaxfinder.showMinMax();
+                }
+                case OPTION_PERCENTANCE -> getPrecentage();
                 default -> System.out.println("Λάθος επιλογή.");
             }
         }
@@ -257,5 +270,38 @@ public final class BudgetMenu {
                 + " ---");
         System.out.printf("Συνολικό Ποσό(αρχικό): %,.2f%n", results[0]);
         System.out.printf("Συνολικό Ποσό(επεξεργασμένο): %,.2f%n", results[1]);
+    }
+
+        public double getPrecentage() {
+            double precent = 0.0;
+            System.out.println("Για ποιον λογαριασμό θέλετε να υπολογίσετε " +
+             "το ποσοστό;");
+            String name = scanner.nextLine();
+            Search search = new Search(url);
+            String table = search.searchTable(name);
+            double[] total;
+            double amount = search.searchAmount(name);
+            if (table == "esoda") {
+                total = manager.getTotal("esoda");
+                double t = total[0];
+            try {
+                precent = (amount / t) * 100;
+                System.out.println("Το ποσοστό του " + name +
+                " στα συνολικά έσοδα έιναι " + precent + " %");
+            } catch (ArithmeticException e) {
+                System.out.println("Δεν είναι δυνατή η διαίρεση με το μηδέν!");
+            }
+            } else if (table == "eksoda") {
+            total = manager.getTotal("eksoda");
+            double t = total[0];
+             try {
+                precent = (amount / t) * 100;
+                System.out.println("Το ποσοστό του " + name +
+                " στα συνολικά έξοδα έιναι " + precent + " %");
+            } catch (ArithmeticException e) {
+                System.out.println("Δεν είναι δυνατή η διαίρεση με το μηδέν!");
+            }
+        } 
+        return precent;
     }
 }
