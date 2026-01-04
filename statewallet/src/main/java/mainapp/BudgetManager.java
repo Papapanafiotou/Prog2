@@ -6,49 +6,97 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class BudgetManager {
+/**
+ * Διαχειρίζεται τις λειτουργίες του προϋπολογισμού στη βάση δεδομένων.
+ */
+public final class BudgetManager {
 
+    /** Μέγιστο μήκος ονόματος για εμφάνιση. */
+    private static final int NAME_LIMIT = 40;
+    /** Μέγιστο μήκος ονόματος για εμφάνιση αλλαγών. */
+    private static final int CHANGE_NAME_LIMIT = 30;
+    /** Μήκος κατάληξης "..." (3 χαρακτήρες). */
+    private static final int DOTS_LEN = 3;
+    /** Δείκτης SQL 1. */
+    private static final int IDX_1 = 1;
+    /** Δείκτης SQL 2. */
+    private static final int IDX_2 = 2;
 
-    String URL;
-    public BudgetManager(String url) {
-        this.URL = url;
+    /** Το URL σύνδεσης στη βάση. */
+    private String url;
+
+    /**
+     * Κατασκευαστής.
+     *
+     * @param dbUrl Το URL της βάσης δεδομένων.
+     */
+    public BudgetManager(final String dbUrl) {
+        this.url = dbUrl;
     }
 
-    // --- Λογική για εμφάνιση (από το παλιό Printtable & ShowBudget) ---
-    public void printTable(String tableName, String idColumnName) {
-        String sql = "SELECT " + idColumnName + ", name, original_amount, amount FROM " + tableName;
+    /**
+     * Ορίζει νέο URL βάσης δεδομένων.
+     *
+     * @param dbUrl Το νέο URL.
+     */
+    public void setUrl(final String dbUrl) {
+        this.url = dbUrl;
+    }
 
-        try (Connection conn = DriverManager.getConnection(URL);
+    /**
+     * Εκτυπώνει τα περιεχόμενα ενός πίνακα στην κονσόλα.
+     *
+     * @param tableName    Το όνομα του πίνακα.
+     * @param idColumnName Το όνομα της στήλης ID.
+     */
+    public void printTable(final String tableName, final String idColumnName) {
+        String sql = "SELECT " + idColumnName
+                + ", name, original_amount, amount FROM " + tableName;
+
+        try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            System.out.println("\n--- Πίνακας: " + tableName.toUpperCase() + " ---");
-            System.out.printf("%-5s | %-40s | %-15s | %-15s\n", "ID", "Περιγραφή", "Αρχικό Ποσό", "Τρέχον Ποσό");
-            System.out.println("---------------------------------------------------------------------------------");
+            System.out.println("\n--- Πίνακας: " + tableName.toUpperCase()
+                    + " ---");
+            System.out.printf("%-5s | %-40s | %-15s | %-15s\n",
+                    "ID", "Περιγραφή", "Αρχικό Ποσό", "Τρέχον Ποσό");
+            System.out.println(
+                    "-------------------------------------------------------");
 
             while (rs.next()) {
                 System.out.printf(
-                    "%-5d | %-40s | %12.2f € | %12.2f "+"€\n",
-                    rs.getInt(idColumnName),
-                    limitString(rs.getString("name"), 40),
-                    rs.getDouble("original_amount"),
-                    rs.getDouble("amount")
+                        "%-5d | %-40s | %12.2f EUR | %12.2f EUR\n",
+                        rs.getInt(idColumnName),
+                        limitString(rs.getString("name"), NAME_LIMIT),
+                        rs.getDouble("original_amount"),
+                        rs.getDouble("amount")
                 );
             }
         } catch (SQLException e) {
-            System.out.println("Σφάλμα κατά την εμφάνιση του " + tableName + ": " + e.getMessage());
+            System.out.println("Σφάλμα: " + e.getMessage());
         }
     }
 
-    // --- Λογική για αλλαγή (από το παλιό ChangeBudget) ---
-    public boolean updateAmount(String tableName, String idColName, int id, double newAmount) {
-        String sql = "UPDATE " + tableName + " SET amount = ? WHERE " + idColName + " = ?";
+    /**
+     * Ενημερώνει το ποσό μιας εγγραφής.
+     *
+     * @param tableName  Ο πίνακας.
+     * @param idColName  Το όνομα στήλης ID.
+     * @param id         Το ID της εγγραφής.
+     * @param newAmount  Το νέο ποσό.
+     * @return true αν έγινε η ενημέρωση, false διαφορετικά.
+     */
+    public boolean updateAmount(final String tableName, final String idColName,
+                                final int id, final double newAmount) {
+        String sql = "UPDATE " + tableName + " SET amount = ? WHERE "
+                + idColName + " = ?";
 
-        try (Connection conn = DriverManager.getConnection(URL);
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setDouble(1, newAmount);
-            pstmt.setInt(2, id);
+            pstmt.setDouble(IDX_1, newAmount);
+            pstmt.setInt(IDX_2, id);
 
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
@@ -59,94 +107,109 @@ public class BudgetManager {
         }
     }
 
-    // --- Λογική για εμφάνιση αλλαγών (από το παλιό ShowChanges) ---
+    /**
+     * Εμφανίζει τις αλλαγές που έχουν γίνει σε όλους τους πίνακες.
+     */
     public void showChanges() {
-        System.out.println("\n--- Αλλαγές Προϋπολογισμού (σε όλους τους πίνακες) ---");
-        boolean foundAnyChange = false;
+        System.out.println("\n--- Αλλαγές Προϋπολογισμού ---");
+        boolean c1 = checkTableForChanges("esoda", "code");
+        boolean c2 = checkTableForChanges("eksoda", "code");
+        boolean c3 = checkTableForChanges("kratos", "number");
+        boolean c4 = checkTableForChanges("ypourgeia", "number");
+        boolean c5 = checkTableForChanges("apokentromenes", "number");
 
-        foundAnyChange |= checkTableForChanges("esoda", "code");
-        foundAnyChange |= checkTableForChanges("eksoda", "code");
-        foundAnyChange |= checkTableForChanges("kratos", "number");
-        foundAnyChange |= checkTableForChanges("ypourgeia", "number");
-        foundAnyChange |= checkTableForChanges("apokentromenes", "number");
-
-        if (!foundAnyChange) {
+        if (!(c1 || c2 || c3 || c4 || c5)) {
             System.out.println("Δεν βρέθηκαν αλλαγές σε κανέναν πίνακα.");
         }
     }
 
-    private boolean checkTableForChanges(String tableName, String idColName) {
-        String sql = "SELECT " + idColName + ", name, amount, original_amount FROM " + tableName + " WHERE amount != original_amount";
+    private boolean checkTableForChanges(final String tableName,
+                                         final String idColName) {
+        String sql = "SELECT " + idColName
+                + ", name, amount, original_amount FROM "
+                + tableName + " WHERE amount != original_amount";
         boolean found = false;
 
-        try (Connection conn = DriverManager.getConnection(URL);
+        try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 if (!found) {
-                    System.out.println("\nΑλλαγές στον πίνακα: " + tableName.toUpperCase());
+                    System.out.println("\nΑλλαγές στον πίνακα: "
+                            + tableName.toUpperCase());
                     found = true;
                 }
                 System.out.printf(
-                    "ID: %-3d | %-30s | Αρχικό: %10.2f | Νέο: %10.2f\n",
-                    rs.getInt(idColName),
-                    limitString(rs.getString("name"), 30),
-                    rs.getDouble("original_amount"),
-                    rs.getDouble("amount")
+                        "ID: %-3d | %-30s | Αρχικό: %10.2f | Νέο: %10.2f\n",
+                        rs.getInt(idColName),
+                        limitString(rs.getString("name"), CHANGE_NAME_LIMIT),
+                        rs.getDouble("original_amount"),
+                        rs.getDouble("amount")
                 );
             }
         } catch (SQLException e) {
-            System.out.println("Σφάλμα ελέγχου αλλαγών στο " + tableName + ": " + e.getMessage());
+            System.out.println("Σφάλμα: " + e.getMessage());
         }
         return found;
     }
 
-    // Βοηθητική μέθοδος
-    private String limitString(String str, int len) {
-        if (str == null) return "";
+    private String limitString(final String str, final int len) {
+        if (str == null) {
+            return "";
+        }
         if (str.length() > len) {
-            return str.substring(0, len - 3) + "...";
+            return str.substring(0, len - DOTS_LEN) + "...";
         }
         return str;
     }
 
-    public double[] getTotal(String tablename) {
-        String sql = "SELECT SUM(amount) AS total_amount, SUM(original_amount) AS total_original FROM " + tablename;
+    /**
+     * Υπολογίζει τα σύνολα για έναν πίνακα.
+     *
+     * @param tablename Το όνομα του πίνακα.
+     * @return Πίνακας double με [αρχικό σύνολο, τρέχον σύνολο].
+     */
+    public double[] getTotal(final String tablename) {
+        String sql = "SELECT SUM(amount) AS total_amount, "
+                + "SUM(original_amount) AS total_original FROM " + tablename;
         double[] results = new double[2];
-        results[0] = 0;
-        results[1] = 0;
-        try (Connection conn = DriverManager.getConnection(URL);
+        try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             if (rs.next()) {
-                double sumAmount = rs.getDouble("total_amount");
-                double sumOriginal = rs.getDouble("total_original");
-                results[0] = sumOriginal;
-                results[1] = sumAmount;
-            } 
+                results[0] = rs.getDouble("total_original");
+                results[1] = rs.getDouble("total_amount");
+            }
 
         } catch (SQLException e) {
-            System.err.println("Σφάλμα κατά τη σύνδεση στη βάση δεδομένων: " + e.getMessage());
+            System.err.println("Σφάλμα σύνδεσης: " + e.getMessage());
         }
         return results;
     }
 
-    public void budgetCharacterism(double revenue, double expenses) {
-        System.out.println("\n--------------------------------------------------");
+    /**
+     * Επιστρέφει τον χαρακτηρισμό του προϋπολογισμού.
+     *
+     * @param revenue  Τα έσοδα.
+     * @param expenses Τα έξοδα.
+     * @return String με τον χαρακτηρισμό (Πλεονασματικός/Ελλειμματικός/Ισος).
+     */
+    public String getBudgetCharacterism(final double revenue,
+                                        final double expenses) {
         if (revenue > expenses) {
-            System.out.println("Ο προϋπολογισμός είναι πλεονασματικός κατα +" + (long)( revenue - expenses) +"€");
+            return "Πλεονασματικός (+" + (long) (revenue - expenses) + " EUR)";
         } else if (revenue < expenses) {
-            System.out.println("Ο προϋπολογισμός είναι ελλειματικός κατα -" + (long)(expenses - revenue)+"€");
+            return "Ελλειμματικός (-" + (long) (expenses - revenue) + " EUR)";
         } else {
-            System.out.println("Ο προϋπολογισμός είναι ισοσκελισμένος");
+            return "Ισοσκελισμένος";
         }
     }
 
     public double getCurrentAmount(String tableName, String idColName, int id) {
     String sql = "SELECT amount FROM " + tableName + " WHERE " + idColName + " = ?";
-    try (Connection conn = DriverManager.getConnection(URL);
+    try (Connection conn = DriverManager.getConnection(url);
          PreparedStatement pstmt = conn.prepareStatement(sql)) {
         
         pstmt.setInt(1, id);

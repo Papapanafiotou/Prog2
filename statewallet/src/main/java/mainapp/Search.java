@@ -6,81 +6,144 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Search {
-    String url;
-    public Search(String database_url) {
-        this.url = database_url;
+/**
+ * Υλοποιεί τη λειτουργία αναζήτησης σε όλους τους πίνακες.
+ */
+public final class Search {
+
+    /** Λίστα πινάκων για αναζήτηση. */
+    private static final String[] TABLES = {
+        "esoda", "eksoda", "kratos", "ypourgeia", "apokentromenes"
+    };
+
+    /** Το URL της βάσης. */
+    private final String url;
+
+    /**
+     * Κατασκευαστής.
+     *
+     * @param databaseUrl Το URL της βάσης δεδομένων.
+     */
+    public Search(final String databaseUrl) {
+        this.url = databaseUrl;
     }
-    private static final String Tables[] = {"esoda", "eksoda", "kratos","ypourgeia", "apokentromenes"};//ονόματα πινάκων
-    
-    public double searchAmount(String name) {
+
+    /**
+     * Αναζητά το ποσό βάσει ονόματος.
+     *
+     * @param name Το όνομα προς αναζήτηση.
+     * @return Το ποσό που βρέθηκε ή 0.
+     */
+    public double searchAmount(final String name) {
         if (name == null || name.trim().isEmpty()) {
-        System.out.println("Σφάλμα: Δεν δόθηκε όνομα για αναζήτηση.");
-        return 0;
-        } 
+            System.out.println("Σφάλμα: Δεν δόθηκε όνομα για αναζήτηση.");
+            return 0;
+        }
         double amount = 0;
         try (Connection conn = DriverManager.getConnection(url)) {
-            for (String table : Tables) { // αναζητεί σε όλους τους πίνακες μέχρι να βρεί τον λογαριασμό
-                String sql = "SELECT amount FROM " + table + " WHERE name LIKE ? "; // εντολή SQL
+            for (String table : TABLES) {
+                String sql = "SELECT amount FROM " + table
+                        + " WHERE name LIKE ?";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setString(1, "%" + name.trim() + "%"); // σε κάθε επανάληψη αλλάζει το όνομα του πίνακα
-                    ResultSet rs = stmt.executeQuery();
-                    if (rs.next()) {
-                        amount = rs.getDouble("amount"); // εκχωρεί το ποσό όταν βρεθεί
-                        System.out.println(" ΒΡΕΘΗΚΕ στον πίνακα " + table + "! Ποσό: " + (long)amount);
-                        return amount; 
+                    stmt.setString(1, "%" + name.trim() + "%");
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            amount = rs.getDouble("amount");
+                            System.out.println(" ΒΡΕΘΗΚΕ στον πίνακα "
+                                    + table + "! Ποσό: " + (long) amount);
+                            return amount;
+                        }
+                    }
                 }
             }
-        }
         } catch (SQLException e) {
             System.err.println("Σφάλμα στη βάση: " + e.getMessage());
         }
-        return amount; // επιστρέφει το ποσό 
+        return amount;
     }
 
-    public String searchString(double amount1) {
+    /**
+     * Αναζητά το όνομα βάσει ποσού.
+     *
+     * @param amount1 Το ποσό προς αναζήτηση.
+     * @return Το όνομα που βρέθηκε ή null.
+     */
+    public String searchString(final double amount1) {
         String name = null;
-         try (Connection conn = DriverManager.getConnection(url)) {
-            for (String table : Tables) { // αναζητεί σε όλους τους πίνακες μέχρι να βρεί τον λογαριασμό
-                String sql = "SELECT name FROM " + table + " WHERE amount = ? "; // εντολή SQL
+        try (Connection conn = DriverManager.getConnection(url)) {
+            for (String table : TABLES) {
+                String sql = "SELECT name FROM " + table + " WHERE amount = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setDouble(1, amount1); // σε κάθε επανάληψη αλλάζει το όνομα του πίνακα
-                    ResultSet rs = stmt.executeQuery();
-                    if (rs.next()) { 
-                        name = rs.getString("name"); // εκχωρεί το ποσό όταν βρεθεί
-                        return name; 
+                    stmt.setDouble(1, amount1);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            name = rs.getString("name");
+                            return name;
+                        }
+                    }
                 }
             }
-    }
-    } catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println("Σφάλμα στη βάση: " + e.getMessage());
         }
         return name;
     }
 
-    public String searchTable(String name2) {
+    /**
+     * Επιστρέφει το όνομα του πίνακα που περιέχει το όνομα αναζήτησης.
+     *
+     * @param name2 Το όνομα προς αναζήτηση.
+     * @return Το όνομα του πίνακα ή null.
+     */
+    public String searchTable(final String name2) {
         String tab = null;
         try (Connection conn = DriverManager.getConnection(url)) {
-            for (String table : Tables) {
-                String sql = " SELECT EXISTS ( " +
-                         " SELECT 1 FROM " + table +
-                         " WHERE name = ? " +
-                         " )";
-           try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, name2);
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next() && rs.getInt(1) == 1) {
-                        tab = table;
+            for (String table : TABLES) {
+                String sql = "SELECT 1 FROM " + table + " WHERE name = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setString(1, name2);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            tab = table;
+                        }
                     }
                 }
-            }              
-
+            }
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα στη βάση: " + e.getMessage());
         }
+        return tab;
+    }
 
-    } catch (SQLException e) {
-        System.err.println("Σφάλμα στη βάση: " + e.getMessage());
-    } 
-    return tab;
-}
+    public double searchAmountInTable(final String name, final String tableName) {
+        if (name == null || name.trim().isEmpty()) {
+            System.out.println("Σφάλμα: Δεν δόθηκε όνομα για αναζήτηση.");
+            return 0;
+        }
+        if (tableName == null || tableName.trim().isEmpty()) {
+            System.out.println("Σφάλμα: Δεν δόθηκε όνομα πίνακα.");
+            return 0;
+        }
+        double amount = 0;
+        try (Connection conn = DriverManager.getConnection(url)) {
+
+         String sql = "SELECT amount FROM " + tableName + " WHERE name LIKE ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, "%" + name.trim() + "%");
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        amount = rs.getDouble("amount");
+                        System.out.println(" ΒΡΕΘΗΚΕ στον πίνακα " 
+                            + tableName + "! Ποσό: " + (long) amount);
+                        return amount;
+                    } else {
+                        System.out.println(" Δεν βρέθηκε εγγραφή στον πίνακα " + tableName);
+                    }
+            }
+        }
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα στη βάση: " + e.getMessage());
+        }
+        return amount;
+    }
 }
