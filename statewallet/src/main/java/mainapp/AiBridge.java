@@ -1,75 +1,53 @@
 package mainapp;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AiBridge {
 
-    // Μέθοδος που ψάχνει παντού για να βρει το αρχείο Python
     private File findScript() {
         String currentDir = System.getProperty("user.dir");
-        System.out.println("📂 Φάκελος Εργασίας: " + currentDir);
         
-        File folder = new File(currentDir);
-        File[] listOfFiles = folder.listFiles();
-        
-        System.out.println("--- ΤΙ ΒΛΕΠΕΙ Η JAVA ΜΕΣΑ ΣΤΟΝ ΦΑΚΕΛΟ ---");
-        boolean found = false;
-        if (listOfFiles != null) {
-            for (File file : listOfFiles) {
-                // Τυπώνουμε το όνομα του αρχείου ανάμεσα σε αγκύλες [] για να δούμε αν υπάρχουν κενά
-                System.out.println("[" + file.getName() + "]");
-                
-                // Έλεγχος αν μοιάζει με το δικό μας
-                if (file.getName().contains("budget_brain")) {
-                    System.out.println("   >>> ΒΡΗΚΑ ΑΥΤΟ: " + file.getName() + " (Είναι αυτό που ψάχνουμε;)");
-                }
-                
-                if (file.getName().equals("budget_brain.py")) {
-                    found = true;
-                }
-            }
-        } else {
-            System.out.println("ΣΦΑΛΜΑ: Η Java δεν μπορεί να διαβάσει τα περιεχόμενα του φακέλου (null)!");
-        }
-        System.out.println("-------------------------------------------");
-
-        if (found) {
-            return new File(currentDir, "budget_brain.py");
-        }
-        
-        // Αν δεν το βρήκε στο root, ψάχνουμε στα backup locations
+        // Λίστα πιθανών τοποθεσιών
         String[] possibleLocations = {
+            "budget_brain.py",
+            "statewallet/budget_brain.py",
             "src/budget_brain.py",
             "src/main/java/mainapp/budget_brain.py"
         };
 
+        // Έλεγχος στο root
+        if (new File(currentDir, "budget_brain.py").exists()) {
+             return new File(currentDir, "budget_brain.py");
+        }
+
+        // Έλεγχος σε υποφακέλους
         for (String loc : possibleLocations) {
             File f = new File(currentDir, loc);
             if (f.exists()) return f;
         }
-
         return null; 
     }
 
-    private String runPythonScript(String... args) {
+    private String runPythonScript(String goal, String... args) {
         try {
-            // Καλόυμε τον ανιχνευτή
             File scriptFile = findScript();
-
-            if (scriptFile == null) {
-                return "ΣΦΑΛΜΑ: Το αρχείο 'budget_brain.py' δεν βρέθηκε πουθενά μέσα στον φάκελο " + System.getProperty("user.dir");
-            }
+            if (scriptFile == null) return "ΣΦΑΛΜΑ: Δεν βρέθηκε το budget_brain.py";
 
             List<String> command = new ArrayList<>();
             String os = System.getProperty("os.name").toLowerCase();
             command.add(os.contains("win") ? "python" : "python3");
             
-            // Δίνουμε την απόλυτη διαδρομή που μόλις βρήκαμε
+            // Επιβάλλουμε UTF-8 mode στην Python για να μην μπερδευτεί με το output
+            command.add("-X"); 
+            command.add("utf8");
+            
             command.add(scriptFile.getAbsolutePath()); 
             
             for (String arg : args) {
@@ -78,13 +56,30 @@ public class AiBridge {
 
             ProcessBuilder pb = new ProcessBuilder(command);
             
-            // Κρίσιμο για να βρει η Python το api_key.txt:
-            // Ορίζουμε ως "φάκελο εργασίας" τον φάκελο που βρίσκεται το script
-            pb.directory(scriptFile.getParentFile()); 
+            if (scriptFile.getParentFile() != null) {
+                pb.directory(scriptFile.getParentFile());
+            }
 
+            // Environment variables για πλήρη υποστήριξη UTF-8
+            pb.environment().put("PYTHONIOENCODING", "utf-8");
+            
             pb.redirectErrorStream(true);
+            
+            // Ξεκινάμε την Python
             Process process = pb.start();
 
+            // --- ΣΗΜΑΝΤΙΚΟ ---
+            // Στέλνουμε τον στόχο (goal) απευθείας στην Python μέσω "σωλήνα" (OutputStream).
+            // Χρησιμοποιούμε UTF-8 εδώ, οπότε αφού η Java έχει το σωστό κείμενο (λόγω CP737),
+            // θα φτάσει σωστά και στην Python.
+            try (BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8))) {
+                writer.write(goal);
+                writer.flush(); // Στέλνουμε τα δεδομένα τώρα
+            }
+            // -----------------
+
+            // Διαβάζουμε την απάντηση
             BufferedReader reader = new BufferedReader(
                 new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8)
             );
@@ -105,10 +100,10 @@ public class AiBridge {
     }
 
     public String getSpecificAdvice(String name, double amount, String goal) {
-        return runPythonScript("specific", name, String.valueOf(amount), goal);
+        return runPythonScript(goal, "specific", name, String.valueOf(amount));
     }
 
     public String getGlobalStrategy(String dbUrl, String goal) {
-        return runPythonScript("global", dbUrl, goal);
+        return runPythonScript(goal, "global", dbUrl);
     }
 }

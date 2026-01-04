@@ -1,39 +1,59 @@
 import sys
 import sqlite3
 import os
+import warnings
+import io
+
+# Ρύθμιση για να διαβάζει και να γράφει UTF-8 (ΕΛΛΗΝΙΚΑ) σωστά
+# Αγνοούμε την κωδικοποίηση της κονσόλας και επιβάλλουμε UTF-8 για την επικοινωνία με Java
+sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
+warnings.filterwarnings("ignore")
+os.environ["GRPC_VERBOSITY"] = "ERROR"
+os.environ["GLOG_minloglevel"] = "2"
+
 import google.generativeai as genai
 
-# --- ΡΥΘΜΙΣΗ ΑΣΦΑΛΕΙΑΣ ---
-# 1. Βρίσκουμε τον φάκελο που βρίσκεται ΑΥΤΟ το script (budget_brain.py)
+# --- ΕΥΡΕΣΗ ΦΑΚΕΛΟΥ & ΚΛΕΙΔΙΟΥ ---
 script_dir = os.path.dirname(os.path.abspath(__file__))
-
-# 2. Φτιάχνουμε την πλήρη διαδρομή για το api_key.txt
 key_path = os.path.join(script_dir, "api_key.txt")
 
 try:
-    # 3. Ανοίγουμε το αρχείο χρησιμοποιώντας την πλήρη διαδρομή
     with open(key_path, "r", encoding='utf-8') as f:
         API_KEY = f.read().strip()
 except FileNotFoundError:
-    print(f"Error: Το αρχείο δεν βρέθηκε στη διαδρομή: {key_path}")
-    # Χρήσιμο hint για debug:
-    print(f"Βεβαιώσου ότι το api_key.txt είναι στον φάκελο: {script_dir}")
+    print(f"Error: Missing api_key.txt in {script_dir}")
     sys.exit(1)
 
 genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-pro')
+
+# --- ΕΠΙΛΟΓΗ ΜΟΝΤΕΛΟΥ ---
+try:
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    preferred_order = ['models/gemini-1.5-flash', 'models/gemini-1.5-pro', 'models/gemini-pro']
+    selected_model_name = next((m for m in preferred_order if m in available_models), available_models[0] if available_models else None)
+    
+    if selected_model_name:
+        model = genai.GenerativeModel(selected_model_name.replace("models/", ""))
+    else:
+        sys.exit(1)
+except:
+    model = genai.GenerativeModel('gemini-pro')
+
+# ---------------------------------------------------------
 
 def analyze_specific(item_name, amount, goal):
-    """Λειτουργία 1: Συμβουλή για συγκεκριμένο λογαριασμό."""
     prompt = f"""
-    Είσαι οικονομικός σύμβουλος του κράτους.
-    Δεδομένα: Ο λογαριασμός '{item_name}' έχει τρέχον ύψος {amount} EUR.
-    Στόχος χρήστη: "{goal}".
+    Είσαι ψηφιακός οικονομικός σύμβουλος του κράτους.
+    Δεδομένα: Ο λογαριασμός '{item_name}' έχει ύψος {amount} EUR.
+    Στόχος Χρήστη: "{goal}".
     
-    Δώσε μια σύντομη συμβουλή (μέχρι 3-4 γραμμές):
-    1. Είναι ρεαλιστικός ο στόχος;
-    2. Τι συγκεκριμένη αλλαγή προτείνεις στο ποσό;
-    Απάντησε στα Ελληνικά.
+    ΟΔΗΓΙΕΣ:
+    1. Απάντησε ΜΟΝΟ με βάση τον στόχο.
+    2. Αν ο στόχος είναι εφικτός πρότεινε συγκεκριμένη αλλαγή στο ποσό (π.χ. μείωση 10%) αλλιώς εξήγησε γιατί δεν είναι εφικτός.
+    Απάντησε σύντομα στα Ελληνικά.
     """
     try:
         response = model.generate_content(prompt)
@@ -42,74 +62,68 @@ def analyze_specific(item_name, amount, goal):
         print(f"AI Error: {e}")
 
 def analyze_global(db_path, goal):
-    """Λειτουργία 2: Στρατηγική με βάση όλη τη βάση δεδομένων."""
     try:
-        # Καθαρισμός του path (η Java στέλνει jdbc:sqlite:...)
         real_path = db_path.replace("jdbc:sqlite:", "")
-        
         if not os.path.exists(real_path):
-            print(f"Error: Database file '{real_path}' not found.")
+            print(f"Error: DB not found at {real_path}")
             return
 
         conn = sqlite3.connect(real_path)
         cursor = conn.cursor()
-
-        # Χρήση των πινάκων που υπάρχουν στο PinakesImporter.java
+        
         cursor.execute("SELECT SUM(amount) FROM esoda")
-        res = cursor.fetchone()
-        total_income = res[0] if res and res[0] else 0
-
+        res = cursor.fetchone(); total_income = res[0] if res and res[0] else 0
         cursor.execute("SELECT SUM(amount) FROM eksoda")
-        res = cursor.fetchone()
-        total_expenses = res[0] if res and res[0] else 0
-
-        # Τα 3 "πιο ακριβά" Υπουργεία
-        cursor.execute("SELECT name, amount FROM ypourgeia ORDER BY amount DESC LIMIT 3")
-        top_ministries = cursor.fetchall()
-
+        res = cursor.fetchone(); total_expenses = res[0] if res and res[0] else 0
+        cursor.execute("SELECT name, amount FROM ypourgeia ORDER BY amount")
+        ministries = cursor.fetchall()
+        ministries_text = "\n".join([f"- {m[0]}: {m[1]:,.0f}€" for m in ministries])
         conn.close()
 
         summary = f"""
-        Σύνολο Εσόδων: {total_income:,.0f}€
-        Σύνολο Εξόδων: {total_expenses:,.0f}€
-        Ισοζύγιο: {total_income - total_expenses:,.0f}€
-        Top Δαπάνες Υπουργείων: {', '.join([f'{m[0]} ({m[1]:,.0f}€)' for m in top_ministries])}
+        Έσοδα: {total_income:,.0f}€ | Έξοδα: {total_expenses:,.0f}€
+        Διαφορά: {total_income - total_expenses:,.0f}€
+        Δαπάνες:
+        {ministries_text}
         """
 
         prompt = f"""
-        Είσαι ο Υπουργός Οικονομικών. Έχεις τη γενική εικόνα:
-        {summary}
+        Είσαι ο ψηφιακός βοηθός του Κράτους.
+        ΔΕΔΟΜΕΝΑ: {summary}
+        ΕΝΤΟΛΗ ΧΡΗΣΤΗ: "{goal}"
         
-        Ο Πρωθυπουργός σου ζητάει: "{goal}".
-        
-        1. Ανάλυσε αν ο στόχος είναι εφικτός.
-        2. Πρότεινε 3 στρατηγικές κινήσεις.
-        Απάντησε στα Ελληνικά, σοβαρά και επαγγελματικά.
+        ΟΔΗΓΙΕΣ:
+        1. Εστίασε ΑΠΟΚΛΕΙΣΤΙΚΑ στην εντολή "{goal}".
+        2. Αν ζητείται παροχή χρημάτων, βρες από ποιο από τα Υπουργεία θα κόψεις ώστε να είναι το λιγότερο ζημιωγώνω και περισσότερο οικονομικά ορθό.
+        3. Αν ο στόχος είναι εφικτός πρότεινε μέχρι 5 συγκεκριμένες κινήσεις με νούμερα αλλιώς εξήγησε γιατί δεν είναι εφικτός.
+        4. Ότι αλλαγές κάνεις να προσέχεις το έλλειμμα να μη ξεπερνάει το 3%
         """
         
         response = model.generate_content(prompt)
         print(response.text)
 
     except Exception as e:
-        print(f"Database/AI Error: {e}")
+        print(f"Error: {e}")
 
 if __name__ == "__main__":
-    # Τρόπος κλήσης από Java: python budget_brain.py [MODE] [ARGS...]
+    # --- ΔΙΑΒΑΣΜΑ ΑΠΟ STDIN ---
+    # Εδώ διαβάζει αυτό που στέλνει η Java "κρυφά" μέσω του σωλήνα
+    try:
+        goal = sys.stdin.read().strip()
+    except Exception:
+        goal = ""
+
+    if not goal:
+        goal = "Γενική ανάλυση"
+
     if len(sys.argv) < 2:
-        print("Error: No arguments provided")
         sys.exit(1)
-
-    # Φροντίζουμε για το encoding στα Windows/Maven περιβάλλοντα
-    if sys.stdout.encoding != 'utf-8':
-        sys.stdout.reconfigure(encoding='utf-8')
-
+    
     mode = sys.argv[1]
 
     if mode == "specific":
-        # Args: mode, name, amount, goal
-        analyze_specific(sys.argv[2], sys.argv[3], sys.argv[4])
+        if len(sys.argv) >= 4:
+            analyze_specific(sys.argv[2], sys.argv[3], goal)
     elif mode == "global":
-        # Args: mode, db_path, goal
-        analyze_global(sys.argv[2], sys.argv[3])
-    else:
-        print("Unknown mode")
+        if len(sys.argv) >= 3:
+            analyze_global(sys.argv[2], goal)

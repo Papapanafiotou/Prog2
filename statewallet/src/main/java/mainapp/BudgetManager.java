@@ -224,11 +224,8 @@ public final class BudgetManager {
     return -1; // Επιστρέφει -1 αν δεν βρεθεί το ID //
 }
 
-    // Στο BudgetManager.java
-
-/**
- * Βρίσκει το όνομα μιας εγγραφής βάσει ID.
- */
+/* Βρίσκει το όνομα μιας εγγραφής βάσει ID. Χρήσιμο για την επιλογή ID απο τον χρήστη στο specific_ai assistant 
+*/
 public String getNameById(String tableName, String idColName, int id) {
     String sql = "SELECT name FROM " + tableName + " WHERE " + idColName + " = ?";
     try (Connection conn = DriverManager.getConnection(url);

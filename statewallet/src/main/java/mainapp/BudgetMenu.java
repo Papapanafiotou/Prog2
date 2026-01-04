@@ -1,5 +1,4 @@
 package mainapp;
-
 import java.util.Scanner;
 
 /**
@@ -27,11 +26,11 @@ public final class BudgetMenu {
 
     private static final int OPTION_PERCENTANCE = 9;
 
-    private static final int OPTION_EXIT = 10;
-
-    private static final int OPTION_AI_SPECIFIC = 11;
+    private static final int OPTION_AI_SPECIFIC = 10;
     
-    private static final int OPTION_AI_GLOBAL = 12;
+    private static final int OPTION_AI_GLOBAL = 11;
+
+    private static final int OPTION_EXIT = 12;
 
 
     /** Πίνακας: Έσοδα. */
@@ -66,7 +65,8 @@ public final class BudgetMenu {
     public BudgetMenu(final String dbUrl) {
         this.url = dbUrl;
         this.manager = new BudgetManager(dbUrl);
-        this.scanner = new Scanner(System.in);
+        // Αναγκάζουμε τον Scanner να διαβάζει UTF-8, όπως το τερματικό του VS Code
+        this.scanner = new Scanner(System.in , "CP737");
     }
 
     /**
@@ -85,7 +85,9 @@ public final class BudgetMenu {
             System.out.println("7. Χαρακτηρισμός προϋπολογισμού");
             System.out.println("8. Εμφάνιση Μέγιστου-Ελάχιστου");
             System.out.println("9. Εμφάνιση Ποσοστού σε σχέση με σύνολο");
-            System.out.println("10. Έξοδος");
+            System.out.println("10. Χρήση AI για συγκεκριμένο λογαριασμό");
+            System.out.println("11. Χρήση AI για πιο γενική αναφορά");
+            System.out.println("12. Έξοδος");
             System.out.print("Επιλογή: ");
 
             int choice = scanner.nextInt();
@@ -328,7 +330,7 @@ public final class BudgetMenu {
             } else if (table == "eksoda") {
             total = manager.getTotal("eksoda");
             double t = total[0];
-             try {
+            try {
                 precent = (amount / t) * 100;
                 System.out.println("Το ποσοστό του " + name +
                 " στα συνολικά έξοδα έιναι " + precent + " %");
@@ -342,7 +344,7 @@ public final class BudgetMenu {
     // Στο BudgetMenu.java
 
 private void handleAiSpecific() {
-    System.out.println("\n--- AI Σύμβουλος (με βάση ID) ---");
+    System.out.println("\n--- AI Σύμβουλος για συγκεκριμένο λογαριασμό ---");
     System.out.println("Επιλέξτε πίνακα:");
     System.out.println("1. Έσοδα");
     System.out.println("2. Έξοδα");
@@ -393,18 +395,19 @@ private void handleAiSpecific() {
     System.out.printf("Τρέχον Ποσό: %,.2f €\n", amount);
     System.out.println("------------------------------------------------");
     
-    System.out.println("Τι θέλετε να πετύχετε; (π.χ. 'Μείωση κατά 10%', 'Αύξηση αποδοτικότητας')");
+    
+    System.out.println("Τι θέλετε να πετύχετε; ...");
     System.out.print("Στόχος: ");
     String goal = scanner.nextLine();
 
-    System.out.println("Επικοινωνία με το AI...");
+    System.out.println("Ο ψηφιακός βοηθός σκέφτεται...");
     AiBridge ai = new AiBridge();
     // Στέλνουμε το όνομα που βρήκαμε αυτόματα από τη βάση!
     System.out.println(ai.getSpecificAdvice(name, amount, goal));
 }
 
     private void handleAiGlobal() {
-        System.out.println("\n--- AI Στρατηγικός Σχεδιασμός (Global) ---");
+        System.out.println("\n--- AI Στρατηγικός Σχεδιασμός για γενική βοήθεια σε επίτευξη στόχων ---");
         System.out.println("Το AI θα μελετήσει τα σύνολα εσόδων/εξόδων και τα Υπουργεία.");
         System.out.println("Ποιο είναι το όραμά σας; (π.χ. 'Θέλω να μηδενίσω το έλλειμμα')");
         System.out.print("Στόχος: ");
