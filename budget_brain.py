@@ -54,7 +54,7 @@ def generate_safe(prompt):
         except exceptions.ResourceExhausted:
             # Εδώ ενεργοποιείται το Sleep
             print(f"⏳ Το σύστημα είναι φορτωμένο. Αναμονή 20 δευτερόλεπτα... (Προσπάθεια {attempt+1}/{max_retries})", flush=True)
-            time.sleep(20) # <--- Η Παύση
+            time.sleep(10) # <--- Η Παύση
         except Exception as e:
             return f"AI Error: {str(e)}"
             
@@ -75,7 +75,7 @@ def analyze_specific(item_name, amount, goal):
     Απάντησε σύντομα αλλά και περιεκτικά στα Ελληνικά.
     """
     print(generate_safe(prompt))
-    time.sleep(3)
+    
 
 def analyze_global(db_path, goal):
     try:
@@ -122,7 +122,7 @@ def analyze_global(db_path, goal):
         """
         
         print(generate_safe(prompt)) # Χρήση της safe μεθόδου
-        time.sleep(3)
+
 
     except Exception as e:
         print(f"Error: {e}")
