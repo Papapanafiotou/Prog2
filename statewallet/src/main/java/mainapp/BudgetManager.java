@@ -1,5 +1,4 @@
 package mainapp;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -207,4 +206,21 @@ public final class BudgetManager {
             return "Ισοσκελισμένος";
         }
     }
+
+    public double getCurrentAmount(String tableName, String idColName, int id) {
+    String sql = "SELECT amount FROM " + tableName + " WHERE " + idColName + " = ?";
+    try (Connection conn = DriverManager.getConnection(url);
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        
+        pstmt.setInt(1, id);
+        ResultSet rs = pstmt.executeQuery();
+        
+        if (rs.next()) {
+            return rs.getDouble("amount");
+        }
+    } catch (SQLException e) {
+        System.out.println("Σφάλμα κατά την ανάκτηση του ποσού: " + e.getMessage());
+    }
+    return -1; // Επιστρέφει -1 αν δεν βρεθεί το ID //
+}
 }

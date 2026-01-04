@@ -216,6 +216,14 @@ public final class BudgetMenu {
             System.out.print("Δώσε το ID (" + idColName + "): ");
             int id = Integer.parseInt(scanner.nextLine());
 
+            // εδω παιρνουμε το αρχικο ποσο του λογαριασμου //
+            double oldAmount = manager.getCurrentAmount(tableName, idColName, id);
+
+            if (oldAmount == -1) {
+                System.out.println("Το ID δεν βρέθηκε.");
+                return;
+            }
+            
             System.out.print("Δώσε το νέο ποσό: ");
             double newAmount = Double.parseDouble(scanner.nextLine());
 
@@ -223,11 +231,31 @@ public final class BudgetMenu {
             boolean success = manager.updateAmount(
                     tableName, idColName, id, newAmount);
 
-            if (success) {
-                System.out.println("Επιτυχής ενημέρωση!");
-            } else {
-                System.out.println("Αποτυχία: Δεν βρέθηκε το ID.");
+            // Αν η αλλαγη ξεπερνα το 50% ρωτατε ο χρηστης αν θελει να συνεχισει σε αυτη την αλλαγη //
+
+            if (!Constrains.isReasonableChange(oldAmount, newAmount)){
+                System.out.println("ΠΡΟΣΟΧΗ! Η αλλαγή που επιθυμείτε να κάνετε υπερβαίνει το 50% του αρχικού ποσού.");
+                System.out.println("Αν εξακολουθείτε να επιθυμείτε να αλλάξετε το ποσό με αυτόν τον τρόπο πληκτρολογήστε 1");
+                int confirm = scanner.nextInt();
+                scanner.nextLine(); 
+                if (confirm != 1){
+                    return;
+                }
             }
+
+            // Ελεγχος για ελλειμα μεγαλυτερο του 3% //
+            
+            double[] rev = manager.getTotal("esoda");
+            double[] exp = manager.getTotal("eksoda");
+            if (!Constrains.deficitLimit(rev[1], exp[1])) {
+                System.out.println("Η αλλαγή αυτή οδηγεί σε έλλειμα μεγαλύτερο του 3% που είναι το επιτρεπτό. Δεν γίνεται να συνεχίσετε.)");
+                return;
+            }
+            
+            success = manager.updateAmount(tableName, idColName, id, newAmount);
+            
+            if (success) System.out.println("Επιτυχής ενημέρωση!");
+            else System.out.println("Αποτυχία: Δεν βρέθηκε το ID.");
 
         } catch (NumberFormatException e) {
             System.out.println("Λάθος είσοδος (μόνο αριθμοί).");
