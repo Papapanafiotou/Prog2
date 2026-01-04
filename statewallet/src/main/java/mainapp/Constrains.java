@@ -32,9 +32,9 @@ public class Constrains {
     }
 
     public static boolean deficitLimit(double esoda, double eksoda){
-        if (esoda >= eksoda) 
+        if (esoda >= eksoda) {
             return true;
-        
+        }
         double defperc = ((eksoda - esoda) / esoda) * 100;
 
         if (defperc > 3) {
