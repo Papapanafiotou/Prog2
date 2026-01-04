@@ -18,7 +18,7 @@ import google.generativeai as genai
 
 # --- ΕΥΡΕΣΗ ΦΑΚΕΛΟΥ & ΚΛΕΙΔΙΟΥ ---
 script_dir = os.path.dirname(os.path.abspath(__file__))
-key_path = os.path.join(script_dir, "api_key.txt")
+key_path = os.path.join(script_dir, "statewallet", "api_key.txt")
 
 try:
     with open(key_path, "r", encoding='utf-8') as f:
