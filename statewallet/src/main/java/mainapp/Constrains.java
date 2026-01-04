@@ -35,7 +35,7 @@ public class Constrains {
         if (esoda >= eksoda) 
             return true;
         
-        double defperc = ((esoda - eksoda) / esoda) * 100;
+        double defperc = ((eksoda - esoda) / esoda) * 100;
 
         if (defperc > 3) {
             return false;
