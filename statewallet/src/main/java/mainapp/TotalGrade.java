@@ -62,7 +62,19 @@ public class TotalGrade {
         System.out.println("O τελικός βαθμός για το κράτος για το έτος " + year 
         + " με βάση τα στοιχεία είναι " + String.format("%.2f", finalGrade));
         double[] totalWeights = w.showTotalWeights(weights, wEcon, wEnv, wSoc);
-        e.showEconomicPie(totalWeights);
+        String[] names = {
+               "MΕΤΑΒΟΛΗ ΑΕΠ",
+               "ΔΗΜΟΣΙΟ ΧΡΕΟΣ ΩΣ ΠΟΣΟΣΤΟ ΑΕΠ",
+               "ΠΡΩΤΟΓΕΝΕΣ ΠΛΕΟΝΑΣΜΑ",
+               "ΑΝΑΝΕΩΣΙΜΕΣ ΠΗΓΕΣ ΕΝΕΡΓΕΙΑΣ",
+               "ΠΟΣΟΣΤΟ ΑΝΑΚΥΚΛΩΣΗΣ",
+               "ΜΕΤΑΒΟΛΗ ΡΥΠΩΝ",
+               "ΔΕΙΚΤΗΣ GINI",
+               "ΕΞΟΔΑ ΓΙΑ ΥΓΕΙΑ ΚΑΙ ΠΑΙΔΕΙΑ",
+               "ΠΟΣΟΣΤΟ ΑΝΘΡΩΠΩΝ ΜΕ ΠΡΟΒΛΗΜΑΤΑ ΨΥΧΙΚΗΣ ΥΓΕΙΑΣ",
+               "ΜΕΤΑΒΟΛΗ ΕΓΚΛΗΜΑΤΙΚΟΤΗΤΑΣ"
+            };
+        e.showPieChart(names, totalWeights);    
         } else if (answer == 1) {
           double[] weights = w.addWeights();
           double wGDP = weights[0];

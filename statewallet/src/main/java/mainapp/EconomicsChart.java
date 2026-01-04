@@ -14,72 +14,43 @@ import javafx.stage.Stage;
 
 public class EconomicsChart {
 
-    /**
-     * Δέχεται μόνο τον πίνακα με τα ποσοστά και εμφανίζει την πίτα
-     * με τα προκαθορισμένα ονόματα οικονομικών δεικτών.
-     */
-    public static void showEconomicPie(double[] percentages) {
-        // Ο πίνακας με τα ονόματα που ζήτησες
-        String[] names = {
-               "MΕΤΑΒΟΛΗ ΑΕΠ",
-               "ΔΗΜΟΣΙΟ ΧΡΕΟΣ ΩΣ ΠΟΣΟΣΤΟ ΑΕΠ",
-               "ΠΡΩΤΟΓΕΝΕΣ ΠΛΕΟΝΑΣΜΑ",
-               "ΑΝΑΝΕΩΣΙΜΕΣ ΠΗΓΕΣ ΕΝΕΡΓΕΙΑΣ",
-               "ΠΟΣΟΣΤΟ ΑΝΑΚΥΚΛΩΣΗΣ",
-               "ΜΕΤΑΒΟΛΗ ΡΥΠΩΝ",
-               "ΔΕΙΚΤΗΣ GINI",
-               "ΕΞΟΔΑ ΓΙΑ ΥΓΕΙΑ ΚΑΙ ΠΑΙΔΕΙΑ",
-               "ΠΟΣΟΣΤΟ ΑΝΘΡΩΠΩΝ ΜΕ ΠΡΟΒΛΗΜΑΤΑ ΨΥΧΙΚΗΣ ΥΓΕΙΑΣ",
-               "ΜΕΤΑΒΟΛΗ ΕΓΚΛΗΜΑΤΙΚΟΤΗΤΑΣ"
-            };
-
-        JFrame frame = new JFrame("Economic Indicators Chart");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public static void showPieChart(String[] names, double[] percentages) {
+        JFrame frame = new JFrame("Πίτα Δεδομένων");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                drawChart(g, names, percentages, getWidth(), getHeight());
+                // Καλούμε τη σχεδίαση περνώντας μόνο τα 2 δικά σου ορίσματα
+                drawPie(g, names, percentages);
             }
         };
 
         frame.add(panel);
-        frame.setSize(900, 500); // Λίγο πιο πλατύ για τα ονόματα
-        frame.setLocationRelativeTo(null);
+        frame.setSize(800, 500); 
         frame.setVisible(true);
     }
 
-    private static void drawChart(Graphics g, String[] labels, double[] values, int w, int h) {
+    // Εσωτερική μέθοδος σχεδίασης
+    private static void drawPie(Graphics g, String[] labels, double[] values) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int size = Math.min(w, h) - 120;
-        int x = 50, y = 60;
+        int size = 300; // Σταθερό μέγεθος για να μην μπερδεύουν τα ορίσματα
+        int x = 50, y = 50;
         double startAngle = 0;
-        
-        // Σταθερό Seed για να έχουν οι δείκτες πάντα τα ίδια χρώματα σε κάθε run
         Random rand = new Random(42); 
 
         for (int i = 0; i < values.length; i++) {
-            if (i >= labels.length) break; // Ασφάλεια αν τα values είναι > 10
-
             double arcAngle = values[i] * 360.0;
-            
-            // Παραγωγή χρώματος
             g2d.setColor(new Color(rand.nextInt(200), rand.nextInt(200), rand.nextInt(200)));
-            
-            // Σχεδίαση κομματιού
             g2d.fillArc(x, y, size, size, (int)Math.round(startAngle), (int)Math.round(arcAngle));
             
-            // Σχεδίαση Υπομνήματος
-            int lx = x + size + 50;
-            int ly = y + (i * 30);
-            g2d.fillRect(lx, ly, 20, 20);
+            // Legend (Υπόμνημα)
+            g2d.fillRect(x + size + 40, y + (i * 25), 15, 15);
             g2d.setColor(Color.BLACK);
-            g2d.setFont(new Font("Arial", Font.BOLD, 13));
-            String text = labels[i] + ": " + String.format("%.1f%%", values[i] * 100);
-            g2d.drawString(text, lx + 30, ly + 15);
+            g2d.drawString(labels[i], x + size + 65, y + (i * 25) + 12);
             
             startAngle += arcAngle;
         }
