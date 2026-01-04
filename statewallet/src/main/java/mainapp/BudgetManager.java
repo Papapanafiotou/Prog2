@@ -223,4 +223,26 @@ public final class BudgetManager {
     }
     return -1; // Επιστρέφει -1 αν δεν βρεθεί το ID //
 }
+
+    // Στο BudgetManager.java
+
+/**
+ * Βρίσκει το όνομα μιας εγγραφής βάσει ID.
+ */
+public String getNameById(String tableName, String idColName, int id) {
+    String sql = "SELECT name FROM " + tableName + " WHERE " + idColName + " = ?";
+    try (Connection conn = DriverManager.getConnection(url);
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        
+        pstmt.setInt(1, id);
+        ResultSet rs = pstmt.executeQuery();
+        
+        if (rs.next()) {
+            return rs.getString("name");
+        }
+    } catch (SQLException e) {
+        System.out.println("Σφάλμα ανάκτησης ονόματος: " + e.getMessage());
+    }
+    return null; // Αν δεν βρεθεί
+}
 }
