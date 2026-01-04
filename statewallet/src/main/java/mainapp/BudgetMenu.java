@@ -1,5 +1,10 @@
 package mainapp;
 
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -300,36 +305,83 @@ public final class BudgetMenu {
         System.out.printf("Συνολικό Ποσό(επεξεργασμένο): %,.2f%n", results[1]);
     }
 
-        public double getPrecentage() {
+        public void getPrecentage() {
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Για έσοδα πατήστε 1, για έξοδα πατήστε 2,"
+            + "για υπουργεία 3.");
+            String tablename = null;
+            do {
+               int answer = scan.nextInt();
+               switch (answer) {
+                case 1:
+                tablename = "esoda";
+                break;
+                case 2:
+                tablename = "eksoda";
+                break;
+                case 3:
+                tablename = "ypourgeia";
+                break;
+                default:
+                System.out.println("Η τιμή δεν είναι 1, 2 ή 3.");
+                break;
+                }
+            } while (tablename == null);
+            double[] total = manager.getTotal(tablename);
+            System.out.println("Για υπολογισμό μεμονωμένου ποσοστού "
+                + "πατήστε 1, για τον υπολογισμό όλων των ποσοστών πατήστε 2"
+            );
+            int answer2 = scan.nextInt();
+            if (answer2 == 1) { 
             double precent = 0.0;
             System.out.println("Για ποιον λογαριασμό θέλετε να υπολογίσετε " +
-             "το ποσοστό;");
+             "το ποσοστό;"); 
             String name = scanner.nextLine();
             Search search = new Search(url);
-            String table = search.searchTable(name);
-            double[] total;
-            double amount = search.searchAmount(name);
-            if (table == "esoda") {
-                total = manager.getTotal("esoda");
-                double t = total[0];
+            double amount = search.searchAmountInTable(name, tablename);
             try {
-                precent = (amount / t) * 100;
-                System.out.println("Το ποσοστό του " + name +
-                " στα συνολικά έσοδα έιναι " + precent + " %");
+                precent = (amount / total[1]) * 100; 
             } catch (ArithmeticException e) {
-                System.out.println("Δεν είναι δυνατή η διαίρεση με το μηδέν!");
+                System.out.println("Σφάλμα! Δεν μπορεί να γίνει διαίρεση με 0!");
             }
-            } else if (table == "eksoda") {
-            total = manager.getTotal("eksoda");
-            double t = total[0];
-             try {
-                precent = (amount / t) * 100;
-                System.out.println("Το ποσοστό του " + name +
-                " στα συνολικά έξοδα έιναι " + precent + " %");
-            } catch (ArithmeticException e) {
-                System.out.println("Δεν είναι δυνατή η διαίρεση με το μηδέν!");
+            System.out.println("Το ποσοστό του " + name + "είναι " 
+            + precent + " %" );
+        } else if (answer2 == 2) {
+           int rowCount = 0;
+           try (Connection conn = DriverManager.getConnection(url);
+               Statement stmtCount = conn.createStatement();
+               ResultSet rsCount = stmtCount.executeQuery("SELECT COUNT(*) FROM " + tablename)) {
+                if (rsCount.next()) {
+                  rowCount = rsCount.getInt(1);
+                }
+            } catch (SQLException e) {
+            System.err.println("Σφάλμα κατά την καταμέτρηση: " + e.getMessage());
+            return; 
             }
+            String[] namesArray = new String[rowCount];
+            double[] amountsArray = new double[rowCount];
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT name, amount FROM " + tablename)) {
+                int index = 0;
+                while (rs.next()) {
+                   namesArray[index] = rs.getString("name");
+                   amountsArray[index] = rs.getDouble("amount");
+                   index++;
+                }
+            
+            System.out.println("Επιτυχής ανάγνωση " + rowCount + " γραμμών.");
+            } catch (SQLException e) {
+               System.err.println("Σφάλμα κατά την ανάγνωση δεδομένων: " + e.getMessage());
+            }
+            System.out.println("----ΠΟΣΟΣΤΑ ΣΤΟΙΧΕΙΩΝ---");
+            for (int i = 0; i < namesArray.length; i++) {
+                System.out.println("ΣΤΟΙΧΕΙΟ: " + namesArray[i] +
+                    "ΠΟΣΟΣΤΟ: " + amountsArray[i]
+                );
+            }
+            EconomicsChart e = new EconomicsChart();
+            e.showPieChart(namesArray, amountsArray);
         } 
-        return precent;
     }
 }
