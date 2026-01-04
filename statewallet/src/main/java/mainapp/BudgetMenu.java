@@ -377,7 +377,7 @@ public final class BudgetMenu {
             System.out.println("----ΠΟΣΟΣΤΑ ΣΤΟΙΧΕΙΩΝ---");
             for (int i = 0; i < namesArray.length; i++) {
                 System.out.println("ΣΤΟΙΧΕΙΟ: " + namesArray[i] +
-                    "ΠΟΣΟΣΤΟ: " + amountsArray[i]
+                    " ΠΟΣΟΣΤΟ: " + String.format("%.4f",amountsArray[i]) + " %"
                 );
             }
             EconomicsChart e = new EconomicsChart();
