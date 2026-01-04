@@ -85,7 +85,7 @@ public final class BudgetMenu {
             System.out.println("6. Αναζήτηση στοιχείου");
             System.out.println("7. Χαρακτηρισμός προϋπολογισμού");
             System.out.println("8. Εμφάνιση Μέγιστου-Ελάχιστου");
-            System.out.println("9. Εμφάνιση Ποσοστού σε σχέση με σύνολο");
+            System.out.println("9. Εμφάνιση Ποσοστών σε σχέση με το σύνολο.");
             System.out.println("10. Έξοδος");
             System.out.print("Επιλογή: ");
 
@@ -374,14 +374,18 @@ public final class BudgetMenu {
             } catch (SQLException e) {
                System.err.println("Σφάλμα κατά την ανάγνωση δεδομένων: " + e.getMessage());
             }
+            double[] percentages = new double[amountsArray.length];
+
             System.out.println("----ΠΟΣΟΣΤΑ ΣΤΟΙΧΕΙΩΝ---");
             for (int i = 0; i < namesArray.length; i++) {
+                percentages[i] = (amountsArray[i] / total[1]) ;
+                double p = percentages[i] * 100;
                 System.out.println("ΣΤΟΙΧΕΙΟ: " + namesArray[i] +
-                    " ΠΟΣΟΣΤΟ: " + String.format("%.4f",amountsArray[i]) + " %"
+                    " ΠΟΣΟΣΤΟ: " + String.format("%.4f",p) + " %"
                 );
             }
             EconomicsChart e = new EconomicsChart();
-            e.showPieChart(namesArray, amountsArray);
+            e.showPieChart(namesArray, percentages);
         } 
     }
 }
