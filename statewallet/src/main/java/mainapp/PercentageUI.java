@@ -25,3 +25,11 @@ public class PercentageUI extends JFrame {
         JLabel result = new JLabel("");
         result.setBounds(20, 130, 250, 20);
         add(result);
+        calcButton.addActionListener(e -> {
+            String table;
+            switch (combo.getSelectedIndex()) {
+                case 0 -> table = "esoda";
+                case 1 -> table = "eksoda";
+                default -> table = "ypourgeia";
+            }
+            double[] total = manager.getTotal(table);
