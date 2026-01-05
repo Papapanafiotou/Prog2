@@ -94,6 +94,8 @@ public final class BudgetGUI extends JFrame {
     private JLabel budgetStatusLabel;
     /** Κουμπί εμφάνισης συνόλων. */
     private JButton showTotalsButton;
+    private JButton percentageButton;
+
 
     /**
      * Κατασκευαστής του BudgetGUI.
@@ -117,6 +119,7 @@ public final class BudgetGUI extends JFrame {
     private void initComponents() {
         backButton = new JButton("⬅ Πίσω");
         showTotalsButton = new JButton("📊 Εμφάνιση Συνόλων");
+        percentageButton = new JButton("📈 Ποσοστά");
         tableSelector = new JComboBox<>();
         tableSelector.addItem(new TableInfo("Έσοδα", "esoda", "code"));
         tableSelector.addItem(new TableInfo("Έξοδα", "eksoda", "code"));
@@ -163,6 +166,7 @@ public final class BudgetGUI extends JFrame {
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
         topPanel.add(showTotalsButton);
+        topPanel.add(percentageButton);
         topPanel.add(Box.createRigidArea(new Dimension(GAP_SIZE, 0)));
         topPanel.add(budgetStatusLabel);
 
@@ -241,6 +245,7 @@ public final class BudgetGUI extends JFrame {
             JOptionPane.PLAIN_MESSAGE
     );
 });
+percentageButton.addActionListener(e -> new PercentageUI(manager));
     }
 
     private void loadSelectedTable() {
