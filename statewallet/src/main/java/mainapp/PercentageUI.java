@@ -9,7 +9,7 @@ public class PercentageUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(null);
-                JLabel label = new JLabel("Επιλέξτε Πίνακα:");
+        JLabel label = new JLabel("Επιλέξτε Πίνακα:");
         label.setBounds(20, 20, 200, 20);
         add(label);
 
@@ -18,3 +18,7 @@ public class PercentageUI extends JFrame {
         );
         combo.setBounds(20, 50, 200, 25);
         add(combo);
+        
+        JButton calcButton = new JButton("Υπολογισμός");
+        calcButton.setBounds(20, 90, 200, 30);
+        add(calcButton);
