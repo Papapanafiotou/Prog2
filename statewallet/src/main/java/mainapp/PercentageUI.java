@@ -32,7 +32,7 @@ public class PercentageUI extends JFrame {
         controlPanel.add(new JLabel("Επιλέξτε Πίνακα:"));
         
         JComboBox<String> comboTable = new JComboBox<>(new String[]{
-            "esoda", "eksoda", "kratos", "ypourgeia", "apokentromenes"
+            "Έσοδα", "έξοδα", "Κράτος", "Υπουργεία", "Αποκεντρωμένες"
         });
         controlPanel.add(comboTable);
 
@@ -41,18 +41,17 @@ public class PercentageUI extends JFrame {
 
         add(controlPanel, BorderLayout.NORTH);
 
-        // Περιοχή Αποτελεσμάτων
         JTextArea resultArea = new JTextArea();
         resultArea.setFont(new Font("Consolas", Font.PLAIN, 12));
         resultArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(resultArea);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Logic για τον υπολογισμό
+        
         btnCalculate.addActionListener(e -> {
             String table = (String) comboTable.getSelectedItem();
             double[] totals = manager.getTotal(table);
-            double totalAmount = totals[1]; // Χρησιμοποιούμε το τρέχον (επεξεργασμένο) σύνολο
+            double totalAmount = totals[1]; // Χρησιμοποιούμε το τρέχον  σύνολο
 
             if (totalAmount <= 0) {
                 resultArea.setText("Σφάλμα: Το συνολικό ποσό του πίνακα είναι 0 ή αρνητικό.");

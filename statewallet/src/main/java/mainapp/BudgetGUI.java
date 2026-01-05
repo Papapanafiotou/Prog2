@@ -166,7 +166,6 @@ public final class BudgetGUI extends JFrame {
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
         topPanel.add(showTotalsButton);
-        topPanel.add(percentageButton);
         topPanel.add(Box.createRigidArea(new Dimension(GAP_SIZE, 0)));
         topPanel.add(budgetStatusLabel);
 
@@ -182,6 +181,7 @@ public final class BudgetGUI extends JFrame {
         updatePanel.add(new JLabel("Νέο ποσό:"));
         updatePanel.add(amountField);
         updatePanel.add(updateButton);
+        updatePanel.add(percentageButton);
 
         JPanel changesPanel = new JPanel(new BorderLayout());
         changesPanel.setBorder(
