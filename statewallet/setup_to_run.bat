@@ -26,6 +26,7 @@ REM === Downloading essential libraries for Python scripts ===
 echo [INFO] Downloading essential libraries...
 python -m pip install --upgrade pip
 python -m pip install PyMuPDF
+python -m pip install google-genai
 
 echo.
 echo [OK] The Python script is ready to run!
