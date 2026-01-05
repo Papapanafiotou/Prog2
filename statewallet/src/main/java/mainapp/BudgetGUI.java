@@ -13,8 +13,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Locale;
 import java.util.Objects;
-import java.util.Locale; 
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -40,9 +40,9 @@ public final class BudgetGUI extends JFrame {
     private static final long serialVersionUID = 1L;
 
     /** Πλάτος παραθύρου. */
-    private static final int WINDOW_WIDTH = 950;
+    private static final int WINDOW_WIDTH = 1200;
     /** Ύψος παραθύρου. */
-    private static final int WINDOW_HEIGHT = 600;
+    private static final int WINDOW_HEIGHT = 750;
     /** Μέγεθος πεδίου ID. */
     private static final int ID_FIELD_SIZE = 8;
     /** Μέγεθος πεδίου ποσού. */
