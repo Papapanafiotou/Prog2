@@ -1,11 +1,15 @@
 package mainapp;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
+import javafx.application.Platform;
 
 /**
  * Το μενού κονσόλας της εφαρμογής.
@@ -26,17 +30,18 @@ public final class BudgetMenu {
     private static final int OPTION_SEARCH = 6;
     /** Επιλογή: Χαρακτηρισμός. */
     private static final int OPTION_CHAR = 7;
-    /** Επιλογή: Έξοδος. */
-
+    /** Επιλογή: Μέγιστο-Ελάχιστο. */
     private static final int OPTION_MINMAX = 8;
-
+    /** Επιλογή: Ποσοστό. */
     private static final int OPTION_PERCENTANCE = 9;
-
+    /** Επιλογή: AI Specific. */
     private static final int OPTION_AI_SPECIFIC = 10;
-    
+    /** Επιλογή: AI Global. */
     private static final int OPTION_AI_GLOBAL = 11;
-
-    private static final int OPTION_EXIT = 12;
+    /** Επιλογή: Διάγραμμα (JavaFX). */
+    private static final int OPTION_DIAGRAM = 12;
+    /** Επιλογή: Έξοδος. */
+    private static final int OPTION_EXIT = 13;
 
 
     /** Πίνακας: Έσοδα. */
@@ -93,11 +98,19 @@ public final class BudgetMenu {
             System.out.println("9. Εμφάνιση Ποσοστού σε σχέση με σύνολο");
             System.out.println("10. Χρήση AI για συγκεκριμένο λογαριασμό");
             System.out.println("11. Χρήση AI για πιο γενική αναφορά");
-            System.out.println("12. Έξοδος");
+            System.out.println("12. Εμφάνιση Διαγράμματος Εξέλιξης");
+            System.out.println("13. Έξοδος");
             System.out.print("Επιλογή: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            } catch (Exception e) {
+                System.out.println("Μη έγκυρη είσοδος.");
+                scanner.nextLine();
+                continue;
+            }
 
             switch (choice) {
                 case OPTION_SHOW -> showBudgetSelection();
@@ -119,6 +132,8 @@ public final class BudgetMenu {
                 case OPTION_EXIT -> {
                     System.out.println("Έξοδος...");
                     scanner.close();
+                    Platform.exit();
+                    System.exit(0);
                     return;
                 }
                 case OPTION_AI_SPECIFIC -> handleAiSpecific();
@@ -128,6 +143,7 @@ public final class BudgetMenu {
                     minmaxfinder.showMinMax();
                 }
                 case OPTION_PERCENTANCE -> getPrecentage();
+                case OPTION_DIAGRAM -> showDiagram();
                 default -> System.out.println("Λάθος επιλογή.");
             }
         }
@@ -242,8 +258,7 @@ public final class BudgetMenu {
             double newAmount = Double.parseDouble(scanner.nextLine());
 
             newAmount = Constrains.negativeAmount(scanner, newAmount);
-            boolean success = manager.updateAmount(
-                    tableName, idColName, id, newAmount);
+            boolean success;
 
             // Αν η αλλαγη ξεπερνα το 50% ρωτατε ο χρηστης αν θελει να συνεχισει σε αυτη την αλλαγη //
 
@@ -314,38 +329,39 @@ public final class BudgetMenu {
         System.out.printf("Συνολικό Ποσό(επεξεργασμένο): %,.2f%n", results[1]);
     }
 
-        public void getPrecentage() {
-            Scanner scan = new Scanner(System.in);
-            System.out.println("Για έσοδα πατήστε 1, για έξοδα πατήστε 2,"
-            + "για υπουργεία 3.");
-            String tablename = null;
-            do {
-               int answer = scan.nextInt();
-               switch (answer) {
-                case 1:
-                tablename = "esoda";
-                break;
-                case 2:
-                tablename = "eksoda";
-                break;
-                case 3:
-                tablename = "ypourgeia";
-                break;
-                default:
-                System.out.println("Η τιμή δεν είναι 1, 2 ή 3.");
-                break;
-                }
-            } while (tablename == null);
-            double[] total = manager.getTotal(tablename);
-            System.out.println("Για υπολογισμό μεμονωμένου ποσοστού "
-                + "πατήστε 1, για τον υπολογισμό όλων των ποσοστών πατήστε 2"
-            );
-            int answer2 = scan.nextInt();
-            if (answer2 == 1) { 
+    public void getPrecentage() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Για έσοδα πατήστε 1, για έξοδα πατήστε 2,"
+        + "για υπουργεία 3.");
+        String tablename = null;
+        do {
+            int answer = scan.nextInt();
+            switch (answer) {
+            case 1:
+            tablename = "esoda";
+            break;
+            case 2:
+            tablename = "eksoda";
+            break;
+            case 3:
+            tablename = "ypourgeia";
+            break;
+            default:
+            System.out.println("Η τιμή δεν είναι 1, 2 ή 3.");
+            break;
+            }
+        } while (tablename == null);
+        double[] total = manager.getTotal(tablename);
+        System.out.println("Για υπολογισμό μεμονωμένου ποσοστού "
+            + "πατήστε 1, για τον υπολογισμό όλων των ποσοστών πατήστε 2"
+        );
+        int answer2 = scan.nextInt();
+        if (answer2 == 1) { 
             double precent = 0.0;
             System.out.println("Για ποιον λογαριασμό θέλετε να υπολογίσετε " +
              "το ποσοστό;"); 
-            String name = scanner.nextLine();
+            scan.nextLine(); // clear buffer
+            String name = scan.nextLine();
             Search search = new Search(url);
             double amount = search.searchAmountInTable(name, tablename);
             try {
@@ -355,14 +371,14 @@ public final class BudgetMenu {
                 System.out.println("Σφάλμα! Δεν μπορεί να γίνει διαίρεση με 0!");
             }
              
-            } else if (answer2 == 2) {
-                int rowCount = 0;
-                try (Connection conn = DriverManager.getConnection(url);
-                Statement stmtCount = conn.createStatement();
-                ResultSet rsCount = stmtCount.executeQuery("SELECT COUNT(*) FROM " + tablename)) {
-                if (rsCount.next()) {
-                  rowCount = rsCount.getInt(1);
-                }
+        } else if (answer2 == 2) {
+            int rowCount = 0;
+            try (Connection conn = DriverManager.getConnection(url);
+            Statement stmtCount = conn.createStatement();
+            ResultSet rsCount = stmtCount.executeQuery("SELECT COUNT(*) FROM " + tablename)) {
+            if (rsCount.next()) {
+                rowCount = rsCount.getInt(1);
+            }
             } catch (SQLException e) {
             System.err.println("Σφάλμα κατά την καταμέτρηση: " + e.getMessage());
             return; 
@@ -397,8 +413,6 @@ public final class BudgetMenu {
             e.showPieChart(namesArray, percentages);
         } 
     }
-
-    
 
     private void handleAiSpecific() {
         System.out.println("\n--- AI Σύμβουλος για συγκεκριμένο λογαριασμό ---");
@@ -452,7 +466,6 @@ public final class BudgetMenu {
         System.out.printf("Τρέχον Ποσό: %,.2f €\n", amount);
         System.out.println("------------------------------------------------");
     
-    
         System.out.println("Τι θέλετε να πετύχετε; ...");
         System.out.print("Στόχος: ");
         String goal = scanner.nextLine();
@@ -475,5 +488,112 @@ public final class BudgetMenu {
         // Περνάμε το url (π.χ. jdbc:sqlite:budget_2024.db) που έχει το BudgetMenu
         System.out.println(ai.getGlobalStrategy(this.url, goal));
     }
-}
 
+    /**
+     * Υπολογίζει και εμφανίζει διαγραμματικά την εξέλιξη των ποσών (2023-2026) σε παράθυρο JavaFX.
+     */
+    private void showDiagram() {
+        // 1. Επιλογή Πίνακα
+        System.out.println("\nΓια ποιον πίνακα θέλετε διάγραμμα;");
+        System.out.println("1. Έσοδα");
+        System.out.println("2. Έξοδα");
+        System.out.println("3. Υπουργεία");
+        System.out.print("Επιλογή: ");
+
+        int tableChoice;
+        try {
+            tableChoice = scanner.nextInt();
+            scanner.nextLine();
+        } catch (Exception e) {
+            System.out.println("Μη έγκυρη είσοδος.");
+            scanner.nextLine();
+            return;
+        }
+
+        String tableName;
+        switch (tableChoice) {
+            case 1 -> tableName = "esoda";
+            case 2 -> tableName = "eksoda";
+            case 3 -> tableName = "ypourgeia";
+            default -> {
+                System.out.println("Άκυρη επιλογή.");
+                return;
+            }
+        }
+
+        // 2. Επιλογή Τύπου Δεδομένων
+        System.out.println("\nΠοια δεδομένα θέλετε να προβάλετε;");
+        System.out.println("1. Αρχικά (Original)");
+        System.out.println("2. Τρέχοντα/Επεξεργασμένα (Current)");
+        System.out.print("Επιλογή: ");
+
+        int dataChoice;
+        try {
+            dataChoice = scanner.nextInt();
+            scanner.nextLine();
+        } catch (Exception e) {
+            System.out.println("Μη έγκυρη είσοδος.");
+            scanner.nextLine();
+            return;
+        }
+
+        if (dataChoice != 1 && dataChoice != 2) {
+            System.out.println("Άκυρη επιλογή τύπου δεδομένων.");
+            return;
+        }
+
+        System.out.println("\nΥπολογισμός δεδομένων για τα έτη 2023-2026 και άνοιγμα παραθύρου...");
+        
+        // Συλλογή δεδομένων
+        Map<Integer, Double> yearlyTotals = new LinkedHashMap<>();
+        DatabaseFinder finder = new DatabaseFinder();
+
+        for (int year = 2023; year <= 2026; year++) {
+            String dbName = "budget_" + year + ".db";
+            String currentDbUrl = "jdbc:sqlite:" + dbName;
+            boolean tempCreated = false;
+
+            if (!finder.findYearbase(year)) {
+                try {
+                    Csvtopdf.run(year);
+                    PinakesImporter importer = new PinakesImporter(currentDbUrl);
+                    importer.importAll();
+                    tempCreated = true;
+                } catch (Exception e) {
+                    System.out.println("Σφάλμα για το έτος " + year);
+                    continue;
+                }
+            }
+
+            BudgetManager tempManager = new BudgetManager(currentDbUrl);
+            double[] totals = tempManager.getTotal(tableName);
+            double selectedTotal = (dataChoice == 1) ? totals[0] : totals[1];
+            yearlyTotals.put(year, selectedTotal);
+
+            if (tempCreated) {
+                try {
+                    File dbFile = new File(dbName);
+                    dbFile.delete();
+                } catch (Exception e) { /* ignore */ }
+            }
+        }
+
+        // --- ΕΚΚΙΝΗΣΗ JAVAFX ---
+        try {
+            // Το Platform.startup ξεκινάει το JavaFX toolkit. 
+            // Αν κληθεί δεύτερη φορά στην ίδια εκτέλεση, πετάει exception, γι' αυτό το try-catch.
+            Platform.startup(() -> {});
+        } catch (IllegalStateException e) {
+
+        }
+
+        String typeLabel = (dataChoice == 1) ? "ΑΡΧΙΚΑ" : "ΤΡΕΧΟΝΤΑ";
+        String chartTitle = "Διάγραμμα Εξέλιξης: " + tableName.toUpperCase() + " (" + typeLabel + ")";
+
+        // Εκτέλεση κώδικα UI στο JavaFX Thread
+        Platform.runLater(() -> {
+            ChartWindow window = new ChartWindow(chartTitle, yearlyTotals);
+            window.show();
+        });
+    }
+}
