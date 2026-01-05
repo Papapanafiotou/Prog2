@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
+import java.util.Locale; 
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -226,48 +227,44 @@ public final class BudgetGUI extends JFrame {
         updateButton.addActionListener(e -> updateAmount());
         showChangesButton.addActionListener(e -> loadChangesFromDb());
         showTotalsButton.addActionListener(e -> {
-    TableInfo info = (TableInfo) tableSelector.getSelectedItem();
+            TableInfo info = (TableInfo) tableSelector.getSelectedItem();
 
-    if (info == null) {
-        JOptionPane.showMessageDialog(this,
-                "Δεν έχει επιλεγεί πίνακας.",
-                "Προειδοποίηση",
-                JOptionPane.WARNING_MESSAGE);
-        return;
-    }
+            if (info == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Δεν έχει επιλεγεί πίνακας.",
+                        "Προειδοποίηση",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-    TotalsPanel panel = new TotalsPanel(manager);
-    panel.updateTotals(info.tableName);
+            TotalsPanel panel = new TotalsPanel(manager);
+            panel.updateTotals(info.tableName);
 
-    JOptionPane.showMessageDialog(
-            this,
-            panel,
-            "Σύνολα Πίνακα: " + info.displayName,
-            JOptionPane.PLAIN_MESSAGE
-    );
-});
-    aiButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(
+                    this,
+                    panel,
+                    "Σύνολα Πίνακα: " + info.displayName,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+        });
+        aiButton.addActionListener(e -> {
             // Έλεγχος αν υπάρχει επιλεγμένη γραμμή στον πίνακα
             String selectedId = null;
             String selectedName = null;
             String selectedAmount = null;
-            
+
             int row = dataTable.getSelectedRow();
             if (row >= 0) {
                 // Στήλη 0 = ID
                 // Στήλη 1 = Περιγραφή (Όνομα)
                 // Στήλη 3 = Τρέχον Ποσό
                 Object idVal = tableModel.getValueAt(row, 0);
-                Object nameVal = tableModel.getValueAt(row, 1); 
+                Object nameVal = tableModel.getValueAt(row, 1);
                 Object amountVal = tableModel.getValueAt(row, 3);
-                
+
                 selectedId = Objects.toString(idVal, "");
                 selectedName = Objects.toString(nameVal, "");
                 selectedAmount = Objects.toString(amountVal, "");
-            } else {
-                // Αν δεν έχει επιλέξει γραμμή, μπορεί να ανοίξει το παράθυρο
-                // αλλά θα πάει στο tab "Γενική Στρατηγική"
-                // (Προαιρετικά μπορείς να του πετάξεις μήνυμα να επιλέξει)
             }
 
             // Περνάμε το ID, Name, Amount στον νέο constructor
@@ -289,10 +286,11 @@ public final class BudgetGUI extends JFrame {
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Object[] row = new Object[]{
-                    rs.getInt(info.idColumnName),
-                    rs.getString("name"),
-                    rs.getDouble("original_amount"),
-                    rs.getDouble("amount")
+                        rs.getInt(info.idColumnName),
+                        rs.getString("name"),
+                        // Αλλαγή: Μορφοποίηση σε String για αποφυγή επιστημονικής μορφής (Ε)
+                        String.format(Locale.US, "%.2f", rs.getDouble("original_amount")),
+                        String.format(Locale.US, "%.2f", rs.getDouble("amount"))
                 };
                 tableModel.addRow(row);
             }
@@ -361,11 +359,11 @@ public final class BudgetGUI extends JFrame {
         boolean foundAny = false;
 
         TableInfo[] tables = new TableInfo[]{
-            new TableInfo("Έσοδα", "esoda", "code"),
-            new TableInfo("Έξοδα", "eksoda", "code"),
-            new TableInfo("Κράτος", "kratos", "number"),
-            new TableInfo("Υπουργεία", "ypourgeia", "number"),
-            new TableInfo("Αποκεντρωμένες", "apokentromenes", "number")
+                new TableInfo("Έσοδα", "esoda", "code"),
+                new TableInfo("Έξοδα", "eksoda", "code"),
+                new TableInfo("Κράτος", "kratos", "number"),
+                new TableInfo("Υπουργεία", "ypourgeia", "number"),
+                new TableInfo("Αποκεντρωμένες", "apokentromenes", "number")
         };
         for (TableInfo info : tables) {
             String sql = "SELECT " + info.idColumnName
@@ -384,7 +382,7 @@ public final class BudgetGUI extends JFrame {
                         tableHasChanges = true;
                         foundAny = true;
                     }
-                    sb.append(String.format(
+                    sb.append(String.format(Locale.US,
                             "ID: %-3d | %-20s | Αρχικό: %.2f | Νέο: %.2f%n",
                             rs.getInt(info.idColumnName),
                             rs.getString("name"),
