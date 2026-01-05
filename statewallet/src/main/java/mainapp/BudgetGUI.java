@@ -245,6 +245,9 @@ public final class BudgetGUI extends JFrame {
             JOptionPane.PLAIN_MESSAGE
     );
 });
+percentageButton.addActionListener(e -> {
+    new PercentageUI(manager, dbPath);
+});
     }
 
     private void loadSelectedTable() {
