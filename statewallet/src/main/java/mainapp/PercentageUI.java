@@ -22,3 +22,6 @@ public class PercentageUI extends JFrame {
         JButton calcButton = new JButton("Υπολογισμός");
         calcButton.setBounds(20, 90, 200, 30);
         add(calcButton);
+        JLabel result = new JLabel("");
+        result.setBounds(20, 130, 250, 20);
+        add(result);
