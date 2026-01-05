@@ -1,10 +1,10 @@
 package mainapp;
 
 import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 
 /**
@@ -32,7 +32,11 @@ public final class BudgetMenu {
 
     private static final int OPTION_PERCENTANCE = 9;
 
-    private static final int OPTION_EXIT = 10;
+    private static final int OPTION_AI_SPECIFIC = 10;
+    
+    private static final int OPTION_AI_GLOBAL = 11;
+
+    private static final int OPTION_EXIT = 12;
 
 
     /** Πίνακας: Έσοδα. */
@@ -67,7 +71,8 @@ public final class BudgetMenu {
     public BudgetMenu(final String dbUrl) {
         this.url = dbUrl;
         this.manager = new BudgetManager(dbUrl);
-        this.scanner = new Scanner(System.in, "CP737");
+        // Αναγκάζουμε τον Scanner να διαβάζει UTF-8, όπως το τερματικό του VS Code
+        this.scanner = new Scanner(System.in , "CP737");
     }
 
     /**
@@ -85,8 +90,10 @@ public final class BudgetMenu {
             System.out.println("6. Αναζήτηση στοιχείου");
             System.out.println("7. Χαρακτηρισμός προϋπολογισμού");
             System.out.println("8. Εμφάνιση Μέγιστου-Ελάχιστου");
-            System.out.println("9. Εμφάνιση Ποσοστών σε σχέση με το σύνολο.");
-            System.out.println("10. Έξοδος");
+            System.out.println("9. Εμφάνιση Ποσοστού σε σχέση με σύνολο");
+            System.out.println("10. Χρήση AI για συγκεκριμένο λογαριασμό");
+            System.out.println("11. Χρήση AI για πιο γενική αναφορά");
+            System.out.println("12. Έξοδος");
             System.out.print("Επιλογή: ");
 
             int choice = scanner.nextInt();
@@ -114,6 +121,8 @@ public final class BudgetMenu {
                     scanner.close();
                     return;
                 }
+                case OPTION_AI_SPECIFIC -> handleAiSpecific();
+                case OPTION_AI_GLOBAL -> handleAiGlobal();
                 case OPTION_MINMAX -> {
                     MinMaX minmaxfinder = new MinMaX(url);
                     minmaxfinder.showMinMax();
@@ -344,13 +353,12 @@ public final class BudgetMenu {
             } catch (ArithmeticException e) {
                 System.out.println("Σφάλμα! Δεν μπορεί να γίνει διαίρεση με 0!");
             }
-            System.out.println("Το ποσοστό του " + name + "είναι " 
-            + precent + " %" );
-        } else if (answer2 == 2) {
-           int rowCount = 0;
-           try (Connection conn = DriverManager.getConnection(url);
-               Statement stmtCount = conn.createStatement();
-               ResultSet rsCount = stmtCount.executeQuery("SELECT COUNT(*) FROM " + tablename)) {
+             
+            } else if (answer2 == 2) {
+                int rowCount = 0;
+                try (Connection conn = DriverManager.getConnection(url);
+                Statement stmtCount = conn.createStatement();
+                ResultSet rsCount = stmtCount.executeQuery("SELECT COUNT(*) FROM " + tablename)) {
                 if (rsCount.next()) {
                   rowCount = rsCount.getInt(1);
                 }
@@ -388,4 +396,83 @@ public final class BudgetMenu {
             e.showPieChart(namesArray, percentages);
         } 
     }
+
+    
+
+    private void handleAiSpecific() {
+        System.out.println("\n--- AI Σύμβουλος για συγκεκριμένο λογαριασμό ---");
+        System.out.println("Επιλέξτε πίνακα:");
+        System.out.println("1. Έσοδα");
+        System.out.println("2. Έξοδα");
+        System.out.println("3. Κράτος");
+        System.out.println("4. Υπουργεία");
+        System.out.print("Επιλογή: ");
+
+        int tableChoice = scanner.nextInt();
+        scanner.nextLine(); // Καθαρισμός buffer
+
+        String tableName;
+        String idColName;
+
+        // Αντιστοίχιση επιλογής με ονόματα πινάκων (όπως στο changeBudget)
+        switch (tableChoice) {
+            case 1 -> { tableName = "esoda"; idColName = "code"; }
+            case 2 -> { tableName = "eksoda"; idColName = "code"; }
+            case 3 -> { tableName = "kratos"; idColName = "number"; }
+            case 4 -> { tableName = "ypourgeia"; idColName = "number"; }
+            default -> {
+                System.out.println("Άκυρη επιλογή πίνακα.");
+                return;
+            }
+        }
+
+        System.out.print("Δώσε το ID (" + idColName + "): ");
+        if (!scanner.hasNextInt()) {
+            System.out.println("Πρέπει να δώσετε αριθμό!");
+            scanner.nextLine();
+            return;
+        }
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        // 1. Βρίσκουμε το όνομα από το ID (Νέα μέθοδος)
+        String name = manager.getNameById(tableName, idColName, id);
+    
+        // 2. Βρίσκουμε το ποσό από το ID (Υπάρχουσα μέθοδος)
+        double amount = manager.getCurrentAmount(tableName, idColName, id);
+
+        if (name == null || amount == -1) {
+            System.out.println("Δεν βρέθηκε εγγραφή με αυτό το ID.");
+            return;
+        }
+
+        System.out.println("------------------------------------------------");
+        System.out.println("Επιλέξατε: " + name);
+        System.out.printf("Τρέχον Ποσό: %,.2f €\n", amount);
+        System.out.println("------------------------------------------------");
+    
+    
+        System.out.println("Τι θέλετε να πετύχετε; ...");
+        System.out.print("Στόχος: ");
+        String goal = scanner.nextLine();
+
+        System.out.println("Ο ψηφιακός βοηθός σκέφτεται...");
+        AiBridge ai = new AiBridge();
+        // Στέλνουμε το όνομα που βρήκαμε αυτόματα από τη βάση!
+        System.out.println(ai.getSpecificAdvice(name, amount, goal));
+    }
+
+    private void handleAiGlobal() {
+        System.out.println("\n--- AI Στρατηγικός Σχεδιασμός για γενική βοήθεια σε επίτευξη στόχων ---");
+        System.out.println("Το AI θα μελετήσει τα σύνολα εσόδων/εξόδων και τα Υπουργεία.");
+        System.out.println("Ποιο είναι το όραμά σας; (π.χ. 'Θέλω να μηδενίσω το έλλειμμα')");
+        System.out.print("Στόχος: ");
+        String goal = scanner.nextLine();
+        
+        System.out.println("Ανάλυση βάσης δεδομένων...");
+        AiBridge ai = new AiBridge();
+        // Περνάμε το url (π.χ. jdbc:sqlite:budget_2024.db) που έχει το BudgetMenu
+        System.out.println(ai.getGlobalStrategy(this.url, goal));
+    }
 }
+

@@ -22,6 +22,7 @@ public final class StateWallet {
         Log log = new Log();
         boolean login = log.logMenu();
 
+
         // 2. Αν επιτευχθεί το login, επιλογή έτους προϋπολογισμού
         if (login) {
             DatabaseChooser chooser = new DatabaseChooser();

@@ -94,6 +94,8 @@ public final class BudgetGUI extends JFrame {
     private JLabel budgetStatusLabel;
     /** Κουμπί εμφάνισης συνόλων. */
     private JButton showTotalsButton;
+    /** Κουμπί AI. */
+    private JButton aiButton;
 
     /**
      * Κατασκευαστής του BudgetGUI.
@@ -152,6 +154,8 @@ public final class BudgetGUI extends JFrame {
         changesArea.setEditable(false);
         changesArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN,
                 CONSOLE_FONT_SIZE));
+        aiButton = new JButton("🤖 AI Σύμβουλος");
+        aiButton.setBackground(new Color(230, 230, 255)); // Ελαφρύ μπλε για να ξεχωρίζει
     }
 
     private void initLayout() {
@@ -163,6 +167,7 @@ public final class BudgetGUI extends JFrame {
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
         topPanel.add(showTotalsButton);
+        topPanel.add(aiButton);
         topPanel.add(Box.createRigidArea(new Dimension(GAP_SIZE, 0)));
         topPanel.add(budgetStatusLabel);
 
@@ -241,6 +246,33 @@ public final class BudgetGUI extends JFrame {
             JOptionPane.PLAIN_MESSAGE
     );
 });
+    aiButton.addActionListener(e -> {
+            // Έλεγχος αν υπάρχει επιλεγμένη γραμμή στον πίνακα
+            String selectedId = null;
+            String selectedName = null;
+            String selectedAmount = null;
+            
+            int row = dataTable.getSelectedRow();
+            if (row >= 0) {
+                // Στήλη 0 = ID
+                // Στήλη 1 = Περιγραφή (Όνομα)
+                // Στήλη 3 = Τρέχον Ποσό
+                Object idVal = tableModel.getValueAt(row, 0);
+                Object nameVal = tableModel.getValueAt(row, 1); 
+                Object amountVal = tableModel.getValueAt(row, 3);
+                
+                selectedId = Objects.toString(idVal, "");
+                selectedName = Objects.toString(nameVal, "");
+                selectedAmount = Objects.toString(amountVal, "");
+            } else {
+                // Αν δεν έχει επιλέξει γραμμή, μπορεί να ανοίξει το παράθυρο
+                // αλλά θα πάει στο tab "Γενική Στρατηγική"
+                // (Προαιρετικά μπορείς να του πετάξεις μήνυμα να επιλέξει)
+            }
+
+            // Περνάμε το ID, Name, Amount στον νέο constructor
+            new AiAdvisorDialog(this, dbPath, selectedId, selectedName, selectedAmount).setVisible(true);
+        });
     }
 
     private void loadSelectedTable() {
