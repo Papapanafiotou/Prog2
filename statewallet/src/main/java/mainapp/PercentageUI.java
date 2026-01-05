@@ -28,21 +28,32 @@ public class PercentageUI extends JFrame {
         JLabel result = new JLabel("");
         result.setBounds(20, 130, 250, 20);
         add(result);
-        calcButton.addActionListener(e -> {
-            String table;
-            switch (combo.getSelectedIndex()) {
-                case 0 -> table = "esoda";
-                case 1 -> table = "eksoda";
-                default -> table = "ypourgeia";
-            }
-            double[] total = manager.getTotal(table);
-                        if (total[1] == 0) {
-                result.setText("Σφάλμα: Σύνολο = 0");
-            } else {
-                result.setText("Σύνολο: "
-                        + String.format("%.2f", total[1]));
-            }
-        });
+calcButton.addActionListener(e -> {
+    String table;
+    switch (combo.getSelectedIndex()) {
+        case 0 -> table = "esoda";
+        case 1 -> table = "eksoda";
+        default -> table = "ypourgeia";
+    }
+    // Παίρνουμε το ποσό για την επιλεγμένη κατηγορία
+    double[] selectedData = manager.getTotal(table);
+    double selectedAmount = selectedData[1];
+
+    // Υπολογίζουμε το Γενικό Σύνολο 
+    double totalEsoda = manager.getTotal("esoda")[1];
+    double totalEksoda = manager.getTotal("eksoda")[1];
+    double totalYpourgeia = manager.getTotal("ypourgeia")[1];
+    
+    double grandTotal = totalEsoda + totalEksoda + totalYpourgeia;
+
+    // Υπολογισμός και εμφάνιση ποσοστού
+    if (grandTotal == 0) {
+        result.setText("Σφάλμα: Γενικό Σύνολο = 0");
+    } else {
+        double percentage = (selectedAmount / grandTotal) * 100;
+        result.setText(String.format("Ποσοστό: %.2f%% (Ποσό: %.0f)", percentage, selectedAmount));
+    }
+});
 
         setVisible(true);
     }
