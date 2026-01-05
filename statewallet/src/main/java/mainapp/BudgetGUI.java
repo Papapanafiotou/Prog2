@@ -321,6 +321,11 @@ public final class BudgetGUI extends JFrame {
         try {
             int id = Integer.parseInt(idText);
             double newAmount = Double.parseDouble(amountText);
+            double oldAmount = manager.getCurrentAmount(
+            info.tableName,
+            info.idColumnName,
+            id
+            );
             if (newAmount < 0) {
                 int option = JOptionPane.showConfirmDialog(this,
                         "Το νέο ποσό είναι αρνητικό. Συνέχεια;",
@@ -330,6 +335,23 @@ public final class BudgetGUI extends JFrame {
                     return;
                 }
             }
+            if (!Constrains.isReasonableChange(oldAmount, newAmount)) {
+
+    int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "ΠΡΟΣΟΧΗ!\n"
+            + "Η αλλαγή που επιθυμείτε να κάνετε υπερβαίνει το 50% "
+            + "του αρχικού ποσού.\n\n"
+            + "Θέλετε να συνεχίσετε;",
+            "Ισχυρή Προειδοποίηση",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+    );
+
+    if (confirm != JOptionPane.YES_OPTION) {
+        return;
+    }
+}
             boolean success = manager.updateAmount(
                     info.tableName, info.idColumnName, id, newAmount);
             if (success) {
