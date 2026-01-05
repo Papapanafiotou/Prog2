@@ -32,7 +32,7 @@ public class PercentageUI extends JFrame {
         controlPanel.add(new JLabel("Επιλέξτε Πίνακα:"));
         
         JComboBox<String> comboTable = new JComboBox<>(new String[]{
-            "Έσοδα", "έξοδα", "Κράτος", "Υπουργεία", "Αποκεντρωμένες"
+            "esoda", "eksoda", "kratos", "ypourgeia", "apokentromenes"
         });
         controlPanel.add(comboTable);
 
