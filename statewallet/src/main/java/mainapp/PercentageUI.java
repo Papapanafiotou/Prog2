@@ -1,5 +1,8 @@
 package mainapp;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class PercentageUI extends JFrame {
 
@@ -33,3 +36,14 @@ public class PercentageUI extends JFrame {
                 default -> table = "ypourgeia";
             }
             double[] total = manager.getTotal(table);
+                        if (total[1] == 0) {
+                result.setText("Σφάλμα: Σύνολο = 0");
+            } else {
+                result.setText("Σύνολο: "
+                        + String.format("%.2f", total[1]));
+            }
+        });
+
+        setVisible(true);
+    }
+}
