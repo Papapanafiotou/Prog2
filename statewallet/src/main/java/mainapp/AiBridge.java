@@ -35,6 +35,11 @@ public class AiBridge {
         return null; 
     }
 
+    /**
+     * Εκτελεί το Python script.
+     * @param goal Το κείμενο (στόχος) που στέλνουμε μέσω Pipe (Stdin).
+     * @param args Τα ορίσματα γραμμής εντολών (mode, dbPath, κλπ).
+     */
     private String runPythonScript(String goal, String... args) {
         try {
             File scriptFile = findScript();
@@ -44,12 +49,13 @@ public class AiBridge {
             String os = System.getProperty("os.name").toLowerCase();
             command.add(os.contains("win") ? "python" : "python3");
             
-            // Επιβάλλουμε UTF-8 mode στην Python για να μην μπερδευτεί με το output
+            // Επιβάλλουμε UTF-8 mode στην Python
             command.add("-X"); 
             command.add("utf8");
             
             command.add(scriptFile.getAbsolutePath()); 
             
+            // Προσθήκη ορισμάτων (mode, dbPath, κλπ)
             for (String arg : args) {
                 command.add(arg);
             }
@@ -60,26 +66,19 @@ public class AiBridge {
                 pb.directory(scriptFile.getParentFile());
             }
 
-            // Environment variables για πλήρη υποστήριξη UTF-8
             pb.environment().put("PYTHONIOENCODING", "utf-8");
-            
             pb.redirectErrorStream(true);
             
-            // Ξεκινάμε την Python
             Process process = pb.start();
 
-            // --- ΣΗΜΑΝΤΙΚΟ ---
-            // Στέλνουμε τον στόχο (goal) απευθείας στην Python μέσω "σωλήνα" (OutputStream).
-            // Χρησιμοποιούμε UTF-8 εδώ, οπότε αφού η Java έχει το σωστό κείμενο (λόγω CP737),
-            // θα φτάσει σωστά και στην Python.
+            // Στέλνουμε τον στόχο (goal)
             try (BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8))) {
                 writer.write(goal);
-                writer.flush(); // Στέλνουμε τα δεδομένα τώρα
+                writer.flush();
             }
-            // -----------------
 
-            // Διαβάζουμε την απάντηση
+            // Διαβάζουμε την απάντηση (HTML)
             BufferedReader reader = new BufferedReader(
                 new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8)
             );
@@ -95,15 +94,19 @@ public class AiBridge {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "Εξαίρεση Java: " + e.getMessage();
+            return "<html><body><span style='color:red'>Εξαίρεση Java: " + e.getMessage() + "</span></body></html>";
         }
     }
 
-    public String getSpecificAdvice(String name, double amount, String goal) {
-        return runPythonScript(goal, "specific", name, String.valueOf(amount));
-    }
+    // --- ΟΙ ΣΩΣΤΕΣ ΜΕΘΟΔΟΙ ---
 
     public String getGlobalStrategy(String dbUrl, String goal) {
+        // Python: global <dbPath>
         return runPythonScript(goal, "global", dbUrl);
+    }
+
+    public String getSpecificAdvice(String dbPath, String name, double amount, String goal) {
+        // Python: specific <dbPath> <name> <amount>
+        return runPythonScript(goal, "specific", dbPath, name, String.valueOf(amount));
     }
 }

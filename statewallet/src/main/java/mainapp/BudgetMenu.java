@@ -460,7 +460,7 @@ public final class BudgetMenu {
         System.out.println("Ο ψηφιακός βοηθός σκέφτεται...");
         AiBridge ai = new AiBridge();
         // Στέλνουμε το όνομα που βρήκαμε αυτόματα από τη βάση!
-        System.out.println(ai.getSpecificAdvice(name, amount, goal));
+        System.out.println(ai.getSpecificAdvice(name, goal, amount, goal));
     }
 
     private void handleAiGlobal() {
