@@ -1,4 +1,10 @@
 package mainapp;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 
 /**
@@ -308,103 +314,153 @@ public final class BudgetMenu {
         System.out.printf("Συνολικό Ποσό(επεξεργασμένο): %,.2f%n", results[1]);
     }
 
-        public double getPrecentage() {
+        public void getPrecentage() {
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Για έσοδα πατήστε 1, για έξοδα πατήστε 2,"
+            + "για υπουργεία 3.");
+            String tablename = null;
+            do {
+               int answer = scan.nextInt();
+               switch (answer) {
+                case 1:
+                tablename = "esoda";
+                break;
+                case 2:
+                tablename = "eksoda";
+                break;
+                case 3:
+                tablename = "ypourgeia";
+                break;
+                default:
+                System.out.println("Η τιμή δεν είναι 1, 2 ή 3.");
+                break;
+                }
+            } while (tablename == null);
+            double[] total = manager.getTotal(tablename);
+            System.out.println("Για υπολογισμό μεμονωμένου ποσοστού "
+                + "πατήστε 1, για τον υπολογισμό όλων των ποσοστών πατήστε 2"
+            );
+            int answer2 = scan.nextInt();
+            if (answer2 == 1) { 
             double precent = 0.0;
             System.out.println("Για ποιον λογαριασμό θέλετε να υπολογίσετε " +
-             "το ποσοστό;");
+             "το ποσοστό;"); 
             String name = scanner.nextLine();
             Search search = new Search(url);
-            String table = search.searchTable(name);
-            double[] total;
-            double amount = search.searchAmount(name);
-            if (table == "esoda") {
-                total = manager.getTotal("esoda");
-                double t = total[0];
+            double amount = search.searchAmountInTable(name, tablename);
             try {
-                precent = (amount / t) * 100;
-                System.out.println("Το ποσοστό του " + name +
-                " στα συνολικά έσοδα έιναι " + precent + " %");
+                precent = (amount / total[1]) * 100; 
             } catch (ArithmeticException e) {
-                System.out.println("Δεν είναι δυνατή η διαίρεση με το μηδέν!");
+                System.out.println("Σφάλμα! Δεν μπορεί να γίνει διαίρεση με 0!");
             }
-            } else if (table == "eksoda") {
-            total = manager.getTotal("eksoda");
-            double t = total[0];
-            try {
-                precent = (amount / t) * 100;
-                System.out.println("Το ποσοστό του " + name +
-                " στα συνολικά έξοδα έιναι " + precent + " %");
-            } catch (ArithmeticException e) {
-                System.out.println("Δεν είναι δυνατή η διαίρεση με το μηδέν!");
+             
+            } else if (answer2 == 2) {
+                int rowCount = 0;
+                try (Connection conn = DriverManager.getConnection(url);
+                Statement stmtCount = conn.createStatement();
+                ResultSet rsCount = stmtCount.executeQuery("SELECT COUNT(*) FROM " + tablename)) {
+                if (rsCount.next()) {
+                  rowCount = rsCount.getInt(1);
+                }
+            } catch (SQLException e) {
+            System.err.println("Σφάλμα κατά την καταμέτρηση: " + e.getMessage());
+            return; 
             }
+            String[] namesArray = new String[rowCount];
+            double[] amountsArray = new double[rowCount];
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT name, amount FROM " + tablename)) {
+                int index = 0;
+                while (rs.next()) {
+                   namesArray[index] = rs.getString("name");
+                   amountsArray[index] = rs.getDouble("amount");
+                   index++;
+                }
+            
+            System.out.println("Επιτυχής ανάγνωση " + rowCount + " γραμμών.");
+            } catch (SQLException e) {
+               System.err.println("Σφάλμα κατά την ανάγνωση δεδομένων: " + e.getMessage());
+            }
+            double[] percentages = new double[amountsArray.length];
+
+            System.out.println("----ΠΟΣΟΣΤΑ ΣΤΟΙΧΕΙΩΝ---");
+            for (int i = 0; i < namesArray.length; i++) {
+                percentages[i] = (amountsArray[i] / total[1]) ;
+                double p = percentages[i] * 100;
+                System.out.println("ΣΤΟΙΧΕΙΟ: " + namesArray[i] +
+                    " ΠΟΣΟΣΤΟ: " + String.format("%.4f",p) + " %"
+                );
+            }
+            EconomicsChart e = new EconomicsChart();
+            e.showPieChart(namesArray, percentages);
         } 
-        return precent;
     }
 
     
 
-private void handleAiSpecific() {
-    System.out.println("\n--- AI Σύμβουλος για συγκεκριμένο λογαριασμό ---");
-    System.out.println("Επιλέξτε πίνακα:");
-    System.out.println("1. Έσοδα");
-    System.out.println("2. Έξοδα");
-    System.out.println("3. Κράτος");
-    System.out.println("4. Υπουργεία");
-    System.out.print("Επιλογή: ");
+    private void handleAiSpecific() {
+        System.out.println("\n--- AI Σύμβουλος για συγκεκριμένο λογαριασμό ---");
+        System.out.println("Επιλέξτε πίνακα:");
+        System.out.println("1. Έσοδα");
+        System.out.println("2. Έξοδα");
+        System.out.println("3. Κράτος");
+        System.out.println("4. Υπουργεία");
+        System.out.print("Επιλογή: ");
 
-    int tableChoice = scanner.nextInt();
-    scanner.nextLine(); // Καθαρισμός buffer
+        int tableChoice = scanner.nextInt();
+        scanner.nextLine(); // Καθαρισμός buffer
 
-    String tableName;
-    String idColName;
+        String tableName;
+        String idColName;
 
-    // Αντιστοίχιση επιλογής με ονόματα πινάκων (όπως στο changeBudget)
-    switch (tableChoice) {
-        case 1 -> { tableName = "esoda"; idColName = "code"; }
-        case 2 -> { tableName = "eksoda"; idColName = "code"; }
-        case 3 -> { tableName = "kratos"; idColName = "number"; }
-        case 4 -> { tableName = "ypourgeia"; idColName = "number"; }
-        default -> {
-            System.out.println("Άκυρη επιλογή πίνακα.");
+        // Αντιστοίχιση επιλογής με ονόματα πινάκων (όπως στο changeBudget)
+        switch (tableChoice) {
+            case 1 -> { tableName = "esoda"; idColName = "code"; }
+            case 2 -> { tableName = "eksoda"; idColName = "code"; }
+            case 3 -> { tableName = "kratos"; idColName = "number"; }
+            case 4 -> { tableName = "ypourgeia"; idColName = "number"; }
+            default -> {
+                System.out.println("Άκυρη επιλογή πίνακα.");
+                return;
+            }
+        }
+
+        System.out.print("Δώσε το ID (" + idColName + "): ");
+        if (!scanner.hasNextInt()) {
+            System.out.println("Πρέπει να δώσετε αριθμό!");
+            scanner.nextLine();
             return;
         }
-    }
-
-    System.out.print("Δώσε το ID (" + idColName + "): ");
-    if (!scanner.hasNextInt()) {
-        System.out.println("Πρέπει να δώσετε αριθμό!");
+        int id = scanner.nextInt();
         scanner.nextLine();
-        return;
+
+        // 1. Βρίσκουμε το όνομα από το ID (Νέα μέθοδος)
+        String name = manager.getNameById(tableName, idColName, id);
+    
+        // 2. Βρίσκουμε το ποσό από το ID (Υπάρχουσα μέθοδος)
+        double amount = manager.getCurrentAmount(tableName, idColName, id);
+
+        if (name == null || amount == -1) {
+            System.out.println("Δεν βρέθηκε εγγραφή με αυτό το ID.");
+            return;
+        }
+
+        System.out.println("------------------------------------------------");
+        System.out.println("Επιλέξατε: " + name);
+        System.out.printf("Τρέχον Ποσό: %,.2f €\n", amount);
+        System.out.println("------------------------------------------------");
+    
+    
+        System.out.println("Τι θέλετε να πετύχετε; ...");
+        System.out.print("Στόχος: ");
+        String goal = scanner.nextLine();
+
+        System.out.println("Ο ψηφιακός βοηθός σκέφτεται...");
+        AiBridge ai = new AiBridge();
+        // Στέλνουμε το όνομα που βρήκαμε αυτόματα από τη βάση!
+        System.out.println(ai.getSpecificAdvice(name, amount, goal));
     }
-    int id = scanner.nextInt();
-    scanner.nextLine();
-
-    // 1. Βρίσκουμε το όνομα από το ID (Νέα μέθοδος)
-    String name = manager.getNameById(tableName, idColName, id);
-    
-    // 2. Βρίσκουμε το ποσό από το ID (Υπάρχουσα μέθοδος)
-    double amount = manager.getCurrentAmount(tableName, idColName, id);
-
-    if (name == null || amount == -1) {
-        System.out.println("Δεν βρέθηκε εγγραφή με αυτό το ID.");
-        return;
-    }
-
-    System.out.println("------------------------------------------------");
-    System.out.println("Επιλέξατε: " + name);
-    System.out.printf("Τρέχον Ποσό: %,.2f €\n", amount);
-    System.out.println("------------------------------------------------");
-    
-    
-    System.out.println("Τι θέλετε να πετύχετε; ...");
-    System.out.print("Στόχος: ");
-    String goal = scanner.nextLine();
-
-    System.out.println("Ο ψηφιακός βοηθός σκέφτεται...");
-    AiBridge ai = new AiBridge();
-    // Στέλνουμε το όνομα που βρήκαμε αυτόματα από τη βάση!
-    System.out.println(ai.getSpecificAdvice(name, amount, goal));
-}
 
     private void handleAiGlobal() {
         System.out.println("\n--- AI Στρατηγικός Σχεδιασμός για γενική βοήθεια σε επίτευξη στόχων ---");
