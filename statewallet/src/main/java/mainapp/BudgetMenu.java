@@ -341,7 +341,7 @@ public final class BudgetMenu {
         return precent;
     }
 
-    // Στο BudgetMenu.java
+    
 
 private void handleAiSpecific() {
     System.out.println("\n--- AI Σύμβουλος για συγκεκριμένο λογαριασμό ---");

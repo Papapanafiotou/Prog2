@@ -2,15 +2,20 @@ package mainapp;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -30,87 +35,118 @@ public class AiAdvisorDialog extends JDialog {
     // Global Tab Input
     private JTextArea globalGoalArea;
     
-    // Specific Tab Inputs (Read-Only)
-    private JTextField idField;     // ΝΕΟ: ID
-    private JTextField nameField;   // Read-only
-    private JTextField amountField; // Read-only
-    private JTextArea specificGoalArea; // Εδώ γράφει ο χρήστης
+    // Specific Tab Inputs
+    private JTextField idField;
+    private JTextField nameField;
+    private JTextField amountField;
+    private JTextArea specificGoalArea;
 
-    // Ο Constructor πλέον δέχεται ΚΑΙ το ID
     public AiAdvisorDialog(JFrame parent, String dbPath, String id, String name, String amount) {
         super(parent, "AI Οικονομικός Σύμβουλος", true);
         this.dbPath = dbPath;
         this.aiBridge = new AiBridge();
 
-        setSize(750, 650);
+        setSize(800, 700);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
 
+        // Χτίσιμο UI
         initComponents(id, name, amount);
-        
-        // Αν ανοίχτηκε για συγκεκριμένο λογαριασμό, πάμε απευθείας στο 2ο tab
-        if (id != null && !id.isEmpty()) {
-            tabbedPane.setSelectedIndex(1);
-        }
     }
 
     private void initComponents(String id, String name, String amount) {
         tabbedPane = new JTabbedPane();
+        tabbedPane.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         
         // --- TAB 1: Γενική Στρατηγική ---
         JPanel globalPanel = new JPanel(new BorderLayout(10, 10));
-        globalPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        globalPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         
-        globalGoalArea = new JTextArea(3, 40);
+        globalGoalArea = new JTextArea(4, 40);
         globalGoalArea.setLineWrap(true);
         globalGoalArea.setWrapStyleWord(true);
+        globalGoalArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         globalGoalArea.setBorder(BorderFactory.createTitledBorder("Ποιο είναι το όραμά σας για τον προϋπολογισμό;"));
-        globalGoalArea.setText("Θέλω να μηδενίσω το έλλειμμα."); 
+        globalGoalArea.setText("π.χ. Θέλω να μειώσω το έλλειμμα κατά 3% χωρίς να πειράξω την Υγεία."); 
         
-        JPanel globalBtnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel globalActionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        // Κλασικό κουμπί χωρίς styling
         JButton runGlobalBtn = new JButton("✨ Λήψη Στρατηγικής");
-        runGlobalBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        runGlobalBtn.setFont(new Font("Segoe UI", Font.BOLD, 12)); 
         runGlobalBtn.addActionListener(e -> runAiTask("global"));
-        globalBtnPanel.add(runGlobalBtn);
+        globalActionPanel.add(runGlobalBtn);
 
         globalPanel.add(new JScrollPane(globalGoalArea), BorderLayout.CENTER);
-        globalPanel.add(globalBtnPanel, BorderLayout.SOUTH);
+        globalPanel.add(globalActionPanel, BorderLayout.SOUTH);
 
-        // --- TAB 2: Συγκεκριμένη Συμβουλή (ΔΙΟΡΘΩΜΕΝΟ) ---
+        // --- TAB 2: Συγκεκριμένη Συμβουλή ---
         JPanel specificPanel = new JPanel(new BorderLayout(10, 10));
-        specificPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        specificPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         
-        // Panel πληροφοριών (ID, Name, Amount) - ΚΛΕΙΔΩΜΕΝΑ
-        JPanel infoPanel = new JPanel(new GridLayout(1, 3, 10, 0));
-        
-        idField = createReadOnlyField("ID", id);
-        nameField = createReadOnlyField("Λογαριασμός", name);
-        amountField = createReadOnlyField("Ποσό (€)", amount);
-        
-        infoPanel.add(idField);
-        infoPanel.add(nameField);
-        infoPanel.add(amountField);
-        
-        // Πεδίο Στόχου (Εδώ γράφει ο χρήστης)
-        specificGoalArea = new JTextArea(4, 40);
-        specificGoalArea.setLineWrap(true);
-        specificGoalArea.setWrapStyleWord(true);
-        specificGoalArea.setBorder(BorderFactory.createTitledBorder("Τι θέλετε να κάνετε με αυτόν τον λογαριασμό;"));
-        
-        JPanel centerSpecPanel = new JPanel(new BorderLayout(0, 10));
-        centerSpecPanel.add(infoPanel, BorderLayout.NORTH);
-        centerSpecPanel.add(new JScrollPane(specificGoalArea), BorderLayout.CENTER);
-        
-        JPanel specBtnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton runSpecBtn = new JButton("💡 Λήψη Συμβουλής");
-        runSpecBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        runSpecBtn.addActionListener(e -> runAiTask("specific"));
-        specBtnPanel.add(runSpecBtn);
-        
-        specificPanel.add(centerSpecPanel, BorderLayout.CENTER);
-        specificPanel.add(specBtnPanel, BorderLayout.SOUTH);
+        boolean hasSelection = (id != null && !id.isEmpty());
 
-        // --- Tabs Setup ---
+        if (hasSelection) {
+            // ΠΕΡΙΠΤΩΣΗ Α: ΕΧΕΙ ΕΠΙΛΕΓΕΙ ΛΟΓΑΡΙΑΣΜΟΣ
+            JPanel infoPanel = new JPanel(new GridLayout(1, 3, 10, 0));
+            idField = createReadOnlyField("ID", id);
+            nameField = createReadOnlyField("Λογαριασμός", name);
+            amountField = createReadOnlyField("Ποσό (€)", amount);
+            
+            infoPanel.add(idField);
+            infoPanel.add(nameField);
+            infoPanel.add(amountField);
+            
+            specificGoalArea = new JTextArea(4, 40);
+            specificGoalArea.setLineWrap(true);
+            specificGoalArea.setWrapStyleWord(true);
+            specificGoalArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            specificGoalArea.setBorder(BorderFactory.createTitledBorder("Τι θέλετε να κάνετε με αυτόν τον λογαριασμό;"));
+            
+            JPanel centerSpecPanel = new JPanel(new BorderLayout(0, 15));
+            centerSpecPanel.add(infoPanel, BorderLayout.NORTH);
+            centerSpecPanel.add(new JScrollPane(specificGoalArea), BorderLayout.CENTER);
+            
+            JPanel specActionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            // Κλασικό κουμπί χωρίς styling
+            JButton runSpecBtn = new JButton("💡 Λήψη Συμβουλής");
+            runSpecBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+            runSpecBtn.addActionListener(e -> runAiTask("specific"));
+            specActionPanel.add(runSpecBtn);
+            
+            specificPanel.add(centerSpecPanel, BorderLayout.CENTER);
+            specificPanel.add(specActionPanel, BorderLayout.SOUTH);
+
+        } else {
+            // ΠΕΡΙΠΤΩΣΗ Β: ΔΕΝ ΕΧΕΙ ΕΠΙΛΕΓΕΙ ΛΟΓΑΡΙΑΣΜΟΣ
+            JPanel errorPanel = new JPanel();
+            errorPanel.setLayout(new BoxLayout(errorPanel, BoxLayout.Y_AXIS));
+            // Αφαιρέθηκε το κόκκινο χρώμα φόντου, είναι κλασικό γκρι του panel
+            
+            // --- ΑΦΑΙΡΕΣΗ ΤΟΥ ΕΙΚΟΝΙΔΙΟΥ ⚠️ ---
+            
+            JLabel errorMsg1 = new JLabel("Δεν έχετε επιλέξει λογαριασμό!");
+            errorMsg1.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            errorMsg1.setForeground(Color.RED); // Κρατάμε το κόκκινο γράμμα για προσοχή
+            errorMsg1.setAlignmentX(Component.CENTER_ALIGNMENT);
+            
+            JLabel errorMsg2 = new JLabel("Για να χρησιμοποιήσετε αυτή τη λειτουργία,");
+            errorMsg2.setAlignmentX(Component.CENTER_ALIGNMENT);
+            
+            JLabel errorMsg3 = new JLabel("παρακαλώ κλείστε το παράθυρο και επιλέξτε μια γραμμή από τον πίνακα.");
+            errorMsg3.setAlignmentX(Component.CENTER_ALIGNMENT);
+            
+            // Στοίχιση στο κέντρο
+            errorPanel.add(Box.createVerticalGlue());
+            errorPanel.add(errorMsg1);
+            errorPanel.add(Box.createVerticalStrut(15));
+            errorPanel.add(errorMsg2);
+            errorPanel.add(errorMsg3);
+            errorPanel.add(Box.createVerticalGlue());
+            
+            specificPanel.add(errorPanel, BorderLayout.CENTER);
+        }
+
+        // --- ΠΡΟΣΘΗΚΗ TABS ---
         tabbedPane.addTab("🌍 Γενική Στρατηγική", globalPanel);
         tabbedPane.addTab("🎯 Συγκεκριμένη Ανάλυση", specificPanel);
 
@@ -124,26 +160,48 @@ public class AiAdvisorDialog extends JDialog {
         
         JScrollPane responseScroll = new JScrollPane(responseArea);
         responseScroll.setBorder(BorderFactory.createTitledBorder("Απάντηση AI"));
-        responseScroll.setPreferredSize(new java.awt.Dimension(600, 250));
+        responseScroll.setPreferredSize(new Dimension(600, 250));
 
-        add(tabbedPane, BorderLayout.CENTER); // Αλλαγή σε CENTER για να πιάνει χώρο
-        add(responseScroll, BorderLayout.SOUTH);
+        // --- Bottom Panel ---
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(responseScroll, BorderLayout.CENTER);
+        
+        JPanel closePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton closeButton = new JButton("← Πίσω");
+        closeButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        closeButton.addActionListener(e -> dispose());
+        closePanel.add(closeButton);
+        
+        bottomPanel.add(closePanel, BorderLayout.SOUTH);
+
+        add(tabbedPane, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        // --- ΑΣΦΑΛΗΣ ΕΠΙΛΟΓΗ TAB ---
+        if (tabbedPane.getTabCount() > 1) { 
+            if (hasSelection) {
+                tabbedPane.setSelectedIndex(1);
+            } else {
+                tabbedPane.setSelectedIndex(0);
+            }
+        }
     }
     
-    // Βοηθητική μέθοδος για πεδία που δεν αλλάζουν
+    // --- Βοηθητική Μέθοδος ---
+    
     private JTextField createReadOnlyField(String title, String value) {
         JTextField field = new JTextField();
         field.setBorder(BorderFactory.createTitledBorder(title));
         field.setText(value);
-        field.setEditable(false); // Κλειδωμένο
-        field.setBackground(new Color(230, 230, 230)); // Γκριζαρισμένο
+        field.setEditable(false);
+        field.setBackground(new Color(230, 230, 230));
         field.setHorizontalAlignment(JTextField.CENTER);
         field.setFont(new Font("Segoe UI", Font.BOLD, 12));
         return field;
     }
 
     private void runAiTask(String mode) {
-        responseArea.setText("⏳ Επικοινωνία με το AI... Παρακαλώ περιμένετε...");
+        responseArea.setText("⏳ Ο AI οικονομικός σύμβουλος αναλύει το αίτημα σας... Παρακαλώ περιμένετε...");
         responseArea.setForeground(Color.BLUE);
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -156,21 +214,16 @@ public class AiAdvisorDialog extends JDialog {
                     if (goal.isEmpty()) return "Παρακαλώ εισάγετε έναν στόχο.";
                     return aiBridge.getGlobalStrategy(dbPath, goal);
                 } else {
-                    String id = idField.getText().trim();
-                    String name = nameField.getText().trim();
-                    String amountStr = amountField.getText().trim();
-                    goal = specificGoalArea.getText().trim();
+                    String id = idField != null ? idField.getText().trim() : "";
+                    String name = nameField != null ? nameField.getText().trim() : "";
+                    String amountStr = amountField != null ? amountField.getText().trim() : "";
+                    goal = specificGoalArea != null ? specificGoalArea.getText().trim() : "";
                     
-                    if (id.isEmpty() || name.isEmpty() || amountStr.isEmpty()) {
-                        return "Δεν έχει επιλεγεί λογαριασμός. Παρακαλώ επιλέξτε από τον πίνακα.";
-                    }
                     if (goal.isEmpty()) {
                         return "Παρακαλώ γράψτε τι θέλετε να κάνετε με τον λογαριασμό.";
                     }
-                    
                     try {
                         double amount = Double.parseDouble(amountStr);
-                        // Στέλνουμε στο AI το Όνομα, το Ποσό και τον Στόχο
                         return aiBridge.getSpecificAdvice(name, amount, goal);
                     } catch (NumberFormatException e) {
                         return "Σφάλμα ανάγνωσης ποσού.";
