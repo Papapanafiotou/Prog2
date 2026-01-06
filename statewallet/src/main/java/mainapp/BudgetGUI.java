@@ -39,9 +39,9 @@ public final class BudgetGUI extends JFrame {
     private static final long serialVersionUID = 1L;
 
     /** Πλάτος παραθύρου. */
-    private static final int WINDOW_WIDTH = 950;
+    private static final int WINDOW_WIDTH = 1100;
     /** Ύψος παραθύρου. */
-    private static final int WINDOW_HEIGHT = 600;
+    private static final int WINDOW_HEIGHT = 650;
     /** Μέγεθος πεδίου ID. */
     private static final int ID_FIELD_SIZE = 8;
     /** Μέγεθος πεδίου ποσού. */
@@ -95,6 +95,8 @@ public final class BudgetGUI extends JFrame {
     /** Κουμπί εμφάνισης συνόλων. */
     private JButton showTotalsButton;
     private JButton percentageButton;
+    /** Κουμπί AI. */
+    private JButton aiButton;
 
 
     /**
@@ -120,6 +122,8 @@ public final class BudgetGUI extends JFrame {
         backButton = new JButton("⬅ Πίσω");
         showTotalsButton = new JButton("📊 Εμφάνιση Συνόλων");
         percentageButton = new JButton("📈 Ποσοστά");
+        aiButton = new JButton("🤖 AI Σύμβουλος");
+        aiButton.setBackground(new Color(230, 230, 255)); // Ελαφρύ μπλε για να ξεχωρίζει
         tableSelector = new JComboBox<>();
         tableSelector.addItem(new TableInfo("Έσοδα", "esoda", "code"));
         tableSelector.addItem(new TableInfo("Έξοδα", "eksoda", "code"));
@@ -166,6 +170,7 @@ public final class BudgetGUI extends JFrame {
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
         topPanel.add(showTotalsButton);
+        topPanel.add(aiButton);
         topPanel.add(Box.createRigidArea(new Dimension(GAP_SIZE, 0)));
         topPanel.add(budgetStatusLabel);
 
@@ -248,6 +253,34 @@ public final class BudgetGUI extends JFrame {
 percentageButton.addActionListener(e -> {
     new PercentageUI(manager, dbPath);
 });
+
+aiButton.addActionListener(e -> {
+            // Έλεγχος αν υπάρχει επιλεγμένη γραμμή στον πίνακα
+            String selectedId = null;
+            String selectedName = null;
+            String selectedAmount = null;
+            
+            int row = dataTable.getSelectedRow();
+            if (row >= 0) {
+                // Στήλη 0 = ID
+                // Στήλη 1 = Περιγραφή (Όνομα)
+                // Στήλη 3 = Τρέχον Ποσό
+                Object idVal = tableModel.getValueAt(row, 0);
+                Object nameVal = tableModel.getValueAt(row, 1); 
+                Object amountVal = tableModel.getValueAt(row, 3);
+                
+                selectedId = Objects.toString(idVal, "");
+                selectedName = Objects.toString(nameVal, "");
+                selectedAmount = Objects.toString(amountVal, "");
+            } else {
+                // Αν δεν έχει επιλέξει γραμμή, μπορεί να ανοίξει το παράθυρο
+                // αλλά θα πάει στο tab "Γενική Στρατηγική"
+                // (Προαιρετικά μπορείς να του πετάξεις μήνυμα να επιλέξει)
+            }
+
+            // Περνάμε το ID, Name, Amount στον νέο constructor
+            new AiAdvisorDialog(this, dbPath, selectedId, selectedName, selectedAmount).setVisible(true);
+        });
     }
 
     private void loadSelectedTable() {
