@@ -50,14 +50,26 @@ public class TotalGrade {
         double socGrade = soc.getSocialGrade(wGini, wCrimeRate, wMentHealPer, wEdHealExp,
             gini, crimeRateDiff, mentalHealthPer, eduHealthExp);
         //Εισαγωγή των βαρών για τις 3 κατηγορίες
+        double t = 0;
+        double wEcon;
+        double wEnv;
+        double wSoc;
+        do { 
         System.out.println("Εισάγετε τα βάρη του τελικού βαθμού για τους "
             + " τρεις τομείς");
         System.out.println("Οικονομικός τομέας");    
-        double wEcon = w.getWeight();
+        wEcon = w.getWeight();
+        t += wEcon;
         System.out.println("Περιβαλλοντικός τομέας");    
-        double wEnv = w.getWeight();
+        wEnv = w.getWeight();
+        t += wEnv;
         System.out.println("Κοινωνικός τομέας");    
-        double wSoc = w.getWeight();
+        wSoc = w.getWeight();
+        t += wSoc;
+        if (t != 1) {
+            System.out.println("Τα βάρη πρέπει να αρθροίζουν σε 1! Εισάγετε ξανά τα βάρη.");
+        }
+        } while (t != 1);
         double finalGrade = (wEcon * econGrade) + (wEnv * envGrade) + (wSoc * socGrade);
         System.out.println("O τελικός βαθμός για το κράτος για το έτος " + year 
         + " με βάση τα στοιχεία είναι " + String.format("%.2f", finalGrade));
@@ -87,14 +99,26 @@ public class TotalGrade {
           double wEdHealExp = weights[7];
           double wMentHealPer = weights[8];
           double wCrimeRate = weights[9];
+          double t = 0;
+          double wEcon;
+          double wEnv;
+          double wSoc;
+          do {
           System.out.println("Εισάγετε τα βάρη του τελικού βαθμού για τους "
             + " τρεις τομείς");
            System.out.println("Οικονομικός τομέας");    
-           double wEcon = w.getWeight();
+           wEcon = w.getWeight();
+           t += wEcon;
            System.out.println("Περιβαλλοντικός τομέας");    
-           double wEnv = w.getWeight();
+           wEnv = w.getWeight();
+           t += wEnv;
            System.out.println("Κοινωνικός τομέας");    
-           double wSoc = w.getWeight();
+           wSoc = w.getWeight();
+           t += wSoc;
+           if (t != 1) {
+            System.out.println("Τα βάρη πρέπει να αρθροίζουν σε 1! Εισάγετε ξανά τα βάρη.");
+           }
+        } while (t != 1);
            double[] finalWeights = w.showTotalWeights(weights, wEcon, wEnv, wSoc);
            w.getAllGrades(finalWeights);
         }   
