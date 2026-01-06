@@ -256,10 +256,41 @@ public final class BudgetGUI extends JFrame {
         percentageButton.addActionListener(e -> {
             new PercentageUI(manager, dbPath);
         });
-        predictButton.addActionListener(e -> {
-        PredictionUI predictionWindow = new PredictionUI(dbPath);
+predictButton.addActionListener(e -> {
+    // 1. Έλεγχος αν ο χρήστης έχει επιλέξει γραμμή στον πίνακα
+    int row = dataTable.getSelectedRow();
+    if (row < 0) {
+        JOptionPane.showMessageDialog(this, 
+            "Παρακαλώ επιλέξτε πρώτα μια γραμμή από τον πίνακα!", 
+            "Προσοχή", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    try {
+        // 2. Ανάκτηση των πληροφοριών της επιλεγμένης γραμμής
+        TableInfo info = (TableInfo) tableSelector.getSelectedItem();
+        
+        // Στήλη 0 είναι το ID, Στήλη 1 είναι το Όνομα (Περιγραφή)
+        int idValue = Integer.parseInt(tableModel.getValueAt(row, 0).toString());
+        String itemName = tableModel.getValueAt(row, 1).toString();
+
+        // 3. Άνοιγμα του PredictionUI με όλες τις παραμέτρους
+        // (dbPath, όνομα_πίνακα, όνομα_στήλης_id, τιμή_id, όνομα_στοιχείου)
+        PredictionUI predictionWindow = new PredictionUI(
+            dbPath, 
+            info.tableName, 
+            info.idColumnName, 
+            idValue, 
+            itemName
+        );
         predictionWindow.setVisible(true);
-    });
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, 
+            "Σφάλμα κατά την εκκίνηση της πρόβλεψης: " + ex.getMessage(), 
+            "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+    }
+});
         aiButton.addActionListener(e -> {
             // Έλεγχος αν υπάρχει επιλεγμένη γραμμή στον πίνακα
             String selectedId = null;
