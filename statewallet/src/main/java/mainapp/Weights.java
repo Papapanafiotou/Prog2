@@ -152,64 +152,96 @@ public class Weights {
     public double[] addWeights() {
         double[] weights = new double[10]; //KΑΤΑΧΩΡΗΣΗ ΒΑΡΩΝ ΣΤΟΝ ΠΙΝΑΚΑ
         int i = 0;
+        System.out.println("ΣΤΟΙΧΕΙΑ ΟΙΚΟΝΟΜΙΚΟΥ ΤΟΜΕΑ");
+        double t1 =0;
+        do {
         System.out.println("Εισάγετε τo βάρος για τη μεταβολή του ΑΕΠ");
         double wGDP = getWeight();
-        weights[i] = wGDP;
-        i+= 1;
+        t1 += wGDP;
+        
         System.out.println("Το βάρος καταχωρήθηκε! Εισάγετε το" 
             + " βάρος για το δημόσιο χρέος ως ποσοστό του ΑΕΠ."
         );
         double wPubDebt = getWeight();
+        t1 += wPubDebt;
         weights[i] = wPubDebt;
         i+= 1;
         System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για "
             + "το πρωτογενές πλεόνασμα ως ποσοστό του ΑΕΠ."
         );
         double wSurp = getWeight();
+        t1 += wSurp;
         weights[i] = wSurp;
-        i+= 1;
-        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για το"
+        i+= 1; 
+        if (t1 != 1) {
+            i =0;
+            System.out.println("Το άρθροισμα των βαρών πρέπει να ισούται με 1! Εισάγετε ξανά τα βάρη");
+        } 
+        } while (t1 != 1);
+        System.out.println("Το βάρος καταχωρήθηκε!\n ΠΕΡΙΒΑΛΛΟΝΤΙΚΑ ΣΤΟΙΧΕΙΑ\n "
+         + "Eισάγετε το βάρος για το"
             + " ποσοστό αξιοποίησης ανανεώσιμων πηγών ενέργειας."
         );
+        double t2 = 0;
+        do {
         double wRES = getWeight();
         weights[i] = wRES;
         i+= 1;
+        t2 += wRES;
         System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για"
             + " το ποσοστό ανακύκλωσης αστικών αποβλήτων."
         );
         double wRecRate = getWeight();
         weights[i] = wRecRate;
         i+= 1;
+        t2 += wRecRate;
         System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για την"
             + " ποσοστίαια μεταβολή τησ εκπομπής ρύπων θερμοκηπίου."
         );
         double wEmm = getWeight();
         weights[i] = wEmm;
         i+= 1;
-        System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για τον"
+        t2 += wEmm;
+        if (t2 != 1) {
+            i = 3;
+            System.out.println("Το άρθροισμα των βαρών πρέπει να ισούται με 1! Εισάγετε ξανά τα βάρη"); 
+        }
+        } while (t2 != 1);
+        System.out.println("Το βάρος καταχωρήθηκε!\n KΟΙΝΩΝΙΚΑ ΣΤΟΙΧΕΙΑ\n" 
+         + "Eισάγετε το βάρος για τον"
             + " κοινωνικό δείκτη GINI"
         );
+        double t3 = 0;
+        do {
         double wGini = getWeight();
         weights[i] = wGini;
         i+= 1;
+        t3 += wGini;
         System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος"
            + " για τις δαπάνες υγείας και παιδείας ως ποσοστό του ΑΕΠ"
         );
         double wEdHealExp = getWeight();
         weights[i] = wEdHealExp;
         i+= 1;
+        t3 += wEdHealExp;
         System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε βάρος για "
             + " την εκτίμηση του ποσοστού ανθρώπων με προβλήματα ψυχικής υγείας"
         );
         double wMentHealPer = getWeight();
         weights[i] = wMentHealPer;
         i+= 1;
+        t3 += wMentHealPer;
         System.out.println("Το βάρος καταχωρήθηκε! Eισάγετε το βάρος"
             + " για την ποσοστιαία μεταβολή της εγκληματικότητας (σοβαρά αδικήματα ανά 10000)."
         );
         double wCrimeRate = getWeight();
         weights[i] = wCrimeRate;
-        i+= 1;
+        t3 += wCrimeRate;
+        if (t3 != 1) {
+            i = 6;
+            System.out.println("Το άρθροισμα των βαρών πρέπει να ισούται με 1! Εισάγετε ξανά τα βάρη");
+        }
+        } while (t3 != 1);  
         System.out.println("Το βάρος καταχωρήθηκε! Όλα τα βάρη έχουν εισαχθεί");
         return weights;
     }
