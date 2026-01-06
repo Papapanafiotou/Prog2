@@ -230,45 +230,45 @@ public final class BudgetGUI extends JFrame {
         updateButton.addActionListener(e -> updateAmount());
         showChangesButton.addActionListener(e -> loadChangesFromDb());
         showTotalsButton.addActionListener(e -> {
-    TableInfo info = (TableInfo) tableSelector.getSelectedItem();
+            TableInfo info = (TableInfo) tableSelector.getSelectedItem();
 
-    if (info == null) {
-        JOptionPane.showMessageDialog(this,
-                "Δεν έχει επιλεγεί πίνακας.",
-                "Προειδοποίηση",
-                JOptionPane.WARNING_MESSAGE);
-        return;
-    }
+            if (info == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Δεν έχει επιλεγεί πίνακας.",
+                        "Προειδοποίηση",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-    TotalsPanel panel = new TotalsPanel(manager);
-    panel.updateTotals(info.tableName);
+            TotalsPanel panel = new TotalsPanel(manager);
+            panel.updateTotals(info.tableName);
 
-    JOptionPane.showMessageDialog(
-            this,
-            panel,
-            "Σύνολα Πίνακα: " + info.displayName,
-            JOptionPane.PLAIN_MESSAGE
-    );
-});
-percentageButton.addActionListener(e -> {
-    new PercentageUI(manager, dbPath);
-});
+            JOptionPane.showMessageDialog(
+                    this,
+                    panel,
+                    "Σύνολα Πίνακα: " + info.displayName,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+        });
+        percentageButton.addActionListener(e -> {
+            new PercentageUI(manager, dbPath);
+        });
 
-aiButton.addActionListener(e -> {
+        aiButton.addActionListener(e -> {
             // Έλεγχος αν υπάρχει επιλεγμένη γραμμή στον πίνακα
             String selectedId = null;
             String selectedName = null;
             String selectedAmount = null;
-            
+
             int row = dataTable.getSelectedRow();
             if (row >= 0) {
                 // Στήλη 0 = ID
                 // Στήλη 1 = Περιγραφή (Όνομα)
                 // Στήλη 3 = Τρέχον Ποσό
                 Object idVal = tableModel.getValueAt(row, 0);
-                Object nameVal = tableModel.getValueAt(row, 1); 
+                Object nameVal = tableModel.getValueAt(row, 1);
                 Object amountVal = tableModel.getValueAt(row, 3);
-                
+
                 selectedId = Objects.toString(idVal, "");
                 selectedName = Objects.toString(nameVal, "");
                 selectedAmount = Objects.toString(amountVal, "");
@@ -297,10 +297,10 @@ aiButton.addActionListener(e -> {
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Object[] row = new Object[]{
-                    rs.getInt(info.idColumnName),
-                    rs.getString("name"),
-                    rs.getDouble("original_amount"),
-                    rs.getDouble("amount")
+                        rs.getInt(info.idColumnName),
+                        rs.getString("name"),
+                        String.format(java.util.Locale.US, "%.2f", rs.getDouble("original_amount")),
+                        String.format(java.util.Locale.US, "%.2f", rs.getDouble("amount"))
                 };
                 tableModel.addRow(row);
             }
@@ -334,11 +334,11 @@ aiButton.addActionListener(e -> {
             double oldAmount = -1;
             for (int i = 0; i < tableModel.getRowCount(); i++) {
                 int rowId = Integer.parseInt(
-                    tableModel.getValueAt(i, 0).toString()
+                        tableModel.getValueAt(i, 0).toString()
                 );
                 if (rowId == id) {
                     oldAmount = Double.parseDouble(
-                        tableModel.getValueAt(i, TABLE_COL_AMOUNT).toString()
+                            tableModel.getValueAt(i, TABLE_COL_AMOUNT).toString()
                     );
                     break;
                 }
@@ -354,18 +354,18 @@ aiButton.addActionListener(e -> {
             }
             if (!Constrains.isReasonableChange(oldAmount, newAmount)) {
                 int option = JOptionPane.showConfirmDialog(
-                    this,
-                    "⚠️ Η αλλαγή υπερβαίνει το 50% του αρχικού ποσού.\n"
-                    + "Θέλεις να συνεχίσεις;",
-                    "Προειδοποίηση",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE
-            );
+                        this,
+                        "⚠️ Η αλλαγή υπερβαίνει το 50% του αρχικού ποσού.\n"
+                                + "Θέλεις να συνεχίσεις;",
+                        "Προειδοποίηση",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
 
-            if (option != JOptionPane.YES_OPTION) {
-                return;
+                if (option != JOptionPane.YES_OPTION) {
+                    return;
+                }
             }
-        }
             boolean success = manager.updateAmount(
                     info.tableName, info.idColumnName, id, newAmount);
             if (success) {
@@ -395,11 +395,11 @@ aiButton.addActionListener(e -> {
         boolean foundAny = false;
 
         TableInfo[] tables = new TableInfo[]{
-            new TableInfo("Έσοδα", "esoda", "code"),
-            new TableInfo("Έξοδα", "eksoda", "code"),
-            new TableInfo("Κράτος", "kratos", "number"),
-            new TableInfo("Υπουργεία", "ypourgeia", "number"),
-            new TableInfo("Αποκεντρωμένες", "apokentromenes", "number")
+                new TableInfo("Έσοδα", "esoda", "code"),
+                new TableInfo("Έξοδα", "eksoda", "code"),
+                new TableInfo("Κράτος", "kratos", "number"),
+                new TableInfo("Υπουργεία", "ypourgeia", "number"),
+                new TableInfo("Αποκεντρωμένες", "apokentromenes", "number")
         };
         for (TableInfo info : tables) {
             String sql = "SELECT " + info.idColumnName
