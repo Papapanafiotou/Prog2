@@ -22,7 +22,7 @@ if (p < 1000000) {
     return 5;
 } else if (p < 10000000) {
     return 6; 
-} else if (p < 1500000) {
+} else if (p < 15000000) {
     return 7;
 } else if (p < 22000000) {
     return 8;

@@ -3,6 +3,9 @@ package mainapp;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.*;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public class PinakesImporter {
 
@@ -98,7 +101,7 @@ public class PinakesImporter {
 
         String sql = "INSERT INTO esoda (code, name, amount, original_amount) VALUES (?, ?, ?, ?)";
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(csvPath));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvPath), StandardCharsets.UTF_8));
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String line;
@@ -133,7 +136,7 @@ public class PinakesImporter {
 
         String sql = "INSERT INTO eksoda (code, name, amount, original_amount) VALUES (?, ?, ?, ?)";
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(csvPath));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvPath), StandardCharsets.UTF_8));
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String line;
@@ -180,7 +183,8 @@ public class PinakesImporter {
         PreparedStatement psKr = conn.prepareStatement(sqlKr);
         PreparedStatement psAp = conn.prepareStatement(sqlAp);
 
-       try (BufferedReader reader = new BufferedReader(new FileReader(csvPath))) {
+       try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvPath), StandardCharsets.UTF_8))) { 
+        
 
             String line;
             boolean skipHeader = true;
@@ -220,7 +224,7 @@ public class PinakesImporter {
 
 
                 // --- rows 1–3 → kratos
-                if (row >= 1 && row <= 3) {
+                if (row >= 0 && row <= 2) {
                     psKr.setInt(1, number);
                     psKr.setString(2, name);
                     psKr.setDouble(3, amount1);
@@ -231,7 +235,7 @@ public class PinakesImporter {
                 }
 
                 // --- rows 4–23 → ypourgeia
-                else if (row >= 4 && row <= 23) {
+                else if (row >= 3 && row <= 23) {
                     psYp.setInt(1, number);
                     psYp.setString(2, name);
                     psYp.setDouble(3, amount1);
