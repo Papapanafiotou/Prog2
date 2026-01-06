@@ -97,6 +97,7 @@ public final class BudgetGUI extends JFrame {
     private JButton percentageButton;
     /** Κουμπί AI. */
     private JButton aiButton;
+    private JButton predictButton;
 
 
     /**
@@ -122,6 +123,7 @@ public final class BudgetGUI extends JFrame {
         backButton = new JButton("⬅ Πίσω");
         showTotalsButton = new JButton("📊 Εμφάνιση Συνόλων");
         percentageButton = new JButton("📈 Ποσοστά");
+        predictButton = new JButton("🔮 Πρόβλεψη 2027");
         aiButton = new JButton("🤖 AI Σύμβουλος");
         aiButton.setBackground(new Color(230, 230, 255)); // Ελαφρύ μπλε για να ξεχωρίζει
         tableSelector = new JComboBox<>();
@@ -187,6 +189,7 @@ public final class BudgetGUI extends JFrame {
         updatePanel.add(amountField);
         updatePanel.add(updateButton);
         updatePanel.add(percentageButton);
+        updatePanel.add(predictButton);
 
         JPanel changesPanel = new JPanel(new BorderLayout());
         changesPanel.setBorder(
@@ -253,7 +256,10 @@ public final class BudgetGUI extends JFrame {
         percentageButton.addActionListener(e -> {
             new PercentageUI(manager, dbPath);
         });
-
+        predictButton.addActionListener(e -> {
+        PredictionUI predictionWindow = new PredictionUI(dbPath);
+        predictionWindow.setVisible(true);
+    });
         aiButton.addActionListener(e -> {
             // Έλεγχος αν υπάρχει επιλεγμένη γραμμή στον πίνακα
             String selectedId = null;
