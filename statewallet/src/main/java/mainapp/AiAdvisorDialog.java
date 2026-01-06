@@ -224,7 +224,7 @@ public class AiAdvisorDialog extends JDialog {
                     }
                     try {
                         double amount = Double.parseDouble(amountStr);
-                        return aiBridge.getSpecificAdvice(name, amount, goal);
+                        return aiBridge.getSpecificAdvice(dbPath, name, amount, goal);
                     } catch (NumberFormatException e) {
                         return "Σφάλμα ανάγνωσης ποσού.";
                     }

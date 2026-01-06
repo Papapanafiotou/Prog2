@@ -99,8 +99,8 @@ public class AiBridge {
         }
     }
 
-    public String getSpecificAdvice(String name, double amount, String goal) {
-        return runPythonScript(goal, "specific", name, String.valueOf(amount));
+    public String getSpecificAdvice(String dbPath, String name, double amount, String goal) {
+        return runPythonScript(goal, "specific", dbPath, name, String.valueOf(amount));
     }
 
     public String getGlobalStrategy(String dbUrl, String goal) {
