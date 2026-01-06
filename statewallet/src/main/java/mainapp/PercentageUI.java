@@ -124,4 +124,4 @@ public class PercentageUI extends JFrame {
             return label; // Επιστρέφει το Label για να φανεί στο ComboBox
         }
     }
-} // Τέλος της κλάσης PercentageUI
+} 
