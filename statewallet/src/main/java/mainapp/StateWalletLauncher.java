@@ -6,8 +6,10 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.Serial;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -19,6 +21,8 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+
+import javafx.scene.image.Image;  
 
 /**
  * Η αρχική οθόνη εκκίνησης (Launcher) της εφαρμογής.
@@ -96,7 +100,7 @@ public final class StateWalletLauncher extends JFrame {
     public StateWalletLauncher() {
 
         setTitle("State Wallet");
-        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT); // Ίσως χρειαστεί να αυξήσεις λίγο το ύψος αν η εικόνα είναι μεγάλη
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -107,13 +111,63 @@ public final class StateWalletLauncher extends JFrame {
         mainPanel.setBorder(new EmptyBorder(BORDER_VERT, BORDER_HORIZ,
                 BORDER_VERT, BORDER_HORIZ));
 
-        addComp(mainPanel, new JLabel("🏛️"),
-                new Font("Segoe UI Emoji", Font.PLAIN, FONT_SIZE_EMOJI),
-                Color.BLACK, GAP_TINY);
+        // --- ΑΛΛΑΓΗ: Προσθήκη Εικόνας (Λογότυπο) ---
+        // --- ΕΞΥΠΝΗ ΦΟΡΤΩΣΗ ΕΙΚΟΝΑΣ ---
+        try {
+            // 1. Τυπώνουμε πού "κοιτάει" η Java για να ξέρουμε
+            String workingDir = System.getProperty("user.dir");
+            System.out.println("📂 Φάκελος Εργασίας (Working Dir): " + workingDir);
 
-        addComp(mainPanel, new JLabel("State Wallet"),
-                new Font("Segoe UI", Font.BOLD, FONT_SIZE_TITLE),
-                PRIMARY, GAP_TINY);
+            // 2. Λίστα με πιθανές τοποθεσίες που μπορεί να έβαλες την εικόνα
+            String[] possiblePaths = {
+                "logo.jpg",                        // Στο root του project
+                "statewallet/logo.jpg",            // Στον φάκελο statewallet
+                "src/logo.jpg",                    // Μέσα στο src
+                "src/mainapp/logo.jpg",            // Μέσα στο πακέτο mainapp
+                "src/main/java/mainapp/logo.jpg"   // Αν έχεις δομή Maven
+            };
+
+            String foundPath = null;
+            for (String path : possiblePaths) {
+                java.io.File f = new java.io.File(path);
+                if (f.exists()) {
+                    System.out.println("✅ Η εικόνα βρέθηκε στο: " + path);
+                    foundPath = path;
+                    break;
+                } else {
+                    System.out.println("❌ Δεν βρέθηκε στο: " + path);
+                }
+            }
+
+            if (foundPath != null) {
+                // Φόρτωση της εικόνας που βρέθηκε
+                ImageIcon originalIcon = new ImageIcon(foundPath);
+                
+                // Προσαρμογή μεγέθους
+                Image scaledImage = originalIcon.getImage().getScaledInstance(300, 150, Image.SCALE_SMOOTH);
+                
+                JLabel logoLabel = new JLabel(new ImageIcon(scaledImage));
+                logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                
+                mainPanel.add(logoLabel);
+                mainPanel.add(Box.createRigidArea(new Dimension(0, GAP_SMALL)));
+            } else {
+                throw new Exception("Το αρχείο logo.jpg δεν βρέθηκε πουθενά!");
+            }
+
+        } catch (Exception e) {
+            // Fallback: Αν αποτύχουν όλα, δείξε το παλιό emoji
+            System.out.println("⚠️ ΠΡΟΒΛΗΜΑ: " + e.getMessage());
+            addComp(mainPanel, new JLabel("🏛️"),
+                    new Font("Segoe UI Emoji", Font.PLAIN, FONT_SIZE_EMOJI),
+                    Color.BLACK, GAP_TINY);
+
+            addComp(mainPanel, new JLabel("State Wallet"),
+                    new Font("Segoe UI", Font.BOLD, FONT_SIZE_TITLE),
+                    PRIMARY, GAP_TINY);
+        }
+        // --- ΤΕΛΟΣ ---
+        // --- ΤΕΛΟΣ ΑΛΛΑΓΗΣ ---
 
         addComp(mainPanel, new JLabel("Επιλέξτε οικονομικό έτος"),
                 new Font("Segoe UI", Font.PLAIN, FONT_SIZE_SUBTITLE),
@@ -152,7 +206,6 @@ public final class StateWalletLauncher extends JFrame {
         add(mainPanel);
         startButton.addActionListener(e -> startProcess());
     }
-
     private void addComp(final JPanel p, final JComponent c,
                          final Font f, final Color col, final int gap) {
         if (f != null) {
