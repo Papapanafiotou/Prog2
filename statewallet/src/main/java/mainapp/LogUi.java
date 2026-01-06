@@ -7,13 +7,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.Serial;
 import java.util.Random;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField; 
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -138,6 +141,55 @@ public final class LogUi extends JFrame {
         return btn;
     }
 
+    /**
+     * Βοηθητική μέθοδος για λήψη κωδικού με αστεράκια.
+     */
+    /**
+     * Βοηθητική μέθοδος για λήψη κωδικού με επιλογή εμφάνισης.
+     */
+    private String getPasswordInput(String message) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        
+        JLabel label = new JLabel(message);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JPasswordField pf = new JPasswordField();
+        pf.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        // Αποθήκευση του αρχικού χαρακτήρα απόκρυψης (συνήθως • ή *)
+        char defaultEcho = pf.getEchoChar();
+
+        JCheckBox showPass = new JCheckBox("Εμφάνιση κωδικού");
+        showPass.setAlignmentX(Component.LEFT_ALIGNMENT);
+        showPass.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        // Λειτουργία εμφάνισης/απόκρυψης
+        showPass.addActionListener(e -> {
+            if (showPass.isSelected()) {
+                pf.setEchoChar((char) 0); // 0 = Κανονικό κείμενο
+            } else {
+                pf.setEchoChar(defaultEcho); // Επαναφορά απόκρυψης
+            }
+        });
+
+        panel.add(label);
+        panel.add(Box.createVerticalStrut(5)); // Κενό
+        panel.add(pf);
+        panel.add(Box.createVerticalStrut(5)); // Κενό
+        panel.add(showPass);
+
+        int action = JOptionPane.showConfirmDialog(null, 
+                panel, 
+                "Εισαγωγή Κωδικού", 
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+        
+        if (action == JOptionPane.OK_OPTION) {
+            return new String(pf.getPassword());
+        }
+        return null;
+    }
     private void createAccount() {
         String username = JOptionPane.showInputDialog("Username:");
         if (username == null || username.trim().isEmpty()) {
@@ -168,7 +220,9 @@ public final class LogUi extends JFrame {
             password = sb.toString();
             JOptionPane.showMessageDialog(null, "Ο κωδικός σας: " + password);
         } else {
-            password = JOptionPane.showInputDialog("Δώστε κωδικό (8+ chars):");
+            // Χρήση της μεθόδου για απόκρυψη κωδικού
+            password = getPasswordInput("Δώστε κωδικό (8+ chars):");
+            
             if (password == null) {
                 return;
             }
@@ -191,7 +245,10 @@ public final class LogUi extends JFrame {
             JOptionPane.showMessageDialog(null, "Ο χρήστης δεν βρέθηκε.");
             return;
         }
-        String pass = JOptionPane.showInputDialog("Κωδικός:");
+        
+        // Χρήση της μεθόδου για απόκρυψη κωδικού
+        String pass = getPasswordInput("Κωδικός:");
+        
         if (pass == null) {
             return;
         }
@@ -209,12 +266,17 @@ public final class LogUi extends JFrame {
         if (user == null) {
             return;
         }
-        String oldP = JOptionPane.showInputDialog("Τρέχων κωδικός:");
+        
+        // Χρήση της μεθόδου για τον παλιό κωδικό
+        String oldP = getPasswordInput("Τρέχων κωδικός:");
+        
         if (oldP == null) {
             return;
         }
         if (acc.logIn(acc.getPassword(user), oldP)) {
-            String newP = JOptionPane.showInputDialog("Νέος κωδικός:");
+            // Χρήση της μεθόδου για τον νέο κωδικό
+            String newP = getPasswordInput("Νέος κωδικός:");
+            
             if (newP != null && Accounts.validatePassword(newP)) {
                 acc.newPass(newP, user);
                 JOptionPane.showMessageDialog(null, "Ο κωδικός ενημερώθηκε!");
