@@ -362,7 +362,7 @@ public final class BudgetMenu {
             double amount = search.searchAmountInTable(name, tablename);
             try {
                 precent = (amount / total[1]) * 100; 
-                System.out.println(precent + "%");
+                System.out.println(String.format("%.4f",precent) + " %");
             } catch (ArithmeticException e) {
                 System.out.println("Σφάλμα! Δεν μπορεί να γίνει διαίρεση με 0!");
             }
