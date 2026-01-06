@@ -331,6 +331,18 @@ aiButton.addActionListener(e -> {
         try {
             int id = Integer.parseInt(idText);
             double newAmount = Double.parseDouble(amountText);
+            double oldAmount = -1;
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                int rowId = Integer.parseInt(
+                    tableModel.getValueAt(i, 0).toString()
+                );
+                if (rowId == id) {
+                    oldAmount = Double.parseDouble(
+                        tableModel.getValueAt(i, TABLE_COL_AMOUNT).toString()
+                    );
+                    break;
+                }
+            }
             if (newAmount < 0) {
                 int option = JOptionPane.showConfirmDialog(this,
                         "Το νέο ποσό είναι αρνητικό. Συνέχεια;",
@@ -340,6 +352,20 @@ aiButton.addActionListener(e -> {
                     return;
                 }
             }
+            if (!Constrains.isReasonableChange(oldAmount, newAmount)) {
+                int option = JOptionPane.showConfirmDialog(
+                    this,
+                    "⚠️ Η αλλαγή υπερβαίνει το 50% του αρχικού ποσού.\n"
+                    + "Θέλεις να συνεχίσεις;",
+                    "Προειδοποίηση",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if (option != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
             boolean success = manager.updateAmount(
                     info.tableName, info.idColumnName, id, newAmount);
             if (success) {
