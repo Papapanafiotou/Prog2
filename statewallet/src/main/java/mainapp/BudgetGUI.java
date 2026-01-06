@@ -40,9 +40,9 @@ public final class BudgetGUI extends JFrame {
     private static final long serialVersionUID = 1L;
 
     /** Πλάτος παραθύρου. */
-    private static final int WINDOW_WIDTH = 1200;
+    private static final int WINDOW_WIDTH = 1100;
     /** Ύψος παραθύρου. */
-    private static final int WINDOW_HEIGHT = 750;
+    private static final int WINDOW_HEIGHT = 650;
     /** Μέγεθος πεδίου ID. */
     private static final int ID_FIELD_SIZE = 8;
     /** Μέγεθος πεδίου ποσού. */
