@@ -327,12 +327,11 @@ public final class BudgetMenu {
     }
 
     public void getPrecentage() {
-        Scanner scan = new Scanner(System.in);
         System.out.println("Για έσοδα πατήστε 1, για έξοδα πατήστε 2,"
         + "για υπουργεία 3.");
         String tablename = null;
         do {
-            int answer = scan.nextInt();
+            int answer = scanner.nextInt();
             switch (answer) {
             case 1:
             tablename = "esoda";
@@ -352,13 +351,13 @@ public final class BudgetMenu {
         System.out.println("Για υπολογισμό μεμονωμένου ποσοστού "
             + "πατήστε 1, για τον υπολογισμό όλων των ποσοστών πατήστε 2"
         );
-        int answer2 = scan.nextInt();
+        int answer2 = scanner.nextInt();
         if (answer2 == 1) { 
             double precent = 0.0;
             System.out.println("Για ποιον λογαριασμό θέλετε να υπολογίσετε " +
              "το ποσοστό;"); 
-            scan.nextLine(); // clear buffer
-            String name = scan.nextLine();
+            scanner.nextLine(); // clear buffer
+            String name = scanner.nextLine();
             Search search = new Search(url);
             double amount = search.searchAmountInTable(name, tablename);
             try {
