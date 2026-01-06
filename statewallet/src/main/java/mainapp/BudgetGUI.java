@@ -13,7 +13,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.swing.BorderFactory;
@@ -40,9 +39,9 @@ public final class BudgetGUI extends JFrame {
     private static final long serialVersionUID = 1L;
 
     /** Πλάτος παραθύρου. */
-    private static final int WINDOW_WIDTH = 1100;
+    private static final int WINDOW_WIDTH = 950;
     /** Ύψος παραθύρου. */
-    private static final int WINDOW_HEIGHT = 650;
+    private static final int WINDOW_HEIGHT = 600;
     /** Μέγεθος πεδίου ID. */
     private static final int ID_FIELD_SIZE = 8;
     /** Μέγεθος πεδίου ποσού. */
@@ -95,8 +94,8 @@ public final class BudgetGUI extends JFrame {
     private JLabel budgetStatusLabel;
     /** Κουμπί εμφάνισης συνόλων. */
     private JButton showTotalsButton;
-    /** Κουμπί AI. */
-    private JButton aiButton;
+    private JButton percentageButton;
+
 
     /**
      * Κατασκευαστής του BudgetGUI.
@@ -120,6 +119,7 @@ public final class BudgetGUI extends JFrame {
     private void initComponents() {
         backButton = new JButton("⬅ Πίσω");
         showTotalsButton = new JButton("📊 Εμφάνιση Συνόλων");
+        percentageButton = new JButton("📈 Ποσοστά");
         tableSelector = new JComboBox<>();
         tableSelector.addItem(new TableInfo("Έσοδα", "esoda", "code"));
         tableSelector.addItem(new TableInfo("Έξοδα", "eksoda", "code"));
@@ -155,8 +155,6 @@ public final class BudgetGUI extends JFrame {
         changesArea.setEditable(false);
         changesArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN,
                 CONSOLE_FONT_SIZE));
-        aiButton = new JButton("🤖 AI Σύμβουλος");
-        aiButton.setBackground(new Color(230, 230, 255)); // Ελαφρύ μπλε για να ξεχωρίζει
     }
 
     private void initLayout() {
@@ -168,7 +166,6 @@ public final class BudgetGUI extends JFrame {
         topPanel.add(tableSelector);
         topPanel.add(loadTableButton);
         topPanel.add(showTotalsButton);
-        topPanel.add(aiButton);
         topPanel.add(Box.createRigidArea(new Dimension(GAP_SIZE, 0)));
         topPanel.add(budgetStatusLabel);
 
@@ -184,6 +181,7 @@ public final class BudgetGUI extends JFrame {
         updatePanel.add(new JLabel("Νέο ποσό:"));
         updatePanel.add(amountField);
         updatePanel.add(updateButton);
+        updatePanel.add(percentageButton);
 
         JPanel changesPanel = new JPanel(new BorderLayout());
         changesPanel.setBorder(
@@ -227,49 +225,29 @@ public final class BudgetGUI extends JFrame {
         updateButton.addActionListener(e -> updateAmount());
         showChangesButton.addActionListener(e -> loadChangesFromDb());
         showTotalsButton.addActionListener(e -> {
-            TableInfo info = (TableInfo) tableSelector.getSelectedItem();
+    TableInfo info = (TableInfo) tableSelector.getSelectedItem();
 
-            if (info == null) {
-                JOptionPane.showMessageDialog(this,
-                        "Δεν έχει επιλεγεί πίνακας.",
-                        "Προειδοποίηση",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+    if (info == null) {
+        JOptionPane.showMessageDialog(this,
+                "Δεν έχει επιλεγεί πίνακας.",
+                "Προειδοποίηση",
+                JOptionPane.WARNING_MESSAGE);
+        return;
+    }
 
-            TotalsPanel panel = new TotalsPanel(manager);
-            panel.updateTotals(info.tableName);
+    TotalsPanel panel = new TotalsPanel(manager);
+    panel.updateTotals(info.tableName);
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    panel,
-                    "Σύνολα Πίνακα: " + info.displayName,
-                    JOptionPane.PLAIN_MESSAGE
-            );
-        });
-        aiButton.addActionListener(e -> {
-            // Έλεγχος αν υπάρχει επιλεγμένη γραμμή στον πίνακα
-            String selectedId = null;
-            String selectedName = null;
-            String selectedAmount = null;
-
-            int row = dataTable.getSelectedRow();
-            if (row >= 0) {
-                // Στήλη 0 = ID
-                // Στήλη 1 = Περιγραφή (Όνομα)
-                // Στήλη 3 = Τρέχον Ποσό
-                Object idVal = tableModel.getValueAt(row, 0);
-                Object nameVal = tableModel.getValueAt(row, 1);
-                Object amountVal = tableModel.getValueAt(row, 3);
-
-                selectedId = Objects.toString(idVal, "");
-                selectedName = Objects.toString(nameVal, "");
-                selectedAmount = Objects.toString(amountVal, "");
-            }
-
-            // Περνάμε το ID, Name, Amount στον νέο constructor
-            new AiAdvisorDialog(this, dbPath, selectedId, selectedName, selectedAmount).setVisible(true);
-        });
+    JOptionPane.showMessageDialog(
+            this,
+            panel,
+            "Σύνολα Πίνακα: " + info.displayName,
+            JOptionPane.PLAIN_MESSAGE
+    );
+});
+percentageButton.addActionListener(e -> {
+    new PercentageUI(manager, dbPath);
+});
     }
 
     private void loadSelectedTable() {
@@ -286,11 +264,10 @@ public final class BudgetGUI extends JFrame {
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Object[] row = new Object[]{
-                        rs.getInt(info.idColumnName),
-                        rs.getString("name"),
-                        // Αλλαγή: Μορφοποίηση σε String για αποφυγή επιστημονικής μορφής (Ε)
-                        String.format(Locale.US, "%.2f", rs.getDouble("original_amount")),
-                        String.format(Locale.US, "%.2f", rs.getDouble("amount"))
+                    rs.getInt(info.idColumnName),
+                    rs.getString("name"),
+                    rs.getDouble("original_amount"),
+                    rs.getDouble("amount")
                 };
                 tableModel.addRow(row);
             }
@@ -321,11 +298,6 @@ public final class BudgetGUI extends JFrame {
         try {
             int id = Integer.parseInt(idText);
             double newAmount = Double.parseDouble(amountText);
-            double oldAmount = manager.getCurrentAmount(
-            info.tableName,
-            info.idColumnName,
-            id
-            );
             if (newAmount < 0) {
                 int option = JOptionPane.showConfirmDialog(this,
                         "Το νέο ποσό είναι αρνητικό. Συνέχεια;",
@@ -335,23 +307,6 @@ public final class BudgetGUI extends JFrame {
                     return;
                 }
             }
-            if (!Constrains.isReasonableChange(oldAmount, newAmount)) {
-
-    int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "ΠΡΟΣΟΧΗ!\n"
-            + "Η αλλαγή που επιθυμείτε να κάνετε υπερβαίνει το 50% "
-            + "του αρχικού ποσού.\n\n"
-            + "Θέλετε να συνεχίσετε;",
-            "Ισχυρή Προειδοποίηση",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-    );
-
-    if (confirm != JOptionPane.YES_OPTION) {
-        return;
-    }
-}
             boolean success = manager.updateAmount(
                     info.tableName, info.idColumnName, id, newAmount);
             if (success) {
@@ -381,11 +336,11 @@ public final class BudgetGUI extends JFrame {
         boolean foundAny = false;
 
         TableInfo[] tables = new TableInfo[]{
-                new TableInfo("Έσοδα", "esoda", "code"),
-                new TableInfo("Έξοδα", "eksoda", "code"),
-                new TableInfo("Κράτος", "kratos", "number"),
-                new TableInfo("Υπουργεία", "ypourgeia", "number"),
-                new TableInfo("Αποκεντρωμένες", "apokentromenes", "number")
+            new TableInfo("Έσοδα", "esoda", "code"),
+            new TableInfo("Έξοδα", "eksoda", "code"),
+            new TableInfo("Κράτος", "kratos", "number"),
+            new TableInfo("Υπουργεία", "ypourgeia", "number"),
+            new TableInfo("Αποκεντρωμένες", "apokentromenes", "number")
         };
         for (TableInfo info : tables) {
             String sql = "SELECT " + info.idColumnName
@@ -404,7 +359,7 @@ public final class BudgetGUI extends JFrame {
                         tableHasChanges = true;
                         foundAny = true;
                     }
-                    sb.append(String.format(Locale.US,
+                    sb.append(String.format(
                             "ID: %-3d | %-20s | Αρχικό: %.2f | Νέο: %.2f%n",
                             rs.getInt(info.idColumnName),
                             rs.getString("name"),
