@@ -261,7 +261,7 @@ public final class BudgetMenu {
 
             if (!Constrains.isReasonableChange(oldAmount, newAmount)){
                 System.out.println("ΠΡΟΣΟΧΗ! Η αλλαγή που επιθυμείτε να κάνετε υπερβαίνει το 50% του αρχικού ποσού.");
-                System.out.println("Αν εξακολουθείτε να επιθυμείτε να αλλάξετε το ποσό με αυτόν τον τρόπο πληκτρολογήστε 1");
+                System.out.println("Αν εξακολουθείτε να επιθυμείτε να αλλάξετε το ποσό με αυτόν τον τρόπο πληκτρολογήστε 1. Αλλιώς πληκτρολογήστε 2.");
                 int confirm = scanner.nextInt();
                 scanner.nextLine(); 
                 if (confirm != 1){
@@ -275,7 +275,7 @@ public final class BudgetMenu {
             double[] exp = manager.getTotal("eksoda");
             if (!Constrains.deficitLimit(rev[1], exp[1])) {
                 System.out.println("Η αλλαγή αυτή οδηγεί σε έλλειμα μεγαλύτερο του 3% που είναι το επιτρεπτό από τους κανονισμούς της ευρωπαικής ένωσης.");
-                System.out.println("Αν εξακολουθείτε να επιθυμείτε να αλλάξετε το ποσό με αυτόν τον τρόπο πληκτρολογήστε 1");
+                System.out.println("Αν εξακολουθείτε να επιθυμείτε να αλλάξετε το ποσό με αυτόν τον τρόπο πληκτρολογήστε 1. Αλλιώς πληκτρολογήστε 2.");
                 int choice = scanner.nextInt();
                 scanner.nextLine();
                 if (choice != 1) {
