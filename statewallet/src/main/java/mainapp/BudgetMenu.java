@@ -274,8 +274,13 @@ public final class BudgetMenu {
             double[] rev = manager.getTotal("esoda");
             double[] exp = manager.getTotal("eksoda");
             if (!Constrains.deficitLimit(rev[1], exp[1])) {
-                System.out.println("Η αλλαγή αυτή οδηγεί σε έλλειμα μεγαλύτερο του 3% που είναι το επιτρεπτό. Δεν γίνεται να συνεχίσετε.)");
-                return;
+                System.out.println("Η αλλαγή αυτή οδηγεί σε έλλειμα μεγαλύτερο του 3% που είναι το επιτρεπτό από τους κανονισμούς της ευρωπαικής ένωσης.");
+                System.out.println("Αν εξακολουθείτε να επιθυμείτε να αλλάξετε το ποσό με αυτόν τον τρόπο πληκτρολογήστε 1");
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice != 1) {
+                    return;
+                }
             }
             
             success = manager.updateAmount(tableName, idColName, id, newAmount);
