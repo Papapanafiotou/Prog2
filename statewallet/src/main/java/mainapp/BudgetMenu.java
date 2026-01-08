@@ -39,8 +39,10 @@ public final class BudgetMenu {
     private static final int OPTION_AI_GLOBAL = 11;
     /** Επιλογή: Πρόβλεψη 2027. */
     private static final int OPTION_PREDICT = 12;
+    //Επιλογή: Σύστημα βαθμολόγησης κράτους
+    private static final int OPTION_GRADE = 13;
     /** Επιλογή: Έξοδος. */
-    private static final int OPTION_EXIT = 13;
+    private static final int OPTION_EXIT = 14;
 
 
     /** Πίνακας: Έσοδα. */
@@ -98,7 +100,8 @@ public final class BudgetMenu {
             System.out.println("10. Χρήση AI για συγκεκριμένο λογαριασμό");
             System.out.println("11. Χρήση AI για πιο γενική αναφορά");
             System.out.println("12. Πρόβλεψη Τιμής για το 2027");
-            System.out.println("13. Έξοδος");
+            System.out.println("13. Σύστημα βαθμολόγησης του κράτους βάσει στοιχείων(ΕΛΣΤΑΤ, EUROSTAT)");
+            System.out.println("14. Έξοδος");
             System.out.print("Επιλογή: ");
 
             int choice;
@@ -141,6 +144,10 @@ public final class BudgetMenu {
                 }
                 case OPTION_PERCENTANCE -> getPrecentage();
                 case OPTION_PREDICT -> predictValue();
+                case OPTION_GRADE -> {
+                    TotalGrade t = new TotalGrade();
+                    t.getTotalGrade();
+                }
                 default -> System.out.println("Λάθος επιλογή.");
             }
         }
