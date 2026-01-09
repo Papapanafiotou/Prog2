@@ -3,6 +3,7 @@ import sqlite3
 import os
 import time
 import io
+from dotenv import load_dotenv
 
 # --- 1. ΡΥΘΜΙΣΗ ENCODING (Για Ελληνικά στα Windows) ---
 sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
@@ -18,27 +19,15 @@ except ImportError:
     print("Εκτελέστε: pip install google-genai")
     sys.exit(1)
 
-# --- 3. ΦΟΡΤΩΣΗ API KEY ---
-script_dir = os.path.dirname(os.path.abspath(__file__))
-# Ψάχνουμε το κλειδί σε δύο πιθανά σημεία
-key_paths = [
-    os.path.join(script_dir, "statewallet", "api_key.txt"),
-    os.path.join(script_dir, "api_key.txt")
-]
-
-API_KEY = None
-for path in key_paths:
-    try:
-        with open(path, "r", encoding='utf-8') as f:
-            API_KEY = f.read().strip()
-        if API_KEY: break
-    except:
-        continue
+# --- ΦΟΡΤΩΣΗ API KEY ΑΠΟ .ENV ---
+load_dotenv() # Διαβάζει το αρχείο .env
+API_KEY = os.getenv("GOOGLE_API_KEY") # Παίρνει την τιμή
 
 if not API_KEY:
-    print("Σφάλμα: Δεν βρέθηκε το αρχείο api_key.txt")
+    print("Σφάλμα: Δεν βρέθηκε το GOOGLE_API_KEY στο αρχείο .env")
     sys.exit(1)
 
+# --- ΑΡΧΙΚΟΠΟΙΗΣΗ CLIENT  ---
 client = genai.Client(api_key=API_KEY)
 
 # --- 4. ΛΙΣΤΑ ΜΟΝΤΕΛΩΝ (ΑΥΤΟΜΑΤΗ ΕΝΑΛΛΑΓΗ) ---
