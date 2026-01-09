@@ -5,6 +5,7 @@ import io
 from dotenv import load_dotenv # 1. Import για το .env
 
 # --- 1. ΡΥΘΜΙΣΗ ENCODING ---
+# Εξασφαλίζει ότι τα Ελληνικά θα περάσουν σωστά από/προς την Java
 sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
@@ -25,10 +26,11 @@ if not API_KEY:
     print("Σφάλμα: Δεν βρέθηκε το GOOGLE_API_KEY στο αρχείο .env")
     sys.exit(1)
 
-# --- 4. ΑΡΧΙΚΟΠΟΙΗΣΗ CLIENT (Αυτό έλειπε!) ---
+# --- 4. ΑΡΧΙΚΟΠΟΙΗΣΗ CLIENT ---
 client = genai.Client(api_key=API_KEY)
 
 # --- 5. ΛΙΣΤΑ ΜΟΝΤΕΛΩΝ ---
+# Λίστα με διαθέσιμα μοντέλα για Failover (αν αποτύχει το ένα, δοκιμάζει το επόμενο)
 MODEL_LIST = [
     "gemini-2.0-flash-001",
     "gemini-2.0-flash-lite-001",
@@ -38,7 +40,19 @@ MODEL_LIST = [
 ]
 
 def generate_safe(prompt):
-    """ Δοκιμάζει μοντέλα με τη σειρά (Failover) """
+    """ 
+    Στέλνει το αίτημα στο Google Gemini με μηχανισμό ασφαλείας (Failover).
+    
+    Δοκιμάζει τα μοντέλα της λίστας MODEL_LIST σειριακά. Αν κάποιο μοντέλο
+    επιστρέψει σφάλμα (π.χ. 429 Too Many Requests ή 503 Service Unavailable),
+    η συνάρτηση δοκιμάζει αυτόματα το επόμενο.
+    
+    Args:
+        prompt (str): Το κείμενο της εντολής προς το AI.
+        
+    Returns:
+        str: Η απάντηση του AI καθαρισμένη από Markdown tags, έτοιμη για HTML render.
+    """
     for model_name in MODEL_LIST:
         try:
             response = client.models.generate_content(
@@ -62,7 +76,15 @@ def generate_safe(prompt):
 
 # ---------------------------------------------------------
 def get_summary(db_path):
-    """ Επιστρέφει HTML σύνοψη για το UI της Java """
+    """ 
+    Ανακτά συνοπτικά οικονομικά δεδομένα από τη βάση SQLite και τα επιστρέφει ως HTML.
+    
+    Args:
+        db_path (str): Το μονοπάτι της βάσης δεδομένων.
+        
+    Returns:
+        str: HTML κώδικας (λίστες <ul>, <li>) με τα σύνολα εσόδων/εξόδων και τα top υπουργεία.
+    """
     try:
         real_path = db_path.replace("jdbc:sqlite:", "")
         if not os.path.exists(real_path):
@@ -101,6 +123,9 @@ def get_summary(db_path):
         return f"Σφάλμα Βάσης: {str(e)}"
 
 def analyze_specific(db_path, item_name, amount, goal):
+    """
+    Δημιουργεί Prompt για ανάλυση συγκεκριμένου λογαριασμού και ζητά HTML απάντηση.
+    """
     global_context = get_summary(db_path)
     
     # Ζητάμε HTML output από το AI
@@ -124,6 +149,9 @@ def analyze_specific(db_path, item_name, amount, goal):
     print(generate_safe(prompt))
 
 def analyze_global(db_path, goal):
+    """
+    Δημιουργεί Prompt για τη γενική στρατηγική και ζητά HTML απάντηση.
+    """
     global_context = get_summary(db_path)
     
     prompt = f"""
@@ -151,6 +179,7 @@ if __name__ == "__main__":
     db_path = sys.argv[2]
     
     goal = ""
+    # Ανάγνωση του στόχου από το stdin (μέσω pipe από την Java)
     if not sys.stdin.isatty():
         try: goal = sys.stdin.read().strip()
         except: pass

@@ -26,12 +26,21 @@ import javax.swing.SwingWorker;
 import javax.swing.text.html.HTMLEditorKit; 
 import javax.swing.text.html.StyleSheet;  
 
+/**
+ * Η κλάση {@code AiAdvisorDialog} υλοποιεί το γραφικό περιβάλλον για τον AI Οικονομικό Σύμβουλο.
+ * <p>
+ * <b>Νέα Δυνατότητα:</b> Χρησιμοποιεί {@link JEditorPane} αντί για JTextArea, επιτρέποντας
+ * την εμφάνιση των απαντήσεων του AI σε μορφή <b>HTML</b>. Αυτό επιτρέπει πλούσια μορφοποίηση
+ * όπως λίστες, έντονα γράμματα και χρωματισμό λέξεων (π.χ. κόκκινο για ελλείμματα).
+ * </p>
+ */
 public class AiAdvisorDialog extends JDialog {
 
     private final AiBridge aiBridge;
     private final String dbPath;
     
     // Components
+    /** Το πεδίο που εμφανίζει την απάντηση (υποστηρίζει HTML). */
     private JEditorPane responseArea; 
     private JTabbedPane tabbedPane;
     
@@ -44,6 +53,14 @@ public class AiAdvisorDialog extends JDialog {
     private JTextField amountField;
     private JTextArea specificGoalArea;
 
+    /**
+     * Κατασκευάζει το παράθυρο διαλόγου και αρχικοποιεί τα γραφικά συστατικά.
+     * * @param parent Το γονικό παράθυρο.
+     * @param dbPath Η διαδρομή της βάσης δεδομένων.
+     * @param id Το ID της επιλεγμένης εγγραφής (μπορεί να είναι null).
+     * @param name Το όνομα της εγγραφής.
+     * @param amount Το ποσό της εγγραφής.
+     */
     public AiAdvisorDialog(JFrame parent, String dbPath, String id, String name, String amount) {
         super(parent, "AI Οικονομικός Σύμβουλος", true);
         this.dbPath = dbPath;
@@ -56,6 +73,14 @@ public class AiAdvisorDialog extends JDialog {
         initComponents(id, name, amount);
     }
 
+    /**
+     * Αρχικοποιεί τη δομή του παραθύρου (Tabs, Inputs) και ρυθμίζει τον HTML Viewer.
+     * <p>
+     * Ειδική μνεία στο {@link HTMLEditorKit}:
+     * Ορίζονται κανόνες CSS (StyleSheet) ώστε η γραμματοσειρά να είναι 'Segoe UI'
+     * και να υπάρχει σωστό spacing στις λίστες του HTML που επιστρέφει το AI.
+     * </p>
+     */
     private void initComponents(String id, String name, String amount) {
         tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -197,6 +222,14 @@ public class AiAdvisorDialog extends JDialog {
         return field;
     }
 
+    /**
+     * Εκτελεί την επικοινωνία με το AI στο παρασκήνιο (Background Thread).
+     * <p>
+     * Στέλνει το αίτημα μέσω του {@code AiBridge} και περιμένει απάντηση σε μορφή <b>HTML</b>.
+     * Το {@code JEditorPane} αναλαμβάνει αυτόματα την απόδοση (render) του HTML κώδικα.
+     * </p>
+     * * @param mode Η λειτουργία ("global" ή "specific").
+     */
     private void runAiTask(String mode) {
         // Χρησιμοποιούμε HTML και στο Loading message για να φαίνεται ωραίο
         responseArea.setText("<html><body><h3 style='color:blue'>⏳ Ο AI οικονομικός σύμβουλος αναλύει το αίτημα σας... Παρακαλώ περιμένετε...</h3></body></html>");
