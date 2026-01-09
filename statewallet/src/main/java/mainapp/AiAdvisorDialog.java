@@ -14,6 +14,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane; // <--- ΑΛΛΑΓΗ 1: Χρησιμοποιούμε JEditorPane
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,28 +23,16 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
+import javax.swing.text.html.HTMLEditorKit; // <--- ΑΛΛΑΓΗ 2: Για το στυλ HTML
+import javax.swing.text.html.StyleSheet;  // <--- ΑΛΛΑΓΗ 2: Για το στυλ HTML
 
-/**
- * Η κλάση {@code AiAdvisorDialog} υλοποιεί το γραφικό περιβάλλον (GUI) για την αλληλεπίδραση
- * του χρήστη με τον AI Οικονομικό Σύμβουλο.
- * <p>
- * Πρόκειται για ένα παράθυρο διαλόγου (Modal Dialog) που παρέχει δύο βασικές λειτουργίες
- * οργανωμένες σε καρτέλες (Tabs):
- * <ol>
- * <li><b>Γενική Στρατηγική:</b> Ανάλυση συνολικών δεδομένων βάσει ενός οράματος.</li>
- * <li><b>Συγκεκριμένη Ανάλυση:</b> Συμβουλές για μια συγκεκριμένη εγγραφή που επέλεξε ο χρήστης.</li>
- * </ol>
- * Η κλάση διαχειρίζεται επίσης την ασύγχρονη επικοινωνία με το AI ώστε να μην "παγώνει"
- * το περιβάλλον κατά την αναμονή της απάντησης.
- * </p>
- */
 public class AiAdvisorDialog extends JDialog {
 
     private final AiBridge aiBridge;
     private final String dbPath;
     
     // Components
-    private JTextArea responseArea;
+    private JEditorPane responseArea; // <--- ΑΛΛΑΓΗ 3: Όχι πια JTextArea
     private JTabbedPane tabbedPane;
     
     // Global Tab Input
@@ -55,41 +44,18 @@ public class AiAdvisorDialog extends JDialog {
     private JTextField amountField;
     private JTextArea specificGoalArea;
 
-    /**
-     * Κατασκευάζει και εμφανίζει το παράθυρο του AI Συμβούλου.
-     * * @param parent Το γονικό παράθυρο (JFrame) της εφαρμογής, ώστε ο διάλογος να κεντραριστεί σωστά.
-     * @param dbPath Η διαδρομή της βάσης δεδομένων για να την διαβάσει το Python script.
-     * @param id Το ID της επιλεγμένης εγγραφής (αν υπάρχει, αλλιώς null/κενό).
-     * @param name Το όνομα της επιλεγμένης εγγραφής.
-     * @param amount Το ποσό της επιλεγμένης εγγραφής.
-     */
     public AiAdvisorDialog(JFrame parent, String dbPath, String id, String name, String amount) {
         super(parent, "AI Οικονομικός Σύμβουλος", true);
         this.dbPath = dbPath;
         this.aiBridge = new AiBridge();
 
-        setSize(800, 700);
+        setSize(850, 750); // Λίγο πιο μεγάλο για να χωράει άνετα το HTML
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
 
-        // Χτίσιμο UI
         initComponents(id, name, amount);
     }
 
-    /**
-     * Αρχικοποιεί όλα τα γραφικά συστατικά (buttons, text fields, tabs) του παραθύρου.
-     * <p>
-     * Ελέγχει αν ο χρήστης έχει επιλέξει κάποια εγγραφή πριν ανοίξει το παράθυρο:
-     * <ul>
-     * <li>Αν <b>έχει επιλέξει</b>, συμπληρώνει αυτόματα τα πεδία στην καρτέλα "Συγκεκριμένη Ανάλυση".</li>
-     * <li>Αν <b>δεν έχει επιλέξει</b>, εμφανίζει μήνυμα λάθους στη δεύτερη καρτέλα και οδηγεί τον χρήστη στην πρώτη.</li>
-     * </ul>
-     * </p>
-     *
-     * @param id Το ID της εγγραφής.
-     * @param name Το όνομα της εγγραφής.
-     * @param amount Το ποσό της εγγραφής.
-     */
     private void initComponents(String id, String name, String amount) {
         tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -106,7 +72,6 @@ public class AiAdvisorDialog extends JDialog {
         globalGoalArea.setText("π.χ. Θέλω να μειώσω το έλλειμμα κατά 3% χωρίς να πειράξω την Υγεία."); 
         
         JPanel globalActionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        // Κλασικό κουμπί χωρίς styling
         JButton runGlobalBtn = new JButton("✨ Λήψη Στρατηγικής");
         runGlobalBtn.setFont(new Font("Segoe UI", Font.BOLD, 12)); 
         runGlobalBtn.addActionListener(e -> runAiTask("global"));
@@ -122,7 +87,6 @@ public class AiAdvisorDialog extends JDialog {
         boolean hasSelection = (id != null && !id.isEmpty());
 
         if (hasSelection) {
-            // ΠΕΡΙΠΤΩΣΗ Α: ΕΧΕΙ ΕΠΙΛΕΓΕΙ ΛΟΓΑΡΙΑΣΜΟΣ
             JPanel infoPanel = new JPanel(new GridLayout(1, 3, 10, 0));
             idField = createReadOnlyField("ID", id);
             nameField = createReadOnlyField("Λογαριασμός", name);
@@ -143,7 +107,6 @@ public class AiAdvisorDialog extends JDialog {
             centerSpecPanel.add(new JScrollPane(specificGoalArea), BorderLayout.CENTER);
             
             JPanel specActionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            // Κλασικό κουμπί χωρίς styling
             JButton runSpecBtn = new JButton("💡 Λήψη Συμβουλής");
             runSpecBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
             runSpecBtn.addActionListener(e -> runAiTask("specific"));
@@ -153,16 +116,12 @@ public class AiAdvisorDialog extends JDialog {
             specificPanel.add(specActionPanel, BorderLayout.SOUTH);
 
         } else {
-            // ΠΕΡΙΠΤΩΣΗ Β: ΔΕΝ ΕΧΕΙ ΕΠΙΛΕΓΕΙ ΛΟΓΑΡΙΑΣΜΟΣ
             JPanel errorPanel = new JPanel();
             errorPanel.setLayout(new BoxLayout(errorPanel, BoxLayout.Y_AXIS));
-            // Αφαιρέθηκε το κόκκινο χρώμα φόντου, είναι κλασικό γκρι του panel
-            
-            // --- ΑΦΑΙΡΕΣΗ ΤΟΥ ΕΙΚΟΝΙΔΙΟΥ ⚠️ ---
             
             JLabel errorMsg1 = new JLabel("Δεν έχετε επιλέξει λογαριασμό!");
             errorMsg1.setFont(new Font("Segoe UI", Font.BOLD, 16));
-            errorMsg1.setForeground(Color.RED); // Κρατάμε το κόκκινο γράμμα για προσοχή
+            errorMsg1.setForeground(Color.RED);
             errorMsg1.setAlignmentX(Component.CENTER_ALIGNMENT);
             
             JLabel errorMsg2 = new JLabel("Για να χρησιμοποιήσετε αυτή τη λειτουργία,");
@@ -171,7 +130,6 @@ public class AiAdvisorDialog extends JDialog {
             JLabel errorMsg3 = new JLabel("παρακαλώ κλείστε το παράθυρο και επιλέξτε μια γραμμή από τον πίνακα.");
             errorMsg3.setAlignmentX(Component.CENTER_ALIGNMENT);
             
-            // Στοίχιση στο κέντρο
             errorPanel.add(Box.createVerticalGlue());
             errorPanel.add(errorMsg1);
             errorPanel.add(Box.createVerticalStrut(15));
@@ -182,23 +140,29 @@ public class AiAdvisorDialog extends JDialog {
             specificPanel.add(errorPanel, BorderLayout.CENTER);
         }
 
-        // --- ΠΡΟΣΘΗΚΗ TABS ---
         tabbedPane.addTab("🌍 Γενική Στρατηγική", globalPanel);
         tabbedPane.addTab("🎯 Συγκεκριμένη Ανάλυση", specificPanel);
 
-        // --- Output Area ---
-        responseArea = new JTextArea();
+        // --- ΑΛΛΑΓΗ 4: Ρύθμιση του HTML Viewer ---
+        responseArea = new JEditorPane();
         responseArea.setEditable(false);
-        responseArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
-        responseArea.setLineWrap(true);
-        responseArea.setWrapStyleWord(true);
-        responseArea.setBackground(new Color(245, 245, 250));
+        responseArea.setContentType("text/html"); // Ενεργοποιεί το HTML
+        
+        // CSS για όμορφη εμφάνιση (γραμματοσειρές, κενά, λίστες)
+        HTMLEditorKit kit = new HTMLEditorKit();
+        StyleSheet styleSheet = kit.getStyleSheet();
+        styleSheet.addRule("body { font-family: 'Segoe UI', sans-serif; font-size: 14px; margin: 10px; }");
+        styleSheet.addRule("ul { margin-left: 20px; }");
+        styleSheet.addRule("li { margin-bottom: 5px; }");
+        styleSheet.addRule("b { color: #333; }");
+        
+        responseArea.setEditorKit(kit);
+        responseArea.setDocument(kit.createDefaultDocument());
         
         JScrollPane responseScroll = new JScrollPane(responseArea);
         responseScroll.setBorder(BorderFactory.createTitledBorder("Απάντηση AI"));
-        responseScroll.setPreferredSize(new Dimension(600, 250));
+        responseScroll.setPreferredSize(new Dimension(600, 300));
 
-        // --- Bottom Panel ---
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(responseScroll, BorderLayout.CENTER);
         
@@ -213,7 +177,6 @@ public class AiAdvisorDialog extends JDialog {
         add(tabbedPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // --- ΑΣΦΑΛΗΣ ΕΠΙΛΟΓΗ TAB ---
         if (tabbedPane.getTabCount() > 1) { 
             if (hasSelection) {
                 tabbedPane.setSelectedIndex(1);
@@ -222,8 +185,6 @@ public class AiAdvisorDialog extends JDialog {
             }
         }
     }
-    
-    // --- Βοηθητική Μέθοδος ---
     
     private JTextField createReadOnlyField(String title, String value) {
         JTextField field = new JTextField();
@@ -236,27 +197,9 @@ public class AiAdvisorDialog extends JDialog {
         return field;
     }
 
-    /**
-     * Εκτελεί την εργασία επικοινωνίας με το AI σε ξεχωριστό νήμα (background thread)
-     * χρησιμοποιώντας την κλάση {@link SwingWorker}.
-     * <p>
-     * Αυτό είναι απαραίτητο διότι η κλήση στο Python script μπορεί να καθυστερήσει αρκετά δευτερόλεπτα.
-     * Αν γινόταν στο κεντρικό νήμα (Event Dispatch Thread), η εφαρμογή θα φαινόταν "κολλημένη".
-     * </p>
-     * <p>
-     * Η μέθοδος:
-     * <ol>
-     * <li>Αλλάζει τον κέρσορα σε "Wait Cursor" για ένδειξη φόρτωσης.</li>
-     * <li>Εκτελεί το {@code doInBackground} για να πάρει την απάντηση από το {@code AiBridge}.</li>
-     * <li>Όταν τελειώσει, ενημερώνει το {@code responseArea} μέσω της μεθόδου {@code done}.</li>
-     * </ol>
-     * </p>
-     *
-     * @param mode Η λειτουργία που ζητήθηκε ("global" ή "specific").
-     */
     private void runAiTask(String mode) {
-        responseArea.setText("⏳ Ο AI οικονομικός σύμβουλος αναλύει το αίτημα σας... Παρακαλώ περιμένετε...");
-        responseArea.setForeground(Color.BLUE);
+        // Χρησιμοποιούμε HTML και στο Loading message για να φαίνεται ωραίο
+        responseArea.setText("<html><body><h3 style='color:blue'>⏳ Ο AI οικονομικός σύμβουλος αναλύει το αίτημα σας...</h3><p>Παρακαλώ περιμένετε...</p></body></html>");
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         new SwingWorker<String, Void>() {
@@ -278,6 +221,7 @@ public class AiAdvisorDialog extends JDialog {
                     }
                     try {
                         double amount = Double.parseDouble(amountStr);
+                        // Στέλνουμε το αίτημα στο AI (η Python επιστρέφει HTML)
                         return aiBridge.getSpecificAdvice(dbPath, name, amount, goal);
                     } catch (NumberFormatException e) {
                         return "Σφάλμα ανάγνωσης ποσού.";
@@ -289,10 +233,11 @@ public class AiAdvisorDialog extends JDialog {
             protected void done() {
                 try {
                     String result = get();
+                    // Απλά βάζουμε το αποτέλεσμα, το JEditorPane θα το κάνει render αυτόματα
                     responseArea.setText(result);
-                    responseArea.setForeground(Color.BLACK);
+                    responseArea.setCaretPosition(0); // Scroll στην αρχή
                 } catch (Exception e) {
-                    responseArea.setText("Σφάλμα: " + e.getMessage());
+                    responseArea.setText("<html><body style='color:red'>Σφάλμα: " + e.getMessage() + "</body></html>");
                 } finally {
                     setCursor(Cursor.getDefaultCursor());
                 }
