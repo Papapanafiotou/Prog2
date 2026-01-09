@@ -23,6 +23,20 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
+/**
+ * Η κλάση {@code AiAdvisorDialog} υλοποιεί το γραφικό περιβάλλον (GUI) για την αλληλεπίδραση
+ * του χρήστη με τον AI Οικονομικό Σύμβουλο.
+ * <p>
+ * Πρόκειται για ένα παράθυρο διαλόγου (Modal Dialog) που παρέχει δύο βασικές λειτουργίες
+ * οργανωμένες σε καρτέλες (Tabs):
+ * <ol>
+ * <li><b>Γενική Στρατηγική:</b> Ανάλυση συνολικών δεδομένων βάσει ενός οράματος.</li>
+ * <li><b>Συγκεκριμένη Ανάλυση:</b> Συμβουλές για μια συγκεκριμένη εγγραφή που επέλεξε ο χρήστης.</li>
+ * </ol>
+ * Η κλάση διαχειρίζεται επίσης την ασύγχρονη επικοινωνία με το AI ώστε να μην "παγώνει"
+ * το περιβάλλον κατά την αναμονή της απάντησης.
+ * </p>
+ */
 public class AiAdvisorDialog extends JDialog {
 
     private final AiBridge aiBridge;
@@ -41,6 +55,14 @@ public class AiAdvisorDialog extends JDialog {
     private JTextField amountField;
     private JTextArea specificGoalArea;
 
+    /**
+     * Κατασκευάζει και εμφανίζει το παράθυρο του AI Συμβούλου.
+     * * @param parent Το γονικό παράθυρο (JFrame) της εφαρμογής, ώστε ο διάλογος να κεντραριστεί σωστά.
+     * @param dbPath Η διαδρομή της βάσης δεδομένων για να την διαβάσει το Python script.
+     * @param id Το ID της επιλεγμένης εγγραφής (αν υπάρχει, αλλιώς null/κενό).
+     * @param name Το όνομα της επιλεγμένης εγγραφής.
+     * @param amount Το ποσό της επιλεγμένης εγγραφής.
+     */
     public AiAdvisorDialog(JFrame parent, String dbPath, String id, String name, String amount) {
         super(parent, "AI Οικονομικός Σύμβουλος", true);
         this.dbPath = dbPath;
@@ -54,6 +76,20 @@ public class AiAdvisorDialog extends JDialog {
         initComponents(id, name, amount);
     }
 
+    /**
+     * Αρχικοποιεί όλα τα γραφικά συστατικά (buttons, text fields, tabs) του παραθύρου.
+     * <p>
+     * Ελέγχει αν ο χρήστης έχει επιλέξει κάποια εγγραφή πριν ανοίξει το παράθυρο:
+     * <ul>
+     * <li>Αν <b>έχει επιλέξει</b>, συμπληρώνει αυτόματα τα πεδία στην καρτέλα "Συγκεκριμένη Ανάλυση".</li>
+     * <li>Αν <b>δεν έχει επιλέξει</b>, εμφανίζει μήνυμα λάθους στη δεύτερη καρτέλα και οδηγεί τον χρήστη στην πρώτη.</li>
+     * </ul>
+     * </p>
+     *
+     * @param id Το ID της εγγραφής.
+     * @param name Το όνομα της εγγραφής.
+     * @param amount Το ποσό της εγγραφής.
+     */
     private void initComponents(String id, String name, String amount) {
         tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -200,6 +236,24 @@ public class AiAdvisorDialog extends JDialog {
         return field;
     }
 
+    /**
+     * Εκτελεί την εργασία επικοινωνίας με το AI σε ξεχωριστό νήμα (background thread)
+     * χρησιμοποιώντας την κλάση {@link SwingWorker}.
+     * <p>
+     * Αυτό είναι απαραίτητο διότι η κλήση στο Python script μπορεί να καθυστερήσει αρκετά δευτερόλεπτα.
+     * Αν γινόταν στο κεντρικό νήμα (Event Dispatch Thread), η εφαρμογή θα φαινόταν "κολλημένη".
+     * </p>
+     * <p>
+     * Η μέθοδος:
+     * <ol>
+     * <li>Αλλάζει τον κέρσορα σε "Wait Cursor" για ένδειξη φόρτωσης.</li>
+     * <li>Εκτελεί το {@code doInBackground} για να πάρει την απάντηση από το {@code AiBridge}.</li>
+     * <li>Όταν τελειώσει, ενημερώνει το {@code responseArea} μέσω της μεθόδου {@code done}.</li>
+     * </ol>
+     * </p>
+     *
+     * @param mode Η λειτουργία που ζητήθηκε ("global" ή "specific").
+     */
     private void runAiTask(String mode) {
         responseArea.setText("⏳ Ο AI οικονομικός σύμβουλος αναλύει το αίτημα σας... Παρακαλώ περιμένετε...");
         responseArea.setForeground(Color.BLUE);
