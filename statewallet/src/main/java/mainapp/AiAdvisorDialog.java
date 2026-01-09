@@ -14,7 +14,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JEditorPane; // <--- ΑΛΛΑΓΗ 1: Χρησιμοποιούμε JEditorPane
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,8 +23,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
-import javax.swing.text.html.HTMLEditorKit; // <--- ΑΛΛΑΓΗ 2: Για το στυλ HTML
-import javax.swing.text.html.StyleSheet;  // <--- ΑΛΛΑΓΗ 2: Για το στυλ HTML
+import javax.swing.text.html.HTMLEditorKit; 
+import javax.swing.text.html.StyleSheet;  
 
 public class AiAdvisorDialog extends JDialog {
 
@@ -32,7 +32,7 @@ public class AiAdvisorDialog extends JDialog {
     private final String dbPath;
     
     // Components
-    private JEditorPane responseArea; // <--- ΑΛΛΑΓΗ 3: Όχι πια JTextArea
+    private JEditorPane responseArea; 
     private JTabbedPane tabbedPane;
     
     // Global Tab Input
@@ -49,7 +49,7 @@ public class AiAdvisorDialog extends JDialog {
         this.dbPath = dbPath;
         this.aiBridge = new AiBridge();
 
-        setSize(850, 750); // Λίγο πιο μεγάλο για να χωράει άνετα το HTML
+        setSize(850, 750); 
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
 
@@ -199,7 +199,7 @@ public class AiAdvisorDialog extends JDialog {
 
     private void runAiTask(String mode) {
         // Χρησιμοποιούμε HTML και στο Loading message για να φαίνεται ωραίο
-        responseArea.setText("<html><body><h3 style='color:blue'>⏳ Ο AI οικονομικός σύμβουλος αναλύει το αίτημα σας...</h3><p>Παρακαλώ περιμένετε...</p></body></html>");
+        responseArea.setText("<html><body><h3 style='color:blue'>⏳ Ο AI οικονομικός σύμβουλος αναλύει το αίτημα σας... Παρακαλώ περιμένετε...</h3></body></html>");
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         new SwingWorker<String, Void>() {
