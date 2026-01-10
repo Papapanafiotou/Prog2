@@ -32,18 +32,17 @@ public final class BudgetMenu {
     /** Επιλογή: Μέγιστο-Ελάχιστο. */
     private static final int OPTION_MINMAX = 8;
     /** Επιλογή: Ποσοστό. */
-    private static final int OPTION_PERCENTANCE = 9;
+    private static final int OPTION_PERCENTAGE = 9;
     /** Επιλογή: AI Specific. */
     private static final int OPTION_AI_SPECIFIC = 10;
     /** Επιλογή: AI Global. */
     private static final int OPTION_AI_GLOBAL = 11;
     /** Επιλογή: Πρόβλεψη 2027. */
     private static final int OPTION_PREDICT = 12;
-    //Επιλογή: Σύστημα βαθμολόγησης κράτους
+    /** Επιλογή: Σύστημα βαθμολόγησης. */
     private static final int OPTION_GRADE = 13;
     /** Επιλογή: Έξοδος. */
     private static final int OPTION_EXIT = 14;
-
 
     /** Πίνακας: Έσοδα. */
     private static final int TABLE_ESODA = 1;
@@ -59,6 +58,17 @@ public final class BudgetMenu {
     private static final int TABLE_ALL = 6;
     /** Πίνακας: Πίσω. */
     private static final int TABLE_BACK = 7;
+
+    /** Έτος έναρξης ιστορικών δεδομένων. */
+    private static final int START_YEAR = 2023;
+    /** Έτος λήξης ιστορικών δεδομένων. */
+    private static final int END_YEAR = 2026;
+    /** Έτος πρόβλεψης. */
+    private static final int PREDICT_YEAR = 2027;
+    /** Επιλογή χρήστη: ΝΑΙ (1). */
+    private static final int CHOICE_YES = 1;
+    /** Πολλαπλασιαστής ποσοστού. */
+    private static final int PERCENT_MULTIPLIER = 100;
 
     /** Επιλογή διαχείρισης βάσης. */
     private final DatabaseChooser chooser = new DatabaseChooser();
@@ -77,8 +87,8 @@ public final class BudgetMenu {
     public BudgetMenu(final String dbUrl) {
         this.url = dbUrl;
         this.manager = new BudgetManager(dbUrl);
-        // Αναγκάζουμε τον Scanner να διαβάζει UTF-8, όπως το τερματικό του VS Code
-        this.scanner = new Scanner(System.in , "CP737");
+        // Αναγκάζουμε τον Scanner να διαβάζει CP737 (Ελληνικά DOS)
+        this.scanner = new Scanner(System.in, "CP737");
     }
 
     /**
@@ -86,22 +96,7 @@ public final class BudgetMenu {
      */
     public void start() {
         while (true) {
-            System.out.println("\n-------------------------------------------");
-            System.out.println("Επιλέξτε μία από τις παρακάτω λειτουργίες");
-            System.out.println("1. Εμφάνιση στοιχείων");
-            System.out.println("2. Αλλαγή στοιχείου");
-            System.out.println("3. Εμφάνιση αλλαγών");
-            System.out.println("4. Εμφάνιση συνόλου");
-            System.out.println("5. Αλλαγή έτους");
-            System.out.println("6. Αναζήτηση στοιχείου");
-            System.out.println("7. Χαρακτηρισμός προϋπολογισμού");
-            System.out.println("8. Εμφάνιση Μέγιστου-Ελάχιστου");
-            System.out.println("9. Εμφάνιση Ποσοστού σε σχέση με σύνολο");
-            System.out.println("10. Χρήση AI για συγκεκριμένο λογαριασμό");
-            System.out.println("11. Χρήση AI για πιο γενική αναφορά");
-            System.out.println("12. Πρόβλεψη Τιμής για το 2027");
-            System.out.println("13. Σύστημα βαθμολόγησης του κράτους βάσει στοιχείων(ΕΛΣΤΑΤ, EUROSTAT)");
-            System.out.println("14. Έξοδος");
+            printMenuOptions();
             System.out.print("Επιλογή: ");
 
             int choice;
@@ -114,43 +109,69 @@ public final class BudgetMenu {
                 continue;
             }
 
-            switch (choice) {
-                case OPTION_SHOW -> showBudgetSelection();
-                case OPTION_CHANGE -> changeBudget();
-                case OPTION_CHANGES_LIST -> manager.showChanges();
-                case OPTION_TOTAL -> showTotalSelection();
-                case OPTION_YEAR -> {
-                    String newURL = chooser.getUrl();
-                    this.url = newURL;
-                    manager.setUrl(newURL);
-                }
-                case OPTION_SEARCH -> {
-                    Search s = new Search(url);
-                    System.out.println("Εισάγετε το στοιχείο αναζήτησης");
-                    String name = scanner.nextLine().trim();
-                    s.searchAmount(name);
-                }
-                case OPTION_CHAR -> handleCharacterism();
-                case OPTION_EXIT -> {
-                    System.out.println("Έξοδος...");
-                    scanner.close();
-                    return;
-                }
-                case OPTION_AI_SPECIFIC -> handleAiSpecific();
-                case OPTION_AI_GLOBAL -> handleAiGlobal();
-                case OPTION_MINMAX -> {
-                    MinMaX minmaxfinder = new MinMaX(url);
-                    minmaxfinder.showMinMax();
-                }
-                case OPTION_PERCENTANCE -> getPrecentage();
-                case OPTION_PREDICT -> predictValue();
-                case OPTION_GRADE -> {
-                    TotalGrade t = new TotalGrade();
-                    t.getTotalGrade();
-                }
-                default -> System.out.println("Λάθος επιλογή.");
+            if (processChoice(choice)) {
+                return;
             }
         }
+    }
+
+    private void printMenuOptions() {
+        System.out.println("\n-------------------------------------------");
+        System.out.println("Επιλέξτε μία από τις παρακάτω λειτουργίες");
+        System.out.println("1. Εμφάνιση στοιχείων");
+        System.out.println("2. Αλλαγή στοιχείου");
+        System.out.println("3. Εμφάνιση αλλαγών");
+        System.out.println("4. Εμφάνιση συνόλου");
+        System.out.println("5. Αλλαγή έτους");
+        System.out.println("6. Αναζήτηση στοιχείου");
+        System.out.println("7. Χαρακτηρισμός προϋπολογισμού");
+        System.out.println("8. Εμφάνιση Μέγιστου-Ελάχιστου");
+        System.out.println("9. Εμφάνιση Ποσοστού σε σχέση με σύνολο");
+        System.out.println("10. Χρήση AI για συγκεκριμένο λογαριασμό");
+        System.out.println("11. Χρήση AI για πιο γενική αναφορά");
+        System.out.println("12. Πρόβλεψη Τιμής για το 2027");
+        System.out.println("13. Σύστημα βαθμολόγησης κράτους (ΕΛΣΤΑΤ)");
+        System.out.println("14. Έξοδος");
+    }
+
+    private boolean processChoice(final int choice) {
+        switch (choice) {
+            case OPTION_SHOW -> showBudgetSelection();
+            case OPTION_CHANGE -> changeBudget();
+            case OPTION_CHANGES_LIST -> manager.showChanges();
+            case OPTION_TOTAL -> showTotalSelection();
+            case OPTION_YEAR -> {
+                String newURL = chooser.getUrl();
+                this.url = newURL;
+                manager.setUrl(newURL);
+            }
+            case OPTION_SEARCH -> {
+                Search s = new Search(url);
+                System.out.println("Εισάγετε το στοιχείο αναζήτησης");
+                String name = scanner.nextLine().trim();
+                s.searchAmount(name);
+            }
+            case OPTION_CHAR -> handleCharacterism();
+            case OPTION_EXIT -> {
+                System.out.println("Έξοδος...");
+                scanner.close();
+                return true;
+            }
+            case OPTION_AI_SPECIFIC -> handleAiSpecific();
+            case OPTION_AI_GLOBAL -> handleAiGlobal();
+            case OPTION_MINMAX -> {
+                MinMaX minmaxfinder = new MinMaX(url);
+                minmaxfinder.showMinMax();
+            }
+            case OPTION_PERCENTAGE -> getPercentage();
+            case OPTION_PREDICT -> predictValue();
+            case OPTION_GRADE -> {
+                TotalGrade t = new TotalGrade();
+                t.getTotalGrade();
+            }
+            default -> System.out.println("Λάθος επιλογή.");
+        }
+        return false;
     }
 
     private void handleCharacterism() {
@@ -170,16 +191,6 @@ public final class BudgetMenu {
         }
     }
 
-    /**
-     * Εμφανίζει το μενού επιλογής για την προβολή των πινάκων του προϋπολογισμού.
-     * <p>
-     * Η μέθοδος παρουσιάζει στον χρήστη τις διαθέσιμες επιλογές (Έσοδα, Έξοδα, Κράτος,
-     * Υπουργεία, κ.λπ.) και διαβάζει την αριθμητική επιλογή του χρήστη από την κονσόλα.
-     * Ανάλογα με την επιλογή, καλείται η αντίστοιχη μέθοδος εκτύπωσης από το αντικείμενο
-     * {@code manager}.
-     * </p>
-     * * @throws java.util.InputMismatchException Αν ο χρήστης εισάγει χαρακτήρα που δεν είναι ακέραιος αριθμός.
-     */
     private void showBudgetSelection() {
         System.out.println("\nΠοιον πίνακα θέλετε να δείτε;");
         System.out.println("1. Έσοδα");
@@ -214,28 +225,6 @@ public final class BudgetMenu {
         }
     }
 
-    /**
-     * Επιτρέπει στον χρήστη να τροποποιήσει το ποσό μιας εγγραφής σε έναν επιλεγμένο πίνακα του προϋπολογισμού.
-     * <p>
-     * Η διαδικασία περιλαμβάνει τα εξής βήματα:
-     * <ol>
-     * <li>Επιλογή του πίνακα (π.χ. Έσοδα, Έξοδα, Κράτος).</li>
-     * <li>Εισαγωγή του μοναδικού κωδικού (ID) της εγγραφής.</li>
-     * <li>Εισαγωγή και επικύρωση του νέου ποσού.</li>
-     * </ol>
-     * </p>
-     * <p>
-     * Πραγματοποιούνται σημαντικοί έλεγχοι ασφαλείας και κανονισμών μέσω της κλάσης {@code Constrains}:
-     * <ul>
-     * <li>Προειδοποίηση αν η μεταβολή του ποσού υπερβαίνει το 50% της αρχικής τιμής.</li>
-     * <li>Προειδοποίηση αν η αλλαγή οδηγεί σε δημοσιονομικό έλλειμμα μεγαλύτερο του 3% (βάσει κανονισμών ΕΕ).</li>
-     * </ul>
-     * Σε περίπτωση που ενεργοποιηθούν οι παραπάνω έλεγχοι, ζητείται ρητή επιβεβαίωση από τον χρήστη για να προχωρήσει η ενημέρωση.
-     * </p>
-     *
-     * @see Constrains#isReasonableChange(double, double)
-     * @see Constrains#deficitLimit(double, double)
-     */
     private void changeBudget() {
         System.out.println("\nΕπιλέξτε πίνακα:");
         System.out.println("1. Έσοδα");
@@ -282,50 +271,49 @@ public final class BudgetMenu {
             System.out.print("Δώσε το ID (" + idColName + "): ");
             int id = Integer.parseInt(scanner.nextLine());
 
-            // εδω παιρνουμε το αρχικο ποσο του λογαριασμου //
-            double oldAmount = manager.getCurrentAmount(tableName, idColName, id);
+            double oldAmount = manager.getCurrentAmount(
+                    tableName, idColName, id);
 
             if (oldAmount == -1) {
                 System.out.println("Το ID δεν βρέθηκε.");
                 return;
             }
-            
+
             System.out.print("Δώσε το νέο ποσό: ");
             double newAmount = Double.parseDouble(scanner.nextLine());
 
             newAmount = Constrains.negativeAmount(scanner, newAmount);
-            boolean success;
 
-            // Αν η αλλαγη ξεπερνα το 50% ρωτατε ο χρηστης αν θελει να συνεχισει σε αυτη την αλλαγη //
-
-            if (!Constrains.isReasonableChange(oldAmount, newAmount)){
-                System.out.println("ΠΡΟΣΟΧΗ! Η αλλαγή που επιθυμείτε να κάνετε υπερβαίνει το 50% του αρχικού ποσού.");
-                System.out.println("Αν εξακολουθείτε να επιθυμείτε να αλλάξετε το ποσό με αυτόν τον τρόπο πληκτρολογήστε 1. Αλλιώς πληκτρολογήστε 2.");
+            if (!Constrains.isReasonableChange(oldAmount, newAmount)) {
+                System.out.println("ΠΡΟΣΟΧΗ! Η αλλαγή υπερβαίνει το 50%.");
+                System.out.println("Για συνέχεια πατήστε 1, αλλιώς 2.");
                 int confirm = scanner.nextInt();
-                scanner.nextLine(); 
-                if (confirm != 1){
+                scanner.nextLine();
+                if (confirm != CHOICE_YES) {
                     return;
                 }
             }
 
-            // Ελεγχος για ελλειμα μεγαλυτερο του 3% //
-            
             double[] rev = manager.getTotal("esoda");
             double[] exp = manager.getTotal("eksoda");
             if (!Constrains.deficitLimit(rev[1], exp[1])) {
-                System.out.println("Η αλλαγή αυτή οδηγεί σε έλλειμα μεγαλύτερο του 3% που είναι το επιτρεπτό από τους κανονισμούς της ευρωπαικής ένωσης.");
-                System.out.println("Αν εξακολουθείτε να επιθυμείτε να αλλάξετε το ποσό με αυτόν τον τρόπο πληκτρολογήστε 1. Αλλιώς πληκτρολογήστε 2.");
+                System.out.println("Η αλλαγή οδηγεί σε έλλειμα > 3%.");
+                System.out.println("Για συνέχεια πατήστε 1, αλλιώς 2.");
                 int choice = scanner.nextInt();
                 scanner.nextLine();
-                if (choice != 1) {
+                if (choice != CHOICE_YES) {
                     return;
                 }
             }
-            
-            success = manager.updateAmount(tableName, idColName, id, newAmount);
-            
-            if (success) System.out.println("Επιτυχής ενημέρωση!");
-            else System.out.println("Αποτυχία: Δεν βρέθηκε το ID.");
+
+            boolean success = manager.updateAmount(
+                    tableName, idColName, id, newAmount);
+
+            if (success) {
+                System.out.println("Επιτυχής ενημέρωση!");
+            } else {
+                System.out.println("Αποτυχία: Δεν βρέθηκε το ID.");
+            }
 
         } catch (NumberFormatException e) {
             System.out.println("Λάθος είσοδος (μόνο αριθμοί).");
@@ -367,132 +355,126 @@ public final class BudgetMenu {
         System.out.println("--- Αποτελέσματα για πίνακα: " + tableChoice
                 + " ---");
         System.out.printf("Συνολικό Ποσό(αρχικό): %,.2f%n", results[0]);
-        System.out.printf("Συνολικό Ποσό(επεξεργασμένο): %,.2f%n", results[1]);
+        System.out.printf("Συνολικό Ποσό(επεξεργασμένο): %,.2f%n",
+                results[1]);
     }
 
-    public void getPrecentage() {
-        System.out.println("Για έσοδα πατήστε 1, για έξοδα πατήστε 2,"
-        + "για υπουργεία 3.");
+    /**
+     * Υπολογίζει και εμφανίζει τα ποσοστά των εγγραφών.
+     */
+    public void getPercentage() {
+        System.out.println("Για έσοδα πατήστε 1, έξοδα 2, υπουργεία 3.");
         String tablename = null;
         do {
             int answer = scanner.nextInt();
             switch (answer) {
-            case 1:
-            tablename = "esoda";
-            break;
-            case 2:
-            tablename = "eksoda";
-            break;
-            case 3:
-            tablename = "ypourgeia";
-            break;
-            default:
-            System.out.println("Η τιμή δεν είναι 1, 2 ή 3.");
-            break;
+                case TABLE_ESODA -> {
+                    tablename = "esoda";
+                }
+                case TABLE_EKSODA -> {
+                    tablename = "eksoda";
+                }
+                case TABLE_KRATOS -> {
+                    tablename = "ypourgeia";
+                }
+                default -> System.out.println("Η τιμή δεν είναι 1, 2 ή 3.");
             }
         } while (tablename == null);
+
         double[] total = manager.getTotal(tablename);
-        System.out.println("Για υπολογισμό μεμονωμένου ποσοστού "
-            + "πατήστε 1, για τον υπολογισμό όλων των ποσοστών πατήστε 2"
-        );
+        System.out.println("1: Μεμονωμένο ποσοστό, 2: Όλα τα ποσοστά");
         int answer2 = scanner.nextInt();
-        if (answer2 == 1) { 
-            double precent = 0.0;
-            System.out.println("Για ποιον λογαριασμό θέλετε να υπολογίσετε " +
-             "το ποσοστό;"); 
-            scanner.nextLine(); // clear buffer
+
+        if (answer2 == 1) {
+            double percent;
+            System.out.println("Για ποιον λογαριασμό;");
+            scanner.nextLine();
             String name = scanner.nextLine();
             Search search = new Search(url);
             double amount = search.searchAmountInTable(name, tablename);
             try {
-                precent = (amount / total[1]) * 100; 
-                System.out.println(String.format("%.4f",precent) + " %");
+                percent = (amount / total[1]) * PERCENT_MULTIPLIER;
+                System.out.printf("%.4f %% %n", percent);
             } catch (ArithmeticException e) {
-                System.out.println("Σφάλμα! Δεν μπορεί να γίνει διαίρεση με 0!");
+                System.out.println("Δεν μπορεί να γίνει διαίρεση με 0!");
             }
-             
+
         } else if (answer2 == 2) {
-            int rowCount = 0;
-            try (Connection conn = DriverManager.getConnection(url);
-            Statement stmtCount = conn.createStatement();
-            ResultSet rsCount = stmtCount.executeQuery("SELECT COUNT(*) FROM " + tablename)) {
+            processAllPercentages(tablename, total[1]);
+        }
+    }
+
+    private void processAllPercentages(final String tablename,
+                                       final double totalAmount) {
+        int rowCount = 0;
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmtCount = conn.createStatement();
+             ResultSet rsCount = stmtCount.executeQuery(
+                     "SELECT COUNT(*) FROM " + tablename)) {
             if (rsCount.next()) {
                 rowCount = rsCount.getInt(1);
             }
-            } catch (SQLException e) {
-            System.err.println("Σφάλμα κατά την καταμέτρηση: " + e.getMessage());
-            return; 
-            }
-            String[] namesArray = new String[rowCount];
-            double[] amountsArray = new double[rowCount];
-            try (Connection conn = DriverManager.getConnection(url);
-                 Statement stmt = conn.createStatement();
-                 ResultSet rs = stmt.executeQuery("SELECT name, amount FROM " + tablename)) {
-                int index = 0;
-                while (rs.next()) {
-                   namesArray[index] = rs.getString("name");
-                   amountsArray[index] = rs.getDouble("amount");
-                   index++;
-                }
-            
-            System.out.println("Επιτυχής ανάγνωση " + rowCount + " γραμμών.");
-            } catch (SQLException e) {
-               System.err.println("Σφάλμα κατά την ανάγνωση δεδομένων: " + e.getMessage());
-            }
-            double[] percentages = new double[amountsArray.length];
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα καταμέτρησης: " + e.getMessage());
+            return;
+        }
 
-            System.out.println("----ΠΟΣΟΣΤΑ ΣΤΟΙΧΕΙΩΝ---");
-            for (int i = 0; i < namesArray.length; i++) {
-                percentages[i] = (amountsArray[i] / total[1]) ;
-                double p = percentages[i] * 100;
-                System.out.println("ΣΤΟΙΧΕΙΟ: " + namesArray[i] +
-                    " ΠΟΣΟΣΤΟ: " + String.format("%.4f",p) + " %"
-                );
+        String[] namesArray = new String[rowCount];
+        double[] amountsArray = new double[rowCount];
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(
+                     "SELECT name, amount FROM " + tablename)) {
+            int index = 0;
+            while (rs.next()) {
+                namesArray[index] = rs.getString("name");
+                amountsArray[index] = rs.getDouble("amount");
+                index++;
             }
-            EconomicsChart e = new EconomicsChart();
-            e.showPieChart(namesArray, percentages);
-        } 
+            System.out.println("Ανάγνωση " + rowCount + " γραμμών.");
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα ανάγνωσης: " + e.getMessage());
+        }
+
+        double[] percentages = new double[amountsArray.length];
+        System.out.println("----ΠΟΣΟΣΤΑ ΣΤΟΙΧΕΙΩΝ---");
+        for (int i = 0; i < namesArray.length; i++) {
+            percentages[i] = (amountsArray[i] / totalAmount);
+            double p = percentages[i] * PERCENT_MULTIPLIER;
+            System.out.println("ΣΤΟΙΧΕΙΟ: " + namesArray[i]
+                    + " ΠΟΣΟΣΤΟ: " + String.format("%.4f", p) + " %");
+        }
+        EconomicsChart e = new EconomicsChart();
+        e.showPieChart(namesArray, percentages);
     }
 
-    /**
-     * Ενεργοποιεί τον ψηφιακό σύμβουλο (AI) για την παροχή στοχευμένων συμβουλών
-     * σχετικά με μια συγκεκριμένη εγγραφή του προϋπολογισμού.
-     * <p>
-     * Η διαδικασία λειτουργεί ως εξής:
-     * <ol>
-     * <li>Ο χρήστης επιλέγει τον πίνακα και το ID της εγγραφής που τον ενδιαφέρει.</li>
-     * <li>Το σύστημα ανακτά αυτόματα το όνομα (περιγραφή) και το τρέχον ποσό της εγγραφής
-     * χρησιμοποιώντας τις μεθόδους {@code getNameById} και {@code getCurrentAmount}.</li>
-     * <li>Ο χρήστης εισάγει κειμενικά τον στόχο του (π.χ. "μείωση δαπανών").</li>
-     * <li>Τα δεδομένα (Όνομα, Ποσό, Στόχος) αποστέλλονται στην κλάση {@link AiBridge}
-     * για την παραγωγή συμβουλής.</li>
-     * </ol>
-     * </p>
-     *
-     * @see AiBridge#getSpecificAdvice(String, String, double, String)
-     * @see Manager#getNameById(String, String, int)
-     */
     private void handleAiSpecific() {
-        System.out.println("\n--- AI Σύμβουλος για συγκεκριμένο λογαριασμό ---");
-        System.out.println("Επιλέξτε πίνακα:");
-        System.out.println("1. Έσοδα");
-        System.out.println("2. Έξοδα");
-        System.out.println("3. Κράτος");
-        System.out.println("4. Υπουργεία");
-        System.out.print("Επιλογή: ");
-
+        System.out.println("\n--- AI Σύμβουλος (Specific) ---");
+        System.out.println("Επιλέξτε πίνακα (1-4):");
         int tableChoice = scanner.nextInt();
-        scanner.nextLine(); // Καθαρισμός buffer
+        scanner.nextLine();
 
         String tableName;
         String idColName;
 
-        // Αντιστοίχιση επιλογής με ονόματα πινάκων (όπως στο changeBudget)
         switch (tableChoice) {
-            case 1 -> { tableName = "esoda"; idColName = "code"; }
-            case 2 -> { tableName = "eksoda"; idColName = "code"; }
-            case 3 -> { tableName = "kratos"; idColName = "number"; }
-            case 4 -> { tableName = "ypourgeia"; idColName = "number"; }
+            case TABLE_ESODA -> {
+                tableName = "esoda";
+                idColName = "code";
+            }
+            case TABLE_EKSODA -> {
+                tableName = "eksoda";
+                idColName = "code";
+            }
+            case TABLE_KRATOS -> {
+                tableName = "kratos";
+                idColName = "number";
+            }
+            case TABLE_YPOURGEIA -> {
+                tableName = "ypourgeia";
+                idColName = "number";
+            }
             default -> {
                 System.out.println("Άκυρη επιλογή πίνακα.");
                 return;
@@ -508,10 +490,7 @@ public final class BudgetMenu {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        // 1. Βρίσκουμε το όνομα από το ID (Νέα μέθοδος)
         String name = manager.getNameById(tableName, idColName, id);
-    
-        // 2. Βρίσκουμε το ποσό από το ID (Υπάρχουσα μέθοδος)
         double amount = manager.getCurrentAmount(tableName, idColName, id);
 
         if (name == null || amount == -1) {
@@ -519,65 +498,30 @@ public final class BudgetMenu {
             return;
         }
 
-        System.out.println("------------------------------------------------");
         System.out.println("Επιλέξατε: " + name);
         System.out.printf("Τρέχον Ποσό: %,.2f €\n", amount);
-        System.out.println("------------------------------------------------");
-    
-        System.out.println("Τι θέλετε να πετύχετε; ...");
         System.out.print("Στόχος: ");
         String goal = scanner.nextLine();
 
         System.out.println("Ο ψηφιακός βοηθός σκέφτεται...");
         AiBridge ai = new AiBridge();
-        // Στέλνουμε το όνομα που βρήκαμε αυτόματα από τη βάση!
-        System.out.println(ai.getSpecificAdvice(this.url, name, amount, goal));
+        System.out.println(ai.getSpecificAdvice(
+                this.url, name, amount, goal));
     }
 
-    /**
-     * Εκκινεί τη διαδικασία στρατηγικού σχεδιασμού με τη βοήθεια Τεχνητής Νοημοσύνης (AI) για το σύνολο του προϋπολογισμού.
-     * <p>
-     * Σε αντίθεση με τη μέθοδο {@code handleAiSpecific}, αυτή η λειτουργία δεν εστιάζει σε μία εγγραφή,
-     * αλλά εξετάζει τη "μεγάλη εικόνα" (συνολικά έσοδα/έξοδα και Υπουργεία).
-     * </p>
-     * <p>
-     * Η ροή εκτέλεσης είναι η εξής:
-     * <ol>
-     * <li>Ζητείται από τον χρήστη να περιγράψει το γενικό όραμά του (π.χ. "μείωση ελλείμματος").</li>
-     * <li>Δημιουργείται στιγμιότυπο της κλάσης {@link AiBridge}.</li>
-     * <li>Καλείται η μέθοδος {@code getGlobalStrategy} περνώντας το URL της βάσης δεδομένων,
-     * ώστε το AI να μπορέσει να διαβάσει απευθείας τα συνολικά δεδομένα και να προτείνει λύσεις.</li>
-     * </ol>
-     * </p>
-     *
-     * @see AiBridge#getGlobalStrategy(String, String)
-     */
     private void handleAiGlobal() {
-        System.out.println("\n--- AI Στρατηγικός Σχεδιασμός για γενική βοήθεια σε επίτευξη στόχων ---");
-        System.out.println("Το AI θα μελετήσει τα σύνολα εσόδων/εξόδων και τα Υπουργεία.");
-        System.out.println("Ποιο είναι το όραμά σας; (π.χ. 'Θέλω να μηδενίσω το έλλειμμα')");
+        System.out.println("\n--- AI Στρατηγικός Σχεδιασμός ---");
         System.out.print("Στόχος: ");
         String goal = scanner.nextLine();
-        
+
         System.out.println("Ανάλυση βάσης δεδομένων...");
         AiBridge ai = new AiBridge();
-        // Περνάμε το url (π.χ. jdbc:sqlite:budget_2024.db) που έχει το BudgetMenu
         System.out.println(ai.getGlobalStrategy(this.url, goal));
     }
 
-    /**
-     * Υπολογίζει πρόβλεψη για το έτος 2027 βάσει ιστορικών στοιχείων.
-     */
     private void predictValue() {
         System.out.println("\n--- Πρόβλεψη για το έτος 2027 ---");
-        System.out.println("Επιλέξτε πίνακα για την πρόβλεψη:");
-        System.out.println("1. Έσοδα");
-        System.out.println("2. Έξοδα");
-        System.out.println("3. Κράτος");
-        System.out.println("4. Υπουργεία");
-        System.out.println("5. Αποκεντρωμένες Διοικήσεις");
-        System.out.print("Επιλογή: ");
-
+        System.out.println("Επιλέξτε πίνακα (1-5):");
         int tableChoice;
         try {
             tableChoice = scanner.nextInt();
@@ -592,11 +536,26 @@ public final class BudgetMenu {
         String idColName;
 
         switch (tableChoice) {
-            case TABLE_ESODA -> { tableName = "esoda"; idColName = "code"; }
-            case TABLE_EKSODA -> { tableName = "eksoda"; idColName = "code"; }
-            case TABLE_KRATOS -> { tableName = "kratos"; idColName = "number"; }
-            case TABLE_YPOURGEIA -> { tableName = "ypourgeia"; idColName = "number"; }
-            case TABLE_APOK -> { tableName = "apokentromenes"; idColName = "number"; }
+            case TABLE_ESODA -> {
+                tableName = "esoda";
+                idColName = "code";
+            }
+            case TABLE_EKSODA -> {
+                tableName = "eksoda";
+                idColName = "code";
+            }
+            case TABLE_KRATOS -> {
+                tableName = "kratos";
+                idColName = "number";
+            }
+            case TABLE_YPOURGEIA -> {
+                tableName = "ypourgeia";
+                idColName = "number";
+            }
+            case TABLE_APOK -> {
+                tableName = "apokentromenes";
+                idColName = "number";
+            }
             default -> {
                 System.out.println("Άκυρη επιλογή.");
                 return;
@@ -612,22 +571,33 @@ public final class BudgetMenu {
             return;
         }
 
-        System.out.println("Συλλογή ιστορικών δεδομένων (2023-2026)...");
+        Map<Integer, Double> history = collectHistory(tableName, idColName, id);
 
+        if (history.size() < 2) {
+            System.out.println("Δεν υπάρχουν αρκετά δεδομένα για πρόβλεψη.");
+            return;
+        }
+
+        performPrediction(history);
+    }
+
+    private Map<Integer, Double> collectHistory(final String tableName,
+                                                final String idColName,
+                                                final int id) {
+        System.out.println("Συλλογή ιστορικών δεδομένων (2023-2026)...");
         Map<Integer, Double> history = new LinkedHashMap<>();
         DatabaseFinder finder = new DatabaseFinder();
 
-        // Συλλογή Δεδομένων από όλες τις βάσεις
-        for (int year = 2023; year <= 2026; year++) {
+        for (int year = START_YEAR; year <= END_YEAR; year++) {
             String dbName = "budget_" + year + ".db";
             String currentDbUrl = "jdbc:sqlite:" + dbName;
             boolean tempCreated = false;
 
-            // Έλεγχος και δημιουργία βάσης αν δεν υπάρχει
             if (!finder.findYearbase(year)) {
                 try {
                     Csvtopdf.run(year);
-                    PinakesImporter importer = new PinakesImporter(currentDbUrl);
+                    PinakesImporter importer = new PinakesImporter(
+                            currentDbUrl);
                     importer.importAll();
                     tempCreated = true;
                 } catch (Exception e) {
@@ -636,9 +606,9 @@ public final class BudgetMenu {
                 }
             }
 
-            // Ανάκτηση ποσού για το συγκεκριμένο ID
             BudgetManager tempManager = new BudgetManager(currentDbUrl);
-            double amount = tempManager.getCurrentAmount(tableName, idColName, id);
+            double amount = tempManager.getCurrentAmount(
+                    tableName, idColName, id);
 
             if (amount != -1) {
                 history.put(year, amount);
@@ -647,22 +617,18 @@ public final class BudgetMenu {
                 System.out.printf("Έτος %d: Δεν βρέθηκε εγγραφή.%n", year);
             }
 
-            // Διαγραφή προσωρινής βάσης
             if (tempCreated) {
                 try {
-                    File dbFile = new File(dbName);
-                    dbFile.delete();
-                } catch (Exception e) { /* ignore */ }
+                    new File(dbName).delete();
+                } catch (Exception e) {
+                    // Ignore deletion errors
+                }
             }
         }
+        return history;
+    }
 
-        if (history.size() < 2) {
-            System.out.println("Δεν υπάρχουν αρκετά δεδομένα για πρόβλεψη.");
-            return;
-        }
-
-        // 2. Υπολογισμός Πρόβλεψης (Γραμμική Παλινδρόμηση: y = mx + b)
-        // x = έτος, y = ποσό
+    private void performPrediction(final Map<Integer, Double> history) {
         double n = history.size();
         double sumX = 0;
         double sumY = 0;
@@ -678,16 +644,15 @@ public final class BudgetMenu {
             sumX2 += (x * x);
         }
 
-        double slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+        double slope = (n * sumXY - sumX * sumY)
+                / (n * sumX2 - sumX * sumX);
         double intercept = (sumY - slope * sumX) / n;
+        double predicted = slope * PREDICT_YEAR + intercept;
 
-        double predicted2027 = slope * 2027 + intercept;
-
-        // Εμφάνιση αποτελέσματος
         System.out.println("----------------------------------------");
-        System.out.printf("Εκτίμηση για το 2027: %,.2f EUR%n", predicted2027);
-        
-        double growth = predicted2027 - history.get(2026);
+        System.out.printf("Εκτίμηση για το 2027: %,.2f EUR%n", predicted);
+
+        double growth = predicted - history.get(END_YEAR);
         if (growth > 0) {
             System.out.printf("Τάση: Αύξηση (+%,.2f EUR)%n", growth);
         } else {

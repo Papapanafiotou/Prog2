@@ -115,7 +115,15 @@ public final class Search {
         return tab;
     }
 
-    public double searchAmountInTable(final String name, final String tableName) {
+    /**
+     * Αναζητά το ποσό βάσει ονόματος σε συγκεκριμένο πίνακα.
+     *
+     * @param name      Το όνομα προς αναζήτηση.
+     * @param tableName Το όνομα του πίνακα.
+     * @return Το ποσό που βρέθηκε ή 0.
+     */
+    public double searchAmountInTable(final String name,
+                                      final String tableName) {
         if (name == null || name.trim().isEmpty()) {
             System.out.println("Σφάλμα: Δεν δόθηκε όνομα για αναζήτηση.");
             return 0;
@@ -127,20 +135,22 @@ public final class Search {
         double amount = 0;
         try (Connection conn = DriverManager.getConnection(url)) {
 
-         String sql = "SELECT amount FROM " + tableName + " WHERE name LIKE ?";
+            String sql = "SELECT amount FROM " + tableName
+                    + " WHERE name LIKE ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, "%" + name.trim() + "%");
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
                         amount = rs.getDouble("amount");
-                        System.out.println(" ΒΡΕΘΗΚΕ στον πίνακα " 
-                            + tableName + "! Ποσό: " + (long) amount);
+                        System.out.println(" ΒΡΕΘΗΚΕ στον πίνακα "
+                                + tableName + "! Ποσό: " + (long) amount);
                         return amount;
                     } else {
-                        System.out.println(" Δεν βρέθηκε εγγραφή στον πίνακα " + tableName);
+                        System.out.println(" Δεν βρέθηκε εγγραφή στον πίνακα "
+                                + tableName);
                     }
+                }
             }
-        }
         } catch (SQLException e) {
             System.err.println("Σφάλμα στη βάση: " + e.getMessage());
         }

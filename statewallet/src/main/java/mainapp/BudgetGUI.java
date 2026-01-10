@@ -14,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -62,6 +61,8 @@ public final class BudgetGUI extends JFrame {
     private static final int BORDER_GAP = 8;
     /** Κενό Panel Layout. */
     private static final int PANEL_GAP = 5;
+    /** Χρώμα για κουμπί AI. */
+    private static final Color AI_BTN_COLOR = new Color(230, 230, 255);
 
     /** Χρώμα για θετικό προϋπολογισμό. */
     private static final Color SUCCESS_COLOR = new Color(34, 139, 34);
@@ -94,11 +95,12 @@ public final class BudgetGUI extends JFrame {
     private JLabel budgetStatusLabel;
     /** Κουμπί εμφάνισης συνόλων. */
     private JButton showTotalsButton;
+    /** Κουμπί εμφάνισης ποσοστών. */
     private JButton percentageButton;
     /** Κουμπί AI. */
     private JButton aiButton;
+    /** Κουμπί πρόβλεψης. */
     private JButton predictButton;
-
 
     /**
      * Κατασκευαστής του BudgetGUI.
@@ -125,13 +127,14 @@ public final class BudgetGUI extends JFrame {
         percentageButton = new JButton("📈 Ποσοστά");
         predictButton = new JButton("🔮 Πρόβλεψη 2027");
         aiButton = new JButton("🤖 AI Σύμβουλος");
-        aiButton.setBackground(new Color(230, 230, 255)); // Ελαφρύ μπλε για να ξεχωρίζει
+        aiButton.setBackground(AI_BTN_COLOR);
+
         tableSelector = new JComboBox<>();
         tableSelector.addItem(new TableInfo("Έσοδα", "esoda", "code"));
         tableSelector.addItem(new TableInfo("Έξοδα", "eksoda", "code"));
         tableSelector.addItem(new TableInfo("Κράτος", "kratos", "number"));
-        tableSelector.addItem(new TableInfo(
-                "Υπουργεία", "ypourgeia", "number"));
+        tableSelector.addItem(
+                new TableInfo("Υπουργεία", "ypourgeia", "number"));
         tableSelector.addItem(new TableInfo(
                 "Αποκεντρωμένες Διοικήσεις", "apokentromenes", "number"));
 
@@ -182,7 +185,7 @@ public final class BudgetGUI extends JFrame {
 
         JPanel updatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         updatePanel.setBorder(BorderFactory.createTitledBorder(
-                "Αλλαγή στοιχείου προϋπολογισμού"));
+                "Αλλαγές στοιχείου προϋπολογισμού"));
         updatePanel.add(new JLabel("ID:"));
         updatePanel.add(idField);
         updatePanel.add(new JLabel("Νέο ποσό:"));
@@ -256,67 +259,57 @@ public final class BudgetGUI extends JFrame {
         percentageButton.addActionListener(e -> {
             new PercentageUI(manager, dbPath);
         });
-predictButton.addActionListener(e -> {
-    // 1. Έλεγχος αν ο χρήστης έχει επιλέξει γραμμή στον πίνακα
-    int row = dataTable.getSelectedRow();
-    if (row < 0) {
-        JOptionPane.showMessageDialog(this, 
-            "Παρακαλώ επιλέξτε πρώτα μια γραμμή από τον πίνακα!", 
-            "Προσοχή", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
+        predictButton.addActionListener(e -> {
+            int row = dataTable.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Παρακαλώ επιλέξτε πρώτα μια γραμμή από τον πίνακα!",
+                        "Προσοχή", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-    try {
-        // 2. Ανάκτηση των πληροφοριών της επιλεγμένης γραμμής
-        TableInfo info = (TableInfo) tableSelector.getSelectedItem();
-        
-        // Στήλη 0 είναι το ID, Στήλη 1 είναι το Όνομα (Περιγραφή)
-        int idValue = Integer.parseInt(tableModel.getValueAt(row, 0).toString());
-        String itemName = tableModel.getValueAt(row, 1).toString();
+            try {
+                TableInfo info = (TableInfo) tableSelector.getSelectedItem();
+                int idValue = Integer.parseInt(
+                        tableModel.getValueAt(row, 0).toString());
+                String itemName = tableModel.getValueAt(row, 1).toString();
 
-        // 3. Άνοιγμα του PredictionUI με όλες τις παραμέτρους
-        // (dbPath, όνομα_πίνακα, όνομα_στήλης_id, τιμή_id, όνομα_στοιχείου)
-        PredictionUI predictionWindow = new PredictionUI(
-            dbPath, 
-            info.tableName, 
-            info.idColumnName, 
-            idValue, 
-            itemName
-        );
-        predictionWindow.setVisible(true);
+                PredictionUI predictionWindow = new PredictionUI(
+                        dbPath,
+                        info.tableName,
+                        info.idColumnName,
+                        idValue,
+                        itemName
+                );
+                predictionWindow.setVisible(true);
 
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, 
-            "Σφάλμα κατά την εκκίνηση της πρόβλεψης: " + ex.getMessage(), 
-            "Σφάλμα", JOptionPane.ERROR_MESSAGE);
-    }
-});
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Σφάλμα κατά την εκκίνηση της πρόβλεψης: "
+                                + ex.getMessage(),
+                        "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+            }
+        });
         aiButton.addActionListener(e -> {
-            // Έλεγχος αν υπάρχει επιλεγμένη γραμμή στον πίνακα
             String selectedId = null;
             String selectedName = null;
             String selectedAmount = null;
 
             int row = dataTable.getSelectedRow();
             if (row >= 0) {
-                // Στήλη 0 = ID
-                // Στήλη 1 = Περιγραφή (Όνομα)
-                // Στήλη 3 = Τρέχον Ποσό
                 Object idVal = tableModel.getValueAt(row, 0);
                 Object nameVal = tableModel.getValueAt(row, 1);
-                Object amountVal = tableModel.getValueAt(row, 3);
+                // Magic Number Fix
+                Object amountVal = tableModel.getValueAt(
+                        row, TABLE_COL_AMOUNT);
 
                 selectedId = Objects.toString(idVal, "");
                 selectedName = Objects.toString(nameVal, "");
                 selectedAmount = Objects.toString(amountVal, "");
-            } else {
-                // Αν δεν έχει επιλέξει γραμμή, μπορεί να ανοίξει το παράθυρο
-                // αλλά θα πάει στο tab "Γενική Στρατηγική"
-                // (Προαιρετικά μπορείς να του πετάξεις μήνυμα να επιλέξει)
             }
 
-            // Περνάμε το ID, Name, Amount στον νέο constructor
-            new AiAdvisorDialog(this, dbPath, selectedId, selectedName, selectedAmount).setVisible(true);
+            new AiAdvisorDialog(this, dbPath, selectedId, selectedName,
+                    selectedAmount).setVisible(true);
         });
     }
 
@@ -334,10 +327,12 @@ predictButton.addActionListener(e -> {
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Object[] row = new Object[]{
-                        rs.getInt(info.idColumnName),
-                        rs.getString("name"),
-                        String.format(java.util.Locale.US, "%.2f", rs.getDouble("original_amount")),
-                        String.format(java.util.Locale.US, "%.2f", rs.getDouble("amount"))
+                    rs.getInt(info.idColumnName),
+                    rs.getString("name"),
+                    String.format(java.util.Locale.US, "%.2f",
+                            rs.getDouble("original_amount")),
+                    String.format(java.util.Locale.US, "%.2f",
+                            rs.getDouble("amount"))
                 };
                 tableModel.addRow(row);
             }
@@ -375,7 +370,8 @@ predictButton.addActionListener(e -> {
                 );
                 if (rowId == id) {
                     oldAmount = Double.parseDouble(
-                            tableModel.getValueAt(i, TABLE_COL_AMOUNT).toString()
+                            tableModel.getValueAt(
+                                    i, TABLE_COL_AMOUNT).toString()
                     );
                     break;
                 }
@@ -432,11 +428,11 @@ predictButton.addActionListener(e -> {
         boolean foundAny = false;
 
         TableInfo[] tables = new TableInfo[]{
-                new TableInfo("Έσοδα", "esoda", "code"),
-                new TableInfo("Έξοδα", "eksoda", "code"),
-                new TableInfo("Κράτος", "kratos", "number"),
-                new TableInfo("Υπουργεία", "ypourgeia", "number"),
-                new TableInfo("Αποκεντρωμένες", "apokentromenes", "number")
+            new TableInfo("Έσοδα", "esoda", "code"),
+            new TableInfo("Έξοδα", "eksoda", "code"),
+            new TableInfo("Κράτος", "kratos", "number"),
+            new TableInfo("Υπουργεία", "ypourgeia", "number"),
+            new TableInfo("Αποκεντρωμένες", "apokentromenes", "number")
         };
         for (TableInfo info : tables) {
             String sql = "SELECT " + info.idColumnName

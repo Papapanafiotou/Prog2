@@ -1,35 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="9.3">
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\Accounts.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetGUI.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetManager.java">
-</file>
 <file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetMenu.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\Constrains.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\Csvtopdf.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\DatabaseChooser.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\DatabaseFinder.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\Log.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\LogUi.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\package-info.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\PinakesImporter.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\Search.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\StateWallet.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\StateWalletLauncher.java">
-</file>
-<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\StateWalletUi.java">
 </file>
 </checkstyle>
