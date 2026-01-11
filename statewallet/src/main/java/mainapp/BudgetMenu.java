@@ -114,7 +114,9 @@ public final class BudgetMenu {
             }
         }
     }
-
+    /**
+     * Εμφάνιση μενού επιλογών
+     */
     private void printMenuOptions() {
         System.out.println("\n-------------------------------------------");
         System.out.println("Επιλέξτε μία από τις παρακάτω λειτουργίες");
@@ -133,7 +135,10 @@ public final class BudgetMenu {
         System.out.println("13. Σύστημα βαθμολόγησης κράτους (ΕΛΣΤΑΤ)");
         System.out.println("14. Έξοδος");
     }
-
+    /**
+     * Διαχειριστής επιλογών
+     * @param choice επιλογή του χρήστη
+     */
     private boolean processChoice(final int choice) {
         switch (choice) {
             case OPTION_SHOW -> showBudgetSelection();
@@ -173,7 +178,11 @@ public final class BudgetMenu {
         }
         return false;
     }
-
+    /**
+     * Μέθοδος διαχείρισης χαρακτηρισμού του προϋπολογισμού.
+     * Καλεί την getBudgetCharacterism αναλογα με τις επιλογές
+     * του χρήστη.
+     */
     private void handleCharacterism() {
         System.out.println("Θέλετε χαρακτηρισμό στα αρχικά ή επεξεργασμένα;");
         System.out.println("(1 για αρχικά 2 για επεξεργασμένα)");
@@ -190,7 +199,10 @@ public final class BudgetMenu {
                     revenue[1], expenses[1]));
         }
     }
-
+    /**
+     * Μέθοδος διαχείρισης εμφάνισης προϋπολογισμού.
+     * Καλεί την printTable ανάλογα με τις επιλογές του χρήστη.
+     */
     private void showBudgetSelection() {
         System.out.println("\nΠοιον πίνακα θέλετε να δείτε;");
         System.out.println("1. Έσοδα");
@@ -319,7 +331,11 @@ public final class BudgetMenu {
             System.out.println("Λάθος είσοδος (μόνο αριθμοί).");
         }
     }
-
+    /**
+     * Μέθοδος διαχείριης εμφάνισης συνόλου.
+     * Καλεί την getTotal ανάλογα με τις επιλογές
+     * του χρήστη.
+     */
     private void showTotalSelection() {
         System.out.println("\nΠοιανού πίνακα θέλετε να δείτε το σύνολο ;");
         System.out.println("1. Έσοδα");
