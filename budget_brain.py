@@ -29,15 +29,47 @@ if not API_KEY:
 # --- 4. ΑΡΧΙΚΟΠΟΙΗΣΗ CLIENT ---
 client = genai.Client(api_key=API_KEY)
 
-# --- 5. ΛΙΣΤΑ ΜΟΝΤΕΛΩΝ ---
-# Λίστα με διαθέσιμα μοντέλα για Failover (αν αποτύχει το ένα, δοκιμάζει το επόμενο)
-MODEL_LIST = [
-    "gemini-2.0-flash-001",
-    "gemini-2.0-flash-lite-001",
-    "gemini-gemini-2.5-flash-lite",
-    "gemini-2.0-flash-001",
-    "gemini-2.5-pro"
-]
+def get_available_models():
+    """
+    Ρωτάει το API ποια μοντέλα είναι διαθέσιμα αυτή τη στιγμή.
+    Επιστρέφει μια λίστα ταξινομημένη ώστε να προτιμά τα νεότερα.
+    """
+    try:
+        print("🔄 Ανάκτηση λίστας μοντέλων από το Google Cloud...", file=sys.stderr)
+        
+        # Ζητάμε όλα τα μοντέλα
+        all_models = list(client.models.list())
+        
+        candidates = []
+        for m in all_models:
+            # Το m.name συνήθως είναι 'models/gemini-2.0-flash'
+            name = m.name.replace("models/", "")
+            
+            # ΦΙΛΤΡΑ:
+            # 1. Να περιέχει 'gemini'
+            # 2. Να ΜΗΝ είναι 'vision' only (αν θέλουμε κείμενο) ή 'embedding'
+            # 3. Να ΜΗΝ είναι experimental (προαιρετικά, αν θέλουμε σταθερότητα)
+            if "gemini" in name and "embedding" not in name:
+                candidates.append(name)
+        
+        # Ταξινόμηση: Θέλουμε τα μεγαλύτερα νούμερα πρώτα (π.χ. 2.0 > 1.5)
+        # και τα 'pro' πριν τα 'flash' αν έχουν τον ίδιο αριθμό (προτίμηση ποιότητας).
+        candidates.sort(key=lambda x: x, reverse=True)
+        
+        if not candidates:
+            print("⚠️ Δεν βρέθηκαν μοντέλα μέσω API. Χρήση Fallback.", file=sys.stderr)
+            return ["gemini-2.0-flash", "gemini-1.5-flash"] # Έσχατη λύση
+            
+        print(f"✅ Βρέθηκαν {len(candidates)} μοντέλα: {candidates}", file=sys.stderr)
+        return candidates
+
+    except Exception as e:
+        print(f"⚠️ Σφάλμα στην ανάκτηση λίστας: {e}", file=sys.stderr)
+        # Σε περίπτωση που αποτύχει το list()
+        return ["gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash"]
+
+# Καλούμε τη συνάρτηση κατά την εκκίνηση
+MODEL_LIST = get_available_models()
 
 def generate_safe(prompt):
     """ 
@@ -55,6 +87,8 @@ def generate_safe(prompt):
     """
     for model_name in MODEL_LIST:
         try:
+            # print(f"  👉 Δοκιμή με: {model_name}...", file=sys.stderr) Αυτό το χρειάζομαι μόνο αν θεωρώ ότι 
+            # κάτι δε πάει καλά με τα μοντελα και θελω να τα δω
             response = client.models.generate_content(
                 model=model_name,
                 contents=prompt
@@ -65,6 +99,8 @@ def generate_safe(prompt):
                 
         except Exception as e:
             err_msg = str(e)
+            # Εκτύπωση του πραγματικού σφάλματος στο stderr για να το δεις στην κονσόλα
+            print(f"⚠️ Αποτυχία στο {model_name}: {err_msg}", file=sys.stderr)
             if "429" in err_msg or "503" in err_msg or "ResourceExhausted" in err_msg:
                 continue 
             elif "NotFound" in err_msg or "404" in err_msg:
@@ -144,7 +180,7 @@ def analyze_specific(db_path, item_name, amount, goal):
     3. ΜΗΝ χρησιμοποιείς Markdown (** ή *).
     4. Αν προτείνεις μείωση, γράψτο με <span style='color:#ff5555'>κόκκινο</span>.
     5. Αν προτείνεις αύξηση/κέρδος, γράψτο με <span style='color:#50fa7b'>πράσινο</span>.
-    6. Σύντομα και περιεκτικά στα Ελληνικά.
+    6. Σχετικά σύντομα και περιεκτικά στα Ελληνικά.
     """
     print(generate_safe(prompt))
 
