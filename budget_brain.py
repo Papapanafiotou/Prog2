@@ -65,6 +65,8 @@ def generate_safe(prompt):
                 
         except Exception as e:
             err_msg = str(e)
+            # Εκτύπωση του πραγματικού σφάλματος στο stderr για να το δεις στην κονσόλα
+            print(f"⚠️ Αποτυχία στο {model_name}: {err_msg}", file=sys.stderr)
             if "429" in err_msg or "503" in err_msg or "ResourceExhausted" in err_msg:
                 continue 
             elif "NotFound" in err_msg or "404" in err_msg:
