@@ -29,7 +29,7 @@ public class CsvtopdfTest {
         // Εκτελούμε τη μέθοδο
         // Σημείωση: Αν δεν υπάρχει το python script, θα πιάσει το catch block, 
         // κάτι που επίσης θέλουμε για το coverage των σφαλμάτων.
-        assertDoesNotThrow(() -> Csvtopdf.run(testYear));
+        assertDoesNotThrow(() -> Pdftocsv.run(testYear));
 
         // Καθαρισμός (Cleanup)
         Files.deleteIfExists(sourceDir.resolve("budgettouse.pdf"));
@@ -39,15 +39,15 @@ public class CsvtopdfTest {
     @Test
     public void testRunWithNonExistentFile() {
         // Ελέγχουμε την περίπτωση που το αρχείο PDF δεν υπάρχει για να καλύψουμε το πρώτο catch block
-        assertDoesNotThrow(() -> Csvtopdf.run(9999));
+        assertDoesNotThrow(() -> Pdftocsv.run(9999));
     }
 
     @Test
     public void testConstructorIsPrivate() throws Exception {
         // Reflection για τον private constructor για 100% coverage
-        Constructor<Csvtopdf> constructor = Csvtopdf.class.getDeclaredConstructor();
+        Constructor<Pdftocsv> constructor = Pdftocsv.class.getDeclaredConstructor();
         constructor.setAccessible(true);
-        Csvtopdf instance = constructor.newInstance();
+        Pdftocsv instance = constructor.newInstance();
         assertNotNull(instance);
     }
 }

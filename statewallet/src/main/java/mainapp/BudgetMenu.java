@@ -612,7 +612,7 @@ public final class BudgetMenu {
 
             if (!finder.findYearbase(year)) {
                 try {
-                    Csvtopdf.run(year);
+                    Pdftocsv.run(year);
                     PinakesImporter importer = new PinakesImporter(
                             currentDbUrl);
                     importer.importAll();

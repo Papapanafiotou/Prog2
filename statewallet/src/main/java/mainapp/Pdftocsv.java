@@ -10,9 +10,9 @@ import java.nio.file.StandardCopyOption;
 /**
  * Διαχειρίζεται τη μετατροπή PDF σε CSV καλώντας εξωτερικό script Python.
  */
-public final class Csvtopdf {
+public final class Pdftocsv {
 
-    private Csvtopdf() {
+    private Pdftocsv() {
         // Utility class
     }
 

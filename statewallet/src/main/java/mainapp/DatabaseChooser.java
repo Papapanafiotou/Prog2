@@ -33,7 +33,7 @@ public final class DatabaseChooser {
         DatabaseFinder finder = new DatabaseFinder();
         boolean databaseExists = finder.findYearbase(year);
         if (!databaseExists) {
-            Csvtopdf.run(year);
+            Pdftocsv.run(year);
             PinakesImporter importer = new PinakesImporter(databaseUrl);
             importer.importAll();
         } else {
@@ -43,7 +43,7 @@ public final class DatabaseChooser {
             scanner.nextLine();
             if (answer == 1) {
                 System.out.println("Έγινε διαγραφή των παλιών στοιχείων");
-                Csvtopdf.run(year);
+                Pdftocsv.run(year);
                 PinakesImporter importer = new PinakesImporter(databaseUrl);
                 importer.importAll();
             }

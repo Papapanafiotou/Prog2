@@ -5,7 +5,6 @@ D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetGUI.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetManager.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetMenu.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\Constrains.java
-D:\programs\Prog2\statewallet\src\main\java\mainapp\Csvtopdf.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\DatabaseChooser.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\DatabaseFinder.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\DataforGrade.java
@@ -17,6 +16,7 @@ D:\programs\Prog2\statewallet\src\main\java\mainapp\Log.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\LogUi.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\MinMaX.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\package-info.java
+D:\programs\Prog2\statewallet\src\main\java\mainapp\Pdftocsv.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\PercentageUI.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\PinakesImporter.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\PredictionUI.java

@@ -2,4 +2,10 @@
 <checkstyle version="9.3">
 <file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\BudgetMenu.java">
 </file>
+<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\DatabaseChooser.java">
+</file>
+<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\Pdftocsv.java">
+</file>
+<file name="D:\programs\Prog2\statewallet\src\main\java\mainapp\StateWalletLauncher.java">
+</file>
 </checkstyle>
