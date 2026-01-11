@@ -115,7 +115,7 @@ public final class BudgetMenu {
         }
     }
     /**
-     * Εμφάνιση μενού επιλογών
+     * Εμφάνιση μενού επιλογών.
      */
     private void printMenuOptions() {
         System.out.println("\n-------------------------------------------");
@@ -136,8 +136,9 @@ public final class BudgetMenu {
         System.out.println("14. Έξοδος");
     }
     /**
-     * Διαχειριστής επιλογών
+     * Διαχειριστής επιλογών.
      * @param choice επιλογή του χρήστη
+     * @return false για τον τερματισμό του προγράμματος
      */
     private boolean processChoice(final int choice) {
         switch (choice) {
