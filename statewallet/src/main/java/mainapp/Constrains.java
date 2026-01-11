@@ -7,86 +7,85 @@ import java.util.Scanner;
  * επιχειρηματικούς κανόνες και ελέγχους εγκυρότητας στα οικονομικά δεδομένα.
  * <p>
  * Χρησιμοποιείται για να διασφαλίσει ότι οι τιμές που εισάγει ο χρήστης
- * είναι λογικές και συμβατές με τους δημοσιονομικούς κανονισμούς (π.χ. όρια ελλείμματος).
+ * είναι λογικές και συμβατές με τους δημοσιονομικούς κανονισμούς.
  * </p>
  */
-public class Constrains {
+public final class Constrains {
+
+    /** Μέγιστο επιτρεπτό ποσοστό αλλαγής (50%). */
+    private static final double MAX_CHANGE_LIMIT = 0.5;
+    /** Μέγιστο επιτρεπτό ποσοστό ελλείμματος (3%). */
+    private static final double MAX_DEFICIT_PERCENT = 3.0;
+    /** Πολλαπλασιαστής για μετατροπή σε ποσοστό. */
+    private static final int PERCENT_MULT = 100;
+
+    /**
+     * Ιδιωτικός κατασκευαστής για να αποτραπεί η δημιουργία αντικειμένων
+     * αυτής της βοηθητικής κλάσης.
+     */
+    private Constrains() {
+        // Utility class
+    }
 
     /**
      * Επαληθεύει ότι ένα χρηματικό ποσό είναι μη αρνητικό.
      * <p>
-     * Αν το αρχικό ποσό είναι αρνητικό, η μέθοδος εισέρχεται σε έναν βρόχο (loop)
-     * ζητώντας από τον χρήστη να εισάγει νέα τιμή μέχρι να δοθεί έγκυρος θετικός αριθμός (ή μηδέν).
-     * Διαχειρίζεται επίσης περιπτώσεις λανθασμένης εισόδου (μη αριθμητικοί χαρακτήρες).
+     * Αν το αρχικό ποσό είναι αρνητικό, ζητάει από τον χρήστη νέα τιμή.
      * </p>
      *
-     * @param scanner Το αντικείμενο {@code Scanner} για την ανάγνωση νέας εισόδου από τον χρήστη.
-     * @param amount Η αρχική τιμή που πρέπει να ελεγχθεί.
+     * @param scanner Το αντικείμενο {@code Scanner} για την ανάγνωση εισόδου.
+     * @param amount  Η αρχική τιμή που πρέπει να ελεγχθεί.
      * @return Ένα έγκυρο, μη αρνητικό ποσό (`double`).
      */
-    public static double negativeAmount(Scanner scanner, double amount){
-        while (amount < 0) {
-                System.out.println("ΣΦΑΛΜΑ: Το ποσό δεν μπορεί να είναι αρνητικό.");
-                System.out.print("Δώσε το νέο ποσό: ");
-                // Ελεγχος αν ο χρηστης εδωσε αριθμο //
-                try {
-                    amount = Double.parseDouble(scanner.nextLine());
-                } catch (NumberFormatException e) {
-                    System.out.println("Πρέπει να δώσετε αριθμό.");
-                    amount = -1; 
-                }
+    public static double negativeAmount(final Scanner scanner,
+                                        final double amount) {
+        double validAmount = amount;
+        while (validAmount < 0) {
+            System.out.println("ΣΦΑΛΜΑ: Το ποσό δεν μπορεί να είναι αρνητικό.");
+            System.out.print("Δώσε το νέο ποσό: ");
+            // Ελεγχος αν ο χρηστης εδωσε αριθμο
+            try {
+                validAmount = Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Πρέπει να δώσετε αριθμό.");
+                validAmount = -1;
             }
-        return amount;
+        }
+        return validAmount;
     }
 
     /**
-     * Ελέγχει αν η μεταβολή ενός ποσού θεωρείται "λογική", δηλαδή δεν υπερβαίνει
-     * το 50% της αρχικής τιμής.
-     * <p>
-     * Αυτός ο έλεγχος λειτουργεί ως ασφαλιστική δικλείδα για την αποφυγή ακραίων
-     * λαθών κατά την πληκτρολόγηση αλλαγών στον προϋπολογισμό.
-     * </p>
+     * Ελέγχει αν η μεταβολή ενός ποσού θεωρείται "λογική" (<= 50%).
      *
-     * @param original_amount Το αρχικό ποσό πριν την αλλαγή.
-     * @param newAmount Το νέο ποσό που προτείνει ο χρήστης.
-     * @return {@code true} αν η αλλαγή είναι μικρότερη του 50% (ή αν το αρχικό ποσό είναι 0),
-     * διαφορετικά {@code false}.
+     * @param originalAmount Το αρχικό ποσό πριν την αλλαγή.
+     * @param newAmount      Το νέο ποσό που προτείνει ο χρήστης.
+     * @return {@code true} αν η αλλαγή είναι εντός ορίων.
      */
-    public static boolean isReasonableChange(double original_amount, double newAmount){
-        if(original_amount == 0) {
+    public static boolean isReasonableChange(final double originalAmount,
+                                             final double newAmount) {
+        if (originalAmount == 0) {
             return true;
         }
-        double PercentChange = Math.abs((original_amount - newAmount) / original_amount);     
-        if (PercentChange >= 0.5) {
-            return false;
-        } else {
-            return true;
-        }
+        double percentChange = Math.abs(
+                (originalAmount - newAmount) / originalAmount);
+
+        return percentChange < MAX_CHANGE_LIMIT;
     }
 
     /**
-     * Ελέγχει αν τηρείται το όριο του δημοσιονομικού ελλείμματος βάσει των κανονισμών.
-     * <p>
-     * Συγκεκριμένα, υπολογίζει αν το έλλειμμα (η διαφορά Εξόδων - Εσόδων)
-     * υπερβαίνει το 3% των συνολικών εσόδων.
-     * </p>
+     * Ελέγχει αν τηρείται το όριο του δημοσιονομικού ελλείμματος (3%).
      *
-     * @param esoda Το συνολικό ποσό των εσόδων.
+     * @param esoda  Το συνολικό ποσό των εσόδων.
      * @param eksoda Το συνολικό ποσό των εξόδων.
-     * @return {@code true} αν δεν υπάρχει έλλειμμα ή αν το έλλειμμα είναι εντός του ορίου (<= 3%).
-     * {@code false} αν το έλλειμμα υπερβαίνει το 3%.
+     * @return {@code true} αν το έλλειμμα είναι εντός του ορίου (<= 3%).
      */
-    public static boolean deficitLimit(double esoda, double eksoda){
+    public static boolean deficitLimit(final double esoda,
+                                       final double eksoda) {
         if (esoda >= eksoda) {
             return true;
         }
-        double defperc = ((eksoda - esoda) / esoda) * 100;
+        double defPerc = ((eksoda - esoda) / esoda) * PERCENT_MULT;
 
-        if (defperc > 3) {
-            return false;
-        } else {
-            return true;
-        }
-    
+        return defPerc <= MAX_DEFICIT_PERCENT;
     }
 }
