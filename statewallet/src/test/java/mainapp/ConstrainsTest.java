@@ -1,50 +1,42 @@
 package mainapp;
 
 import java.io.ByteArrayInputStream;
-import java.lang.reflect.Constructor;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 public class ConstrainsTest {
 
     @Test
-    public void testPositiveAmount() {
-        // Σενάριο 1: Θετικό ποσό. Δεν ζητείται είσοδος.
+    public void testNegativeAmountValidation() {
+        // Σενάριο: Ο χρήστης δίνει -50 (λάθος), μετά "abc" (λάθος), μετά 100 (σωστό)
+        String simulatedInput = "-50\nabc\n100\n";
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
         Scanner scanner = new Scanner(System.in);
-        double result = Constrains.negativeAmount(scanner, 150.0);
-        assertEquals(150.0, result);
-    }
 
-    @Test
-    public void testNegativeAmountAndContinue() {
-        // Σενάριο 2: Αρνητικό ποσό και ο χρήστης επιλέγει "1" (ΝΑΙ).
-        String input = "1\n";
-        Scanner scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-        
+        // Καλούμε τη μέθοδο με αρχική τιμή -50
         double result = Constrains.negativeAmount(scanner, -50.0);
-        assertEquals(-50.0, result);
+
+        // Πρέπει να επιστρέψει 100.0, που ήταν η πρώτη έγκυρη είσοδος
+        assertEquals(100.0, result);
     }
 
     @Test
-    public void testNegativeAmountAndCancel() {
-        // Σενάριο 3: Αρνητικό ποσό και ο χρήστης επιλέγει "0" (ΟΧΙ).
-        String input = "0\n";
-        Scanner scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
-        
-        double result = Constrains.negativeAmount(scanner, -50.0);
-        assertEquals(0, result);
+    public void testIsReasonableChange() {
+        // Έλεγχος ορίου 50% (MAX_CHANGE_LIMIT = 0.5)
+        assertTrue(Constrains.isReasonableChange(100, 120)); // 20% αλλαγή - OK
+        assertFalse(Constrains.isReasonableChange(100, 160)); // 60% αλλαγή - FAIL
+        assertTrue(Constrains.isReasonableChange(0, 500));   // Αρχικό 0 - OK
     }
 
     @Test
-    public void testConstructorIsPrivate() throws Exception {
-        // Αυτό το test χρησιμοποιεί Reflection για να καλέσει τον private constructor
-        // Έτσι το JaCoCo θα "πρασινίσει" και τις γραμμές 11-13 της Constrains.java
-        Constructor<Constrains> constructor = Constrains.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        Constrains instance = constructor.newInstance();
-        assertNotNull(instance);
+    public void testDeficitLimit() {
+        // Έλεγχος ορίου ελλείμματος 3% (MAX_DEFICIT_PERCENT = 3.0)
+        assertTrue(Constrains.deficitLimit(1000, 900));  // Πλεόνασμα - OK
+        assertTrue(Constrains.deficitLimit(1000, 1020)); // 2% έλλειμμα - OK
+        assertFalse(Constrains.deficitLimit(1000, 1050)); // 5% έλλειμμα - FAIL
     }
 }
