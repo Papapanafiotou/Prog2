@@ -1,36 +1,3 @@
-<<<<<<< HEAD
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\AccountsTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\AiAdvisorDialogTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\AiBridgeTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\AppTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\BudgetGUITest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\BudgetManagerTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\BudgetMenuTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\ConstrainsTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\CsvtopdfTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\DatabaseChooserTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\DatabaseFinderTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\DataforGradeTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\EconElemGradesTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\EconomicsChartTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\EnvElemGradesTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\GradeCharTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\LogTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\LogUiTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\MinMaXTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\PdftocsvTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\PercentageUITest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\PinakesImporterTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\PredictionUITest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\SearchTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\SocElemGradesTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\StateWalletLauncherTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\StateWalletTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\StateWalletUiTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\TotalGradeTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\TotalsPanelTest.java
-C:\Users\user\Prog2\statewallet\src\test\java\mainapp\WeightsTest.java
-=======
 D:\programs\Prog2\statewallet\src\test\java\mainapp\AccountsTest.java
 D:\programs\Prog2\statewallet\src\test\java\mainapp\AiAdvisorDialogTest.java
 D:\programs\Prog2\statewallet\src\test\java\mainapp\AiBridgeTest.java
@@ -62,4 +29,3 @@ D:\programs\Prog2\statewallet\src\test\java\mainapp\StateWalletUiTest.java
 D:\programs\Prog2\statewallet\src\test\java\mainapp\TotalGradeTest.java
 D:\programs\Prog2\statewallet\src\test\java\mainapp\TotalsPanelTest.java
 D:\programs\Prog2\statewallet\src\test\java\mainapp\WeightsTest.java
->>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
