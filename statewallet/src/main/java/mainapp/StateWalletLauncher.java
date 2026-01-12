@@ -204,7 +204,8 @@ public final class StateWalletLauncher extends JFrame {
                             "Επεξεργασία δεδομένων (από την αρχή)..."));
                     // Εκτέλεση επεξεργασίας
                     Pdftocsv.run(year);
-                    new PinakesImporter("jdbc:sqlite:budget.db").importAll();
+                    String dbPath = "jdbc:sqlite:budget_" + year + ".db";
+                    new PinakesImporter(dbPath).importAll();
                 } else {
                     SwingUtilities.invokeLater(() -> statusLabel.setText(
                             "Φόρτωση υπάρχουσας βάσης..."));
