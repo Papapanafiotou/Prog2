@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.TotalGradeTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.009 s <<< FAILURE! -- in mainapp.TotalGradeTest
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.010 s <<< FAILURE! -- in mainapp.TotalGradeTest
 mainapp.TotalGradeTest.testGetTotalGradeAllYears -- Time elapsed: 0.005 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.util.NoSuchElementException: No line found
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)

@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.SearchTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 6, Skipped: 0, Time elapsed: 0.017 s <<< FAILURE! -- in mainapp.SearchTest
+Tests run: 6, Failures: 0, Errors: 6, Skipped: 0, Time elapsed: 0.009 s <<< FAILURE! -- in mainapp.SearchTest
 mainapp.SearchTest.testSearchTable -- Time elapsed: 0.002 s <<< ERROR!
 java.sql.SQLException: No suitable driver found for jdbc:h2:mem:searchDb;DB_CLOSE_DELAY=-1
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
@@ -20,7 +20,7 @@ java.sql.SQLException: No suitable driver found for jdbc:h2:mem:searchDb;DB_CLOS
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
-mainapp.SearchTest.testSearchAmountFound -- Time elapsed: 0.001 s <<< ERROR!
+mainapp.SearchTest.testSearchAmountFound -- Time elapsed: 0 s <<< ERROR!
 java.sql.SQLException: No suitable driver found for jdbc:h2:mem:searchDb;DB_CLOSE_DELAY=-1
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)
@@ -29,7 +29,7 @@ java.sql.SQLException: No suitable driver found for jdbc:h2:mem:searchDb;DB_CLOS
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
-mainapp.SearchTest.testSearchStringFoundAndNotFound -- Time elapsed: 0.002 s <<< ERROR!
+mainapp.SearchTest.testSearchStringFoundAndNotFound -- Time elapsed: 0.001 s <<< ERROR!
 java.sql.SQLException: No suitable driver found for jdbc:h2:mem:searchDb;DB_CLOSE_DELAY=-1
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)

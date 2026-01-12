@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.1" name="mainapp.EconomicsChartTest" time="0.431" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.1" name="mainapp.EconomicsChartTest" time="0.43" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="javafx.runtime.version" value="21+31"/>
@@ -18,7 +18,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="GR"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-25\bin"/>
-    <property name="sun.java.command" value="C:\Users\user\AppData\Local\Temp\surefire10438611397081764783\surefirebooter-20260112225812537_3.jar C:\Users\user\AppData\Local\Temp\surefire10438611397081764783 2026-01-12T22-58-12_403-jvmRun1 surefire-20260112225812537_1tmp surefire_0-20260112225812537_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\user\AppData\Local\Temp\surefire1475164566568271136\surefirebooter-20260112232603781_3.jar C:\Users\user\AppData\Local\Temp\surefire1475164566568271136 2026-01-12T23-26-03_642-jvmRun1 surefire-20260112232603781_1tmp surefire_0-20260112232603781_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\user\Prog2\statewallet\target\test-classes;C:\Users\user\Prog2\statewallet\target\classes;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.0\junit-jupiter-api-5.11.0.jar;C:\Users\user\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-commons\1.11.0\junit-platform-commons-1.11.0.jar;C:\Users\user\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.0\junit-jupiter-params-5.11.0.jar;C:\Users\user\.m2\repository\org\xerial\sqlite-jdbc\3.45.3.0\sqlite-jdbc-3.45.3.0.jar;C:\Users\user\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.0\junit-jupiter-5.10.0.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.11.0\junit-jupiter-engine-5.11.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-engine\1.11.0\junit-platform-engine-1.11.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-core\5.2.0\mockito-core-5.2.0.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy\1.14.1\byte-buddy-1.14.1.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.1\byte-buddy-agent-1.14.1.jar;C:\Users\user\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\user\.m2\repository\org\mockito\mockito-inline\5.2.0\mockito-inline-5.2.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-junit-jupiter\5.2.0\mockito-junit-jupiter-5.2.0.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -33,7 +33,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\user\AppData\Local\Temp\surefire10438611397081764783\surefirebooter-20260112225812537_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\user\AppData\Local\Temp\surefire1475164566568271136\surefirebooter-20260112232603781_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25+37-LTS-3491"/>
@@ -62,10 +62,10 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="testDisplayGraphCall" classname="mainapp.EconomicsChartTest" time="0.346">
-    <system-err><![CDATA[Ιαν 12, 2026 10:58:16 Μ.Μ. com.sun.javafx.application.PlatformImpl startup
+  <testcase name="testDisplayGraphCall" classname="mainapp.EconomicsChartTest" time="0.349">
+    <system-err><![CDATA[Ιαν 12, 2026 11:26:07 Μ.Μ. com.sun.javafx.application.PlatformImpl startup
 WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @32709393'
 ]]></system-err>
   </testcase>
-  <testcase name="testShowPieChartInitialization" classname="mainapp.EconomicsChartTest" time="0.08"/>
+  <testcase name="testShowPieChartInitialization" classname="mainapp.EconomicsChartTest" time="0.074"/>
 </testsuite>

@@ -6,7 +6,7 @@ mainapp.WeightsTest.testGetWeightFullCoverage -- Time elapsed: 0.003 s <<< ERROR
 java.util.NoSuchElementException: No line found
 	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
 	at mainapp.Weights.getWeight(Weights.java:86)
-	at mainapp.WeightsTest.testGetWeightFullCoverage(WeightsTest.java:23)
+	at mainapp.WeightsTest.testGetWeightFullCoverage(WeightsTest.java:31)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
@@ -16,7 +16,7 @@ java.util.NoSuchElementException: No line found
 	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
 	at mainapp.Weights.getWeight(Weights.java:86)
 	at mainapp.Weights.addWeights(Weights.java:274)
-	at mainapp.WeightsTest.testAddWeightsWithRetries(WeightsTest.java:60)
+	at mainapp.WeightsTest.testAddWeightsWithRetries(WeightsTest.java:56)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
