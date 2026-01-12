@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: mainapp.TotalsPanelTest
--------------------------------------------------------------------------------
-<<<<<<< HEAD
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.214 s -- in mainapp.TotalsPanelTest
-=======
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.141 s -- in mainapp.TotalsPanelTest
->>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
