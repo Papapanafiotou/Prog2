@@ -1,0 +1,28 @@
+-------------------------------------------------------------------------------
+Test set: mainapp.DatabaseChooserTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 7.381 s <<< FAILURE! -- in mainapp.DatabaseChooserTest
+mainapp.DatabaseChooserTest.testGetUrlWithInvalidThenValidYear -- Time elapsed: 0.006 s <<< ERROR!
+java.util.NoSuchElementException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:975)
+	at java.base/java.util.Scanner.next(Scanner.java:1632)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2297)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2251)
+	at mainapp.DatabaseChooser.getUrl(DatabaseChooser.java:42)
+	at mainapp.DatabaseChooserTest.testGetUrlWithInvalidThenValidYear(DatabaseChooserTest.java:47)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.DatabaseChooserTest.testGetUrlWithValidYearAndNewDatabase -- Time elapsed: 0.003 s <<< ERROR!
+java.util.NoSuchElementException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:975)
+	at java.base/java.util.Scanner.next(Scanner.java:1632)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2297)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2251)
+	at mainapp.DatabaseChooser.getUrl(DatabaseChooser.java:42)
+	at mainapp.DatabaseChooserTest.testGetUrlWithValidYearAndNewDatabase(DatabaseChooserTest.java:35)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+

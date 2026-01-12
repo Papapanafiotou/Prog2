@@ -16,10 +16,7 @@ mainapp\BudgetGUI.class
 mainapp\StateWallet.class
 mainapp\DatabaseFinder.class
 mainapp\BudgetGUI$1.class
-<<<<<<< HEAD
-=======
 mainapp\EconElemGrades.class
->>>>>>> 15615cb30c94647f741b8cb09b9846069a6a2276
 mainapp\Pdftocsv.class
 mainapp\StateWalletUi.class
 mainapp\TotalGrade.class

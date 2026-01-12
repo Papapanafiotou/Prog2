@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 D:\programs\Prog2\statewallet\src\main\java\mainapp\Accounts.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\AiAdvisorDialog.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\AiBridge.java
@@ -29,35 +28,3 @@ D:\programs\Prog2\statewallet\src\main\java\mainapp\StateWalletUi.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\TotalGrade.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\TotalsPanel.java
 D:\programs\Prog2\statewallet\src\main\java\mainapp\Weights.java
-=======
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\Accounts.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\AiAdvisorDialog.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\AiBridge.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\BudgetGUI.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\BudgetManager.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\BudgetMenu.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\Constrains.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\DatabaseChooser.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\DatabaseFinder.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\DataforGrade.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\EconElemGrades.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\EconomicsChart.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\EnvElemGrades.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\GradeChar.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\Log.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\LogUi.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\MinMaX.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\package-info.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\Pdftocsv.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\PercentageUI.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\PinakesImporter.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\PredictionUI.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\Search.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\SocElemGrades.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\StateWallet.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\StateWalletLauncher.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\StateWalletUi.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\TotalGrade.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\TotalsPanel.java
-C:\ProgTask\Prog2\statewallet\src\main\java\mainapp\Weights.java
->>>>>>> 15615cb30c94647f741b8cb09b9846069a6a2276

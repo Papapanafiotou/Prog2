@@ -1,0 +1,22 @@
+-------------------------------------------------------------------------------
+Test set: mainapp.PinakesImporterTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.008 s <<< FAILURE! -- in mainapp.PinakesImporterTest
+mainapp.PinakesImporterTest.testImportAllWithDummyFiles -- Time elapsed: 0.002 s <<< ERROR!
+java.sql.SQLException: No suitable driver found for jdbc:h2:mem:importerDb;DB_CLOSE_DELAY=-1
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)
+	at mainapp.PinakesImporterTest.setup(PinakesImporterTest.java:30)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.PinakesImporterTest.testImportAllExceptionHandling -- Time elapsed: 0.003 s <<< ERROR!
+java.sql.SQLException: No suitable driver found for jdbc:h2:mem:importerDb;DB_CLOSE_DELAY=-1
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)
+	at mainapp.PinakesImporterTest.setup(PinakesImporterTest.java:30)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+

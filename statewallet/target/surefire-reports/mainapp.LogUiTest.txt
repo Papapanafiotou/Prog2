@@ -1,0 +1,115 @@
+-------------------------------------------------------------------------------
+Test set: mainapp.LogUiTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 1.466 s <<< FAILURE! -- in mainapp.LogUiTest
+mainapp.LogUiTest.testForgotPasswordFlow -- Time elapsed: 1.369 s <<< ERROR!
+org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.JOptionPane]
+	at mainapp.LogUiTest.testForgotPasswordFlow(LogUiTest.java:70)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.lang.IllegalStateException: 
+Byte Buddy could not instrument all classes within the mock's type hierarchy
+
+This problem should never occur for javac-compiled classes. This problem has been observed for classes that are:
+ - Compiled by older versions of scalac
+ - Classes that are part of the Android distribution
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:285)
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.mockClassStatic(InlineBytecodeGenerator.java:226)
+	at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClassStatic(TypeCachingBytecodeGenerator.java:63)
+	at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createStaticMock(InlineDelegateByteBuddyMockMaker.java:566)
+	at org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker.createStaticMock(InlineByteBuddyMockMaker.java:83)
+	at org.mockito.internal.util.MockUtil.createStaticMock(MockUtil.java:202)
+	at org.mockito.internal.MockitoCore.mockStatic(MockitoCore.java:134)
+	at org.mockito.Mockito.mockStatic(Mockito.java:2307)
+	at org.mockito.Mockito.mockStatic(Mockito.java:2244)
+	... 4 more
+Caused by: java.lang.IllegalArgumentException: Java 25 (69) is not supported by the current version of Byte Buddy which officially supports Java 20 (64) - update Byte Buddy or set net.bytebuddy.experimental as a VM property
+	at net.bytebuddy.utility.OpenedClassReader.of(OpenedClassReader.java:96)
+	at net.bytebuddy.dynamic.scaffold.TypeWriter$Default$ForInlining.create(TypeWriter.java:4011)
+	at net.bytebuddy.dynamic.scaffold.TypeWriter$Default.make(TypeWriter.java:2224)
+	at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase$UsingTypeWriter.make(DynamicType.java:4050)
+	at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase.make(DynamicType.java:3734)
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.transform(InlineBytecodeGenerator.java:402)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses0(Native Method)
+	at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses(InstrumentationImpl.java:221)
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
+	... 12 more
+
+mainapp.LogUiTest.testCreateAccountFlow -- Time elapsed: 0.044 s <<< ERROR!
+org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.JOptionPane]
+	at mainapp.LogUiTest.testCreateAccountFlow(LogUiTest.java:38)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.lang.IllegalStateException: 
+Byte Buddy could not instrument all classes within the mock's type hierarchy
+
+This problem should never occur for javac-compiled classes. This problem has been observed for classes that are:
+ - Compiled by older versions of scalac
+ - Classes that are part of the Android distribution
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:285)
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.mockClassStatic(InlineBytecodeGenerator.java:226)
+	at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClassStatic(TypeCachingBytecodeGenerator.java:63)
+	at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createStaticMock(InlineDelegateByteBuddyMockMaker.java:566)
+	at org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker.createStaticMock(InlineByteBuddyMockMaker.java:83)
+	at org.mockito.internal.util.MockUtil.createStaticMock(MockUtil.java:202)
+	at org.mockito.internal.MockitoCore.mockStatic(MockitoCore.java:134)
+	at org.mockito.Mockito.mockStatic(Mockito.java:2307)
+	at org.mockito.Mockito.mockStatic(Mockito.java:2244)
+	... 4 more
+Caused by: java.lang.IllegalArgumentException: Java 25 (69) is not supported by the current version of Byte Buddy which officially supports Java 20 (64) - update Byte Buddy or set net.bytebuddy.experimental as a VM property
+	at net.bytebuddy.utility.OpenedClassReader.of(OpenedClassReader.java:96)
+	at net.bytebuddy.dynamic.scaffold.TypeWriter$Default$ForInlining.create(TypeWriter.java:4011)
+	at net.bytebuddy.dynamic.scaffold.TypeWriter$Default.make(TypeWriter.java:2224)
+	at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase$UsingTypeWriter.make(DynamicType.java:4050)
+	at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase.make(DynamicType.java:3734)
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.transform(InlineBytecodeGenerator.java:402)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses0(Native Method)
+	at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses(InstrumentationImpl.java:221)
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
+	... 12 more
+
+mainapp.LogUiTest.testLoginFlowFailure -- Time elapsed: 0.043 s <<< ERROR!
+org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.JOptionPane]
+	at mainapp.LogUiTest.testLoginFlowFailure(LogUiTest.java:57)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.lang.IllegalStateException: 
+Byte Buddy could not instrument all classes within the mock's type hierarchy
+
+This problem should never occur for javac-compiled classes. This problem has been observed for classes that are:
+ - Compiled by older versions of scalac
+ - Classes that are part of the Android distribution
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:285)
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.mockClassStatic(InlineBytecodeGenerator.java:226)
+	at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClassStatic(TypeCachingBytecodeGenerator.java:63)
+	at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createStaticMock(InlineDelegateByteBuddyMockMaker.java:566)
+	at org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker.createStaticMock(InlineByteBuddyMockMaker.java:83)
+	at org.mockito.internal.util.MockUtil.createStaticMock(MockUtil.java:202)
+	at org.mockito.internal.MockitoCore.mockStatic(MockitoCore.java:134)
+	at org.mockito.Mockito.mockStatic(Mockito.java:2307)
+	at org.mockito.Mockito.mockStatic(Mockito.java:2244)
+	... 4 more
+Caused by: java.lang.IllegalArgumentException: Java 25 (69) is not supported by the current version of Byte Buddy which officially supports Java 20 (64) - update Byte Buddy or set net.bytebuddy.experimental as a VM property
+	at net.bytebuddy.utility.OpenedClassReader.of(OpenedClassReader.java:96)
+	at net.bytebuddy.dynamic.scaffold.TypeWriter$Default$ForInlining.create(TypeWriter.java:4011)
+	at net.bytebuddy.dynamic.scaffold.TypeWriter$Default.make(TypeWriter.java:2224)
+	at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase$UsingTypeWriter.make(DynamicType.java:4050)
+	at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase.make(DynamicType.java:3734)
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.transform(InlineBytecodeGenerator.java:402)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses0(Native Method)
+	at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses(InstrumentationImpl.java:221)
+	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
+	... 12 more
+
