@@ -18,7 +18,11 @@ org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table 
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
+<<<<<<< HEAD
 mainapp.PredictionUITest.testAnalysisFlow -- Time elapsed: 0.002 s <<< ERROR!
+=======
+mainapp.PredictionUITest.testAnalysisFlow -- Time elapsed: 0.003 s <<< ERROR!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table esoda has 4 columns but 2 values were supplied)
 	at org.sqlite.core.DB.newSQLException(DB.java:1179)
 	at org.sqlite.core.DB.newSQLException(DB.java:1190)
@@ -34,7 +38,11 @@ org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table 
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
+<<<<<<< HEAD
 mainapp.PredictionUITest.testConstructorAndInit -- Time elapsed: 0.003 s <<< ERROR!
+=======
+mainapp.PredictionUITest.testConstructorAndInit -- Time elapsed: 0.001 s <<< ERROR!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table esoda has 4 columns but 2 values were supplied)
 	at org.sqlite.core.DB.newSQLException(DB.java:1179)
 	at org.sqlite.core.DB.newSQLException(DB.java:1190)

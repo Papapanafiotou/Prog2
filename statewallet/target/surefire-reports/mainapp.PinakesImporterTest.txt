@@ -2,7 +2,11 @@
 Test set: mainapp.PinakesImporterTest
 -------------------------------------------------------------------------------
 Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.008 s <<< FAILURE! -- in mainapp.PinakesImporterTest
+<<<<<<< HEAD
 mainapp.PinakesImporterTest.testImportAllWithDummyFiles -- Time elapsed: 0.004 s <<< ERROR!
+=======
+mainapp.PinakesImporterTest.testImportAllWithDummyFiles -- Time elapsed: 0.002 s <<< ERROR!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 java.sql.SQLException: No suitable driver found for jdbc:h2:mem:importerDb;DB_CLOSE_DELAY=-1
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)
@@ -11,7 +15,11 @@ java.sql.SQLException: No suitable driver found for jdbc:h2:mem:importerDb;DB_CL
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
+<<<<<<< HEAD
 mainapp.PinakesImporterTest.testImportAllExceptionHandling -- Time elapsed: 0.002 s <<< ERROR!
+=======
+mainapp.PinakesImporterTest.testImportAllExceptionHandling -- Time elapsed: 0.003 s <<< ERROR!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 java.sql.SQLException: No suitable driver found for jdbc:h2:mem:importerDb;DB_CLOSE_DELAY=-1
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)

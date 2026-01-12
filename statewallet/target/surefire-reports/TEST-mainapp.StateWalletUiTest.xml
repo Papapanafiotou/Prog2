@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.1" name="mainapp.StateWalletUiTest" time="0.091" tests="4" errors="2" skipped="0" failures="0">
+=======
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.1" name="mainapp.StateWalletUiTest" time="0.1" tests="4" errors="2" skipped="0" failures="0">
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="javafx.runtime.version" value="21+31"/>
     <property name="sun.cpu.isalist" value="amd64"/>
     <property name="sun.jnu.encoding" value="Cp1253"/>
+<<<<<<< HEAD
     <property name="java.class.path" value="C:\Users\user\Prog2\statewallet\target\test-classes;C:\Users\user\Prog2\statewallet\target\classes;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.0\junit-jupiter-api-5.11.0.jar;C:\Users\user\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-commons\1.11.0\junit-platform-commons-1.11.0.jar;C:\Users\user\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.0\junit-jupiter-params-5.11.0.jar;C:\Users\user\.m2\repository\org\xerial\sqlite-jdbc\3.45.3.0\sqlite-jdbc-3.45.3.0.jar;C:\Users\user\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.0\junit-jupiter-5.10.0.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.11.0\junit-jupiter-engine-5.11.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-engine\1.11.0\junit-platform-engine-1.11.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-core\5.2.0\mockito-core-5.2.0.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy\1.14.1\byte-buddy-1.14.1.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.1\byte-buddy-agent-1.14.1.jar;C:\Users\user\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\user\.m2\repository\org\mockito\mockito-inline\5.2.0\mockito-inline-5.2.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-junit-jupiter\5.2.0\mockito-junit-jupiter-5.2.0.jar;"/>
+=======
+    <property name="java.class.path" value="D:\programs\Prog2\statewallet\target\test-classes;D:\programs\Prog2\statewallet\target\classes;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.0\junit-jupiter-api-5.11.0.jar;C:\Users\user\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-commons\1.11.0\junit-platform-commons-1.11.0.jar;C:\Users\user\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.0\junit-jupiter-params-5.11.0.jar;C:\Users\user\.m2\repository\org\xerial\sqlite-jdbc\3.45.3.0\sqlite-jdbc-3.45.3.0.jar;C:\Users\user\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.0\junit-jupiter-5.10.0.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.11.0\junit-jupiter-engine-5.11.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-engine\1.11.0\junit-platform-engine-1.11.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-core\5.2.0\mockito-core-5.2.0.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy\1.14.1\byte-buddy-1.14.1.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.1\byte-buddy-agent-1.14.1.jar;C:\Users\user\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\user\.m2\repository\org\mockito\mockito-inline\5.2.0\mockito-inline-5.2.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-junit-jupiter\5.2.0\mockito-junit-jupiter-5.2.0.jar;"/>
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
     <property name="sun.awt.enableExtraMouseButtons" value="true"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
     <property name="java.vendor.url" value="https://java.oracle.com/"/>
     <property name="user.timezone" value="Europe/Athens"/>
+<<<<<<< HEAD
     <property name="os.name" value="Windows 11"/>
+=======
+    <property name="os.name" value="Windows 10"/>
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
     <property name="java.vm.specification.version" value="25"/>
     <property name="javafx.version" value="21"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="GR"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-25\bin"/>
+<<<<<<< HEAD
     <property name="sun.java.command" value="C:\Users\user\AppData\Local\Temp\surefire409191145204839772\surefirebooter-20260112200646932_3.jar C:\Users\user\AppData\Local\Temp\surefire409191145204839772 2026-01-12T20-06-46_148-jvmRun1 surefire-20260112200646932_1tmp surefire_0-20260112200646932_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\user\Prog2\statewallet\target\test-classes;C:\Users\user\Prog2\statewallet\target\classes;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.0\junit-jupiter-api-5.11.0.jar;C:\Users\user\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-commons\1.11.0\junit-platform-commons-1.11.0.jar;C:\Users\user\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.0\junit-jupiter-params-5.11.0.jar;C:\Users\user\.m2\repository\org\xerial\sqlite-jdbc\3.45.3.0\sqlite-jdbc-3.45.3.0.jar;C:\Users\user\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.0\junit-jupiter-5.10.0.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.11.0\junit-jupiter-engine-5.11.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-engine\1.11.0\junit-platform-engine-1.11.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-core\5.2.0\mockito-core-5.2.0.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy\1.14.1\byte-buddy-1.14.1.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.1\byte-buddy-agent-1.14.1.jar;C:\Users\user\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\user\.m2\repository\org\mockito\mockito-inline\5.2.0\mockito-inline-5.2.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-junit-jupiter\5.2.0\mockito-junit-jupiter-5.2.0.jar;"/>
+=======
+    <property name="sun.java.command" value="C:\Users\user\AppData\Local\Temp\surefire13498746631263768404\surefirebooter-20260112200256831_3.jar C:\Users\user\AppData\Local\Temp\surefire13498746631263768404 2026-01-12T20-02-56_530-jvmRun1 surefire-20260112200256831_1tmp surefire_0-20260112200256831_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="D:\programs\Prog2\statewallet\target\test-classes;D:\programs\Prog2\statewallet\target\classes;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.0\junit-jupiter-api-5.11.0.jar;C:\Users\user\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-commons\1.11.0\junit-platform-commons-1.11.0.jar;C:\Users\user\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.0\junit-jupiter-params-5.11.0.jar;C:\Users\user\.m2\repository\org\xerial\sqlite-jdbc\3.45.3.0\sqlite-jdbc-3.45.3.0.jar;C:\Users\user\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.0\junit-jupiter-5.10.0.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.11.0\junit-jupiter-engine-5.11.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-engine\1.11.0\junit-platform-engine-1.11.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-core\5.2.0\mockito-core-5.2.0.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy\1.14.1\byte-buddy-1.14.1.jar;C:\Users\user\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.1\byte-buddy-agent-1.14.1.jar;C:\Users\user\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\user\.m2\repository\org\mockito\mockito-inline\5.2.0\mockito-inline-5.2.0.jar;C:\Users\user\.m2\repository\org\mockito\mockito-junit-jupiter\5.2.0\mockito-junit-jupiter-5.2.0.jar;"/>
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="C:\Users\user"/>
     <property name="user.language" value="el"/>
@@ -28,13 +46,22 @@
     <property name="java.version.date" value="2025-09-16"/>
     <property name="java.home" value="C:\Program Files\Java\jdk-25"/>
     <property name="file.separator" value="\"/>
+<<<<<<< HEAD
     <property name="basedir" value="C:\Users\user\Prog2\statewallet"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
+=======
+    <property name="basedir" value="D:\programs\Prog2\statewallet"/>
+    <property name="java.vm.compressedOopsMode" value="32-bit"/>
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.awt.headless" value="true"/>
+<<<<<<< HEAD
     <property name="surefire.real.class.path" value="C:\Users\user\AppData\Local\Temp\surefire409191145204839772\surefirebooter-20260112200646932_3.jar"/>
+=======
+    <property name="surefire.real.class.path" value="C:\Users\user\AppData\Local\Temp\surefire13498746631263768404\surefirebooter-20260112200256831_3.jar"/>
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25+37-LTS-3491"/>
@@ -49,12 +76,20 @@
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
     <property name="java.io.tmpdir" value="C:\Users\user\AppData\Local\Temp\"/>
     <property name="java.version" value="25"/>
+<<<<<<< HEAD
     <property name="user.dir" value="C:\Users\user\Prog2\statewallet"/>
+=======
+    <property name="user.dir" value="D:\programs\Prog2\statewallet"/>
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="sun.os.patch.level" value=""/>
     <property name="native.encoding" value="Cp1253"/>
+<<<<<<< HEAD
     <property name="java.library.path" value="C:\Program Files\Java\jdk-25\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;JAVA_HOME%\bin;C:\Program Files\Git\cmd;C:\Users\user\Downloads\apache-maven-3.9.11\bin;C:\Users\user\AppData\Local\Microsoft\WindowsApps;C:\Users\user\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\user\AppData\Local\Python\bin;c:\Users\user\.vscode\extensions\vscjava.vscode-java-debug-0.58.5\bundled\scripts\noConfigScripts;."/>
+=======
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-25\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Razer Chroma SDK\bin;C:\Program Files\Razer Chroma SDK\bin;C:\Program Files (x86)\Razer\ChromaBroadcast\bin;C:\Program Files\Razer\ChromaBroadcast\bin;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;D:\vpn\OpenVPN\bin;C:\Program Files\PuTTY\;C:\Program Files\Java\jdk-25\bin;C:\Program Files\Git\cmd;C:\Users\user\AppData\Local\Microsoft\WindowsApps;D:\Microsoft VS Code\bin;C:\Program Files\Apache\apache-maven-3.9.11\bin;C:\Users\user\AppData\Local\Python\bin;c:\Users\user\.vscode\extensions\ms-python.debugpy-2025.18.0-win32-x64\bundled\scripts\noConfigScripts;c:\Users\user\.vscode\extensions\vscjava.vscode-java-debug-0.58.5\bundled\scripts\noConfigScripts;c:\Users\user\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand;."/>
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
     <property name="java.vm.info" value="mixed mode, sharing"/>
     <property name="stderr.encoding" value="Cp1253"/>
     <property name="java.vendor" value="Oracle Corporation"/>
@@ -63,8 +98,13 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
+<<<<<<< HEAD
   <testcase name="testPrivateConstructor" classname="mainapp.StateWalletUiTest" time="0.002"/>
   <testcase name="testMainMethodWithExceptions" classname="mainapp.StateWalletUiTest" time="0.037">
+=======
+  <testcase name="testPrivateConstructor" classname="mainapp.StateWalletUiTest" time="0.003"/>
+  <testcase name="testMainMethodWithExceptions" classname="mainapp.StateWalletUiTest" time="0.034">
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
     <error message="Could not modify all classes [class javax.swing.UIManager]" type="org.mockito.exceptions.base.MockitoException"><![CDATA[org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.UIManager]
 	at mainapp.StateWalletUiTest.testMainMethodWithExceptions(StateWalletUiTest.java:50)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
@@ -102,7 +142,11 @@ Caused by: java.lang.IllegalArgumentException: Java 25 (69) is not supported by 
 	... 12 more
 ]]></error>
   </testcase>
+<<<<<<< HEAD
   <testcase name="testMainMethodWithUnsupportedLF" classname="mainapp.StateWalletUiTest" time="0.029">
+=======
+  <testcase name="testMainMethodWithUnsupportedLF" classname="mainapp.StateWalletUiTest" time="0.035">
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
     <error message="Could not modify all classes [class javax.swing.UIManager]" type="org.mockito.exceptions.base.MockitoException"><![CDATA[org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.UIManager]
 	at mainapp.StateWalletUiTest.testMainMethodWithUnsupportedLF(StateWalletUiTest.java:65)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
@@ -140,5 +184,9 @@ Caused by: java.lang.IllegalArgumentException: Java 25 (69) is not supported by 
 	... 12 more
 ]]></error>
   </testcase>
+<<<<<<< HEAD
   <testcase name="testMainMethodSuccess" classname="mainapp.StateWalletUiTest" time="0.02"/>
+=======
+  <testcase name="testMainMethodSuccess" classname="mainapp.StateWalletUiTest" time="0.026"/>
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 </testsuite>

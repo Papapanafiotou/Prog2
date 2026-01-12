@@ -1,8 +1,13 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.PercentageUITest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 4, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.748 s <<< FAILURE! -- in mainapp.PercentageUITest
 mainapp.PercentageUITest.testZeroTotalError -- Time elapsed: 0.158 s <<< FAILURE!
+=======
+Tests run: 4, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 2.619 s <<< FAILURE! -- in mainapp.PercentageUITest
+mainapp.PercentageUITest.testZeroTotalError -- Time elapsed: 0.983 s <<< FAILURE!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -15,7 +20,11 @@ org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
+<<<<<<< HEAD
 mainapp.PercentageUITest.testSuccessfulCalculationFlow -- Time elapsed: 0.118 s <<< FAILURE!
+=======
+mainapp.PercentageUITest.testSuccessfulCalculationFlow -- Time elapsed: 0.465 s <<< FAILURE!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)

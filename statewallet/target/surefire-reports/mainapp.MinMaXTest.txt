@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.MinMaXTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.232 s -- in mainapp.MinMaXTest
+=======
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.467 s -- in mainapp.MinMaXTest
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394

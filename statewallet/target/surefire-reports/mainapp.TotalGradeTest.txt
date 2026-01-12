@@ -1,8 +1,13 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.TotalGradeTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.009 s <<< FAILURE! -- in mainapp.TotalGradeTest
 mainapp.TotalGradeTest.testGetTotalGradeAllYears -- Time elapsed: 0.004 s <<< FAILURE!
+=======
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.016 s <<< FAILURE! -- in mainapp.TotalGradeTest
+mainapp.TotalGradeTest.testGetTotalGradeAllYears -- Time elapsed: 0.005 s <<< FAILURE!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.util.NoSuchElementException: No line found
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
 	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
@@ -22,7 +27,11 @@ Caused by: java.util.NoSuchElementException: No line found
 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
 	... 6 more
 
+<<<<<<< HEAD
 mainapp.TotalGradeTest.testGetTotalGradeSingleYearWithRetry -- Time elapsed: 0.003 s <<< FAILURE!
+=======
+mainapp.TotalGradeTest.testGetTotalGradeSingleYearWithRetry -- Time elapsed: 0.002 s <<< FAILURE!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.util.NoSuchElementException
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
 	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)

@@ -1,8 +1,13 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.LogUiTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 4, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 1.049 s <<< FAILURE! -- in mainapp.LogUiTest
 mainapp.LogUiTest.testForgotPasswordFlow -- Time elapsed: 0.944 s <<< ERROR!
+=======
+Tests run: 4, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 1.466 s <<< FAILURE! -- in mainapp.LogUiTest
+mainapp.LogUiTest.testForgotPasswordFlow -- Time elapsed: 1.369 s <<< ERROR!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.JOptionPane]
 	at mainapp.LogUiTest.testForgotPasswordFlow(LogUiTest.java:70)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
@@ -76,7 +81,11 @@ Caused by: java.lang.IllegalArgumentException: Java 25 (69) is not supported by 
 	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
 	... 12 more
 
+<<<<<<< HEAD
 mainapp.LogUiTest.testLoginFlowFailure -- Time elapsed: 0.044 s <<< ERROR!
+=======
+mainapp.LogUiTest.testLoginFlowFailure -- Time elapsed: 0.043 s <<< ERROR!
+>>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
 org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.JOptionPane]
 	at mainapp.LogUiTest.testLoginFlowFailure(LogUiTest.java:57)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
