@@ -469,6 +469,10 @@ public final class BudgetMenu {
     private void handleAiSpecific() {
         System.out.println("\n--- AI Σύμβουλος (Specific) ---");
         System.out.println("Επιλέξτε πίνακα (1-4):");
+        System.out.println("1. Έσοδα");
+        System.out.println("2. Έξοδα");
+        System.out.println("3. Κράτος");
+        System.out.println("4. Υπουργεία");
         int tableChoice = scanner.nextInt();
         scanner.nextLine();
 
