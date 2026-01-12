@@ -1,0 +1,46 @@
+-------------------------------------------------------------------------------
+Test set: mainapp.TotalGradeTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.009 s <<< FAILURE! -- in mainapp.TotalGradeTest
+mainapp.TotalGradeTest.testGetTotalGradeAllYears -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.util.NoSuchElementException: No line found
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3199)
+	at mainapp.TotalGradeTest.testGetTotalGradeAllYears(TotalGradeTest.java:80)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.util.NoSuchElementException: No line found
+	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
+	at mainapp.Weights.getWeight(Weights.java:86)
+	at mainapp.Weights.addWeights(Weights.java:274)
+	at mainapp.TotalGrade.getTotalGrade(TotalGrade.java:153)
+	at mainapp.TotalGradeTest.lambda$testGetTotalGradeAllYears$0(TotalGradeTest.java:80)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+	... 6 more
+
+mainapp.TotalGradeTest.testGetTotalGradeSingleYearWithRetry -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.util.NoSuchElementException
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3199)
+	at mainapp.TotalGradeTest.testGetTotalGradeSingleYearWithRetry(TotalGradeTest.java:59)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.util.NoSuchElementException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:975)
+	at java.base/java.util.Scanner.next(Scanner.java:1632)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2297)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2251)
+	at mainapp.DataforGrade.chooseYear(DataforGrade.java:70)
+	at mainapp.TotalGrade.getTotalGrade(TotalGrade.java:63)
+	at mainapp.TotalGradeTest.lambda$testGetTotalGradeSingleYearWithRetry$0(TotalGradeTest.java:59)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+	... 6 more
+

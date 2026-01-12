@@ -1,0 +1,23 @@
+-------------------------------------------------------------------------------
+Test set: mainapp.WeightsTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.014 s <<< FAILURE! -- in mainapp.WeightsTest
+mainapp.WeightsTest.testGetWeightValidAndInvalid -- Time elapsed: 0.003 s <<< ERROR!
+java.util.NoSuchElementException: No line found
+	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
+	at mainapp.Weights.getWeight(Weights.java:86)
+	at mainapp.WeightsTest.testGetWeightValidAndInvalid(WeightsTest.java:36)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.WeightsTest.testAddWeightsWithRetries -- Time elapsed: 0.002 s <<< ERROR!
+java.util.NoSuchElementException: No line found
+	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
+	at mainapp.Weights.getWeight(Weights.java:86)
+	at mainapp.Weights.addWeights(Weights.java:274)
+	at mainapp.WeightsTest.testAddWeightsWithRetries(WeightsTest.java:70)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+

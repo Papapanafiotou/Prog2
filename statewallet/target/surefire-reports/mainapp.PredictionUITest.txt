@@ -1,0 +1,52 @@
+-------------------------------------------------------------------------------
+Test set: mainapp.PredictionUITest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.011 s <<< FAILURE! -- in mainapp.PredictionUITest
+mainapp.PredictionUITest.testInsufficientData -- Time elapsed: 0.003 s <<< ERROR!
+org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table esoda has 4 columns but 2 values were supplied)
+	at org.sqlite.core.DB.newSQLException(DB.java:1179)
+	at org.sqlite.core.DB.newSQLException(DB.java:1190)
+	at org.sqlite.core.DB.throwex(DB.java:1150)
+	at org.sqlite.core.NativeDB.prepare_utf8(Native Method)
+	at org.sqlite.core.NativeDB.prepare(NativeDB.java:132)
+	at org.sqlite.core.DB.prepare(DB.java:264)
+	at org.sqlite.jdbc3.JDBC3Statement.lambda$execute$0(JDBC3Statement.java:54)
+	at org.sqlite.jdbc3.JDBC3Statement.withConnectionTimeout(JDBC3Statement.java:454)
+	at org.sqlite.jdbc3.JDBC3Statement.execute(JDBC3Statement.java:43)
+	at mainapp.PredictionUITest.setUp(PredictionUITest.java:39)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.PredictionUITest.testAnalysisFlow -- Time elapsed: 0.002 s <<< ERROR!
+org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table esoda has 4 columns but 2 values were supplied)
+	at org.sqlite.core.DB.newSQLException(DB.java:1179)
+	at org.sqlite.core.DB.newSQLException(DB.java:1190)
+	at org.sqlite.core.DB.throwex(DB.java:1150)
+	at org.sqlite.core.NativeDB.prepare_utf8(Native Method)
+	at org.sqlite.core.NativeDB.prepare(NativeDB.java:132)
+	at org.sqlite.core.DB.prepare(DB.java:264)
+	at org.sqlite.jdbc3.JDBC3Statement.lambda$execute$0(JDBC3Statement.java:54)
+	at org.sqlite.jdbc3.JDBC3Statement.withConnectionTimeout(JDBC3Statement.java:454)
+	at org.sqlite.jdbc3.JDBC3Statement.execute(JDBC3Statement.java:43)
+	at mainapp.PredictionUITest.setUp(PredictionUITest.java:39)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.PredictionUITest.testConstructorAndInit -- Time elapsed: 0.003 s <<< ERROR!
+org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table esoda has 4 columns but 2 values were supplied)
+	at org.sqlite.core.DB.newSQLException(DB.java:1179)
+	at org.sqlite.core.DB.newSQLException(DB.java:1190)
+	at org.sqlite.core.DB.throwex(DB.java:1150)
+	at org.sqlite.core.NativeDB.prepare_utf8(Native Method)
+	at org.sqlite.core.NativeDB.prepare(NativeDB.java:132)
+	at org.sqlite.core.DB.prepare(DB.java:264)
+	at org.sqlite.jdbc3.JDBC3Statement.lambda$execute$0(JDBC3Statement.java:54)
+	at org.sqlite.jdbc3.JDBC3Statement.withConnectionTimeout(JDBC3Statement.java:454)
+	at org.sqlite.jdbc3.JDBC3Statement.execute(JDBC3Statement.java:43)
+	at mainapp.PredictionUITest.setUp(PredictionUITest.java:39)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+

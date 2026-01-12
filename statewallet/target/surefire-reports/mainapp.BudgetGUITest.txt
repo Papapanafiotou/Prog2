@@ -1,0 +1,40 @@
+-------------------------------------------------------------------------------
+Test set: mainapp.BudgetGUITest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 0.023 s <<< FAILURE! -- in mainapp.BudgetGUITest
+mainapp.BudgetGUITest.testButtonVisibility -- Time elapsed: 0.010 s <<< ERROR!
+java.sql.SQLException: No suitable driver found for jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)
+	at mainapp.BudgetGUITest.setUp(BudgetGUITest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.BudgetGUITest.testConstructorInitialization -- Time elapsed: 0.002 s <<< ERROR!
+java.sql.SQLException: No suitable driver found for jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)
+	at mainapp.BudgetGUITest.setUp(BudgetGUITest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.BudgetGUITest.testUpdateBudgetUIPath -- Time elapsed: 0.002 s <<< ERROR!
+java.sql.SQLException: No suitable driver found for jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)
+	at mainapp.BudgetGUITest.setUp(BudgetGUITest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.BudgetGUITest.testTableInfoInternalClass -- Time elapsed: 0.002 s <<< ERROR!
+java.sql.SQLException: No suitable driver found for jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:222)
+	at mainapp.BudgetGUITest.setUp(BudgetGUITest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+

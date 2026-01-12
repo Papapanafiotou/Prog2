@@ -1,0 +1,47 @@
+-------------------------------------------------------------------------------
+Test set: mainapp.LogTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 0.066 s <<< FAILURE! -- in mainapp.LogTest
+mainapp.LogTest.testChangePasswordFlow -- Time elapsed: 0.009 s <<< ERROR!
+java.util.InputMismatchException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:977)
+	at java.base/java.util.Scanner.next(Scanner.java:1632)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2297)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2251)
+	at mainapp.Log.logMenu(Log.java:50)
+	at mainapp.LogTest.testChangePasswordFlow(LogTest.java:58)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.LogTest.testForgotPasswordFlow -- Time elapsed: 0.005 s <<< ERROR!
+java.util.NoSuchElementException: No line found
+	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
+	at mainapp.Accounts.forgotPass(Accounts.java:193)
+	at mainapp.Log.logMenu(Log.java:64)
+	at mainapp.LogTest.testForgotPasswordFlow(LogTest.java:66)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.LogTest.testLoginSuccess -- Time elapsed: 0.007 s <<< ERROR!
+java.util.NoSuchElementException: No line found
+	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
+	at mainapp.Log.handleLogin(Log.java:111)
+	at mainapp.Log.logMenu(Log.java:55)
+	at mainapp.LogTest.testLoginSuccess(LogTest.java:74)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+mainapp.LogTest.testLoginFailureAndRecovery -- Time elapsed: 0.008 s <<< ERROR!
+java.util.NoSuchElementException: No line found
+	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
+	at mainapp.Accounts.forgotPass(Accounts.java:193)
+	at mainapp.Log.handleLogin(Log.java:123)
+	at mainapp.Log.logMenu(Log.java:55)
+	at mainapp.LogTest.testLoginFailureAndRecovery(LogTest.java:88)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
