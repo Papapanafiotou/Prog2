@@ -51,7 +51,7 @@ public final class EconElemGrades {
     /** Όριο Πλεονάσματος για βαθμό 8. */
     private static final double SURP_LIMIT_8 = 0.016;
     /** Όριο Πλεονάσματος για βαθμό 7. */
-    private static final double SURP_LIMIT_7 = 0.09;
+    private static final double SURP_LIMIT_7 = 0.009;
     /** Όριο Πλεονάσματος για βαθμό 6. */
     private static final double SURP_LIMIT_6 = 0.0;
 
