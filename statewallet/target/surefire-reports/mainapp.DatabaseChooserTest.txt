@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.DatabaseChooserTest
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 8.350 s <<< FAILURE! -- in mainapp.DatabaseChooserTest
-mainapp.DatabaseChooserTest.testGetUrlWithInvalidThenValidYear -- Time elapsed: 0.006 s <<< ERROR!
+Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.892 s <<< FAILURE! -- in mainapp.DatabaseChooserTest
+mainapp.DatabaseChooserTest.testGetUrlWithInvalidThenValidYear -- Time elapsed: 0.007 s <<< ERROR!
 java.util.NoSuchElementException
 	at java.base/java.util.Scanner.throwFor(Scanner.java:975)
 	at java.base/java.util.Scanner.next(Scanner.java:1632)
@@ -14,7 +14,7 @@ java.util.NoSuchElementException
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
-mainapp.DatabaseChooserTest.testGetUrlWithValidYearAndNewDatabase -- Time elapsed: 0.003 s <<< ERROR!
+mainapp.DatabaseChooserTest.testGetUrlWithValidYearAndNewDatabase -- Time elapsed: 0.004 s <<< ERROR!
 java.util.NoSuchElementException
 	at java.base/java.util.Scanner.throwFor(Scanner.java:975)
 	at java.base/java.util.Scanner.next(Scanner.java:1632)
