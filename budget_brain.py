@@ -35,7 +35,7 @@ def get_available_models():
     Επιστρέφει μια λίστα ταξινομημένη ώστε να προτιμά τα νεότερα.
     """
     try:
-        print("🔄 Ανάκτηση λίστας μοντέλων από το Google Cloud...", file=sys.stderr)
+        #print("🔄 Ανάκτηση λίστας μοντέλων από το Google Cloud...", file=sys.stderr)
         
         # Ζητάμε όλα τα μοντέλα
         all_models = list(client.models.list())
