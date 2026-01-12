@@ -27,6 +27,7 @@ echo [INFO] Downloading essential libraries...
 python -m pip install --upgrade pip
 python -m pip install PyMuPDF
 python -m pip install google-genai
+python -m pip install python-dotenv
 
 echo.
 echo [OK] The Python script is ready to run!
