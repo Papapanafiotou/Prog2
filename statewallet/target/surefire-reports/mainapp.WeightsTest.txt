@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.WeightsTest
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.014 s <<< FAILURE! -- in mainapp.WeightsTest
+Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.015 s <<< FAILURE! -- in mainapp.WeightsTest
 mainapp.WeightsTest.testGetWeightFullCoverage -- Time elapsed: 0.003 s <<< ERROR!
 java.util.NoSuchElementException: No line found
 	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)

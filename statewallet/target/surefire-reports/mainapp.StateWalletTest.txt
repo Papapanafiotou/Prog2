@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.StateWalletTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.013 s <<< FAILURE! -- in mainapp.StateWalletTest
-mainapp.StateWalletTest.testMainFullFlow -- Time elapsed: 0.006 s <<< FAILURE!
+Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.017 s <<< FAILURE! -- in mainapp.StateWalletTest
+mainapp.StateWalletTest.testMainFullFlow -- Time elapsed: 0.007 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.util.NoSuchElementException: No line found
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
 	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)

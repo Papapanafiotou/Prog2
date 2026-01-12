@@ -2,7 +2,7 @@
 Test set: mainapp.PredictionUITest
 -------------------------------------------------------------------------------
 Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.160 s <<< FAILURE! -- in mainapp.PredictionUITest
-mainapp.PredictionUITest.testAnalysisFlow -- Time elapsed: 0.158 s <<< FAILURE!
+mainapp.PredictionUITest.testAnalysisFlow -- Time elapsed: 0.160 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)

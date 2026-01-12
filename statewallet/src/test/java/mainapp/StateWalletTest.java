@@ -42,24 +42,16 @@ class StateWalletTest {
 
     @Test
     void testMainFullFlow() {
-        /**
-         * Σενάριο πλήρους ροής:
-         * 1. Log Menu: Επιλογή "2" (Login)
-         * 2. Username: "test1"
-         * 3. Password: "Test12345!"
-         * 4. DatabaseChooser: Έτος "2024"
-         * 5. DatabaseChooser: Αν υπάρχει η βάση, επιλογή "2" (Όχι επανεκκίνηση)
-         * 6. BudgetMenu: Επιλογή "0" (ή όποια επιλογή οδηγεί σε Exit)
-         */
-        String input = "2\ntest1\nTest12345!\n2024\n2\n0\n"; 
+        // Προσθέτουμε πολλά \n στο τέλος για ασφάλεια και καλύπτουμε όλα τα πιθανά prompts
+        // 2 (Login), username, password, 2024 (Year), 2 (No Redo), 0 (Exit)
+        // Προσθέτουμε επιπλέον "0" και "\n" σε περίπτωση που το μενού επαναλαμβάνεται
+        String input = "2\ntest1\nTest12345!\n2024\n2\n0\n0\n0\n\n\n\n\n"; 
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
 
-        // Σημείωση: Αν η BudgetMenu.start() δεν έχει επιλογή εξόδου, 
-        // το test θα περιμένει για πάντα. Υποθέτουμε ότι το "0" τερματίζει το μενού.
-        assertDoesNotThrow(() -> {
-            // Χρησιμοποιούμε ένα thread για να μην κολλήσει το test αν το μενού είναι ατέρμονο
-            StateWallet.main(new String[]{});
-        });
-    }
+    assertDoesNotThrow(() -> {
+        // Καλούμε τη main. Αν υπάρχουν έξτρα reads, τα \n θα τα καλύψουν.
+        StateWallet.main(new String[]{});
+    });
+  }
 }

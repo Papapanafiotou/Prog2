@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.LogUiTest
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 1.432 s <<< FAILURE! -- in mainapp.LogUiTest
-mainapp.LogUiTest.testForgotPasswordFlow -- Time elapsed: 1.254 s <<< ERROR!
+Tests run: 4, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 1.491 s <<< FAILURE! -- in mainapp.LogUiTest
+mainapp.LogUiTest.testForgotPasswordFlow -- Time elapsed: 1.327 s <<< ERROR!
 org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.JOptionPane]
 	at mainapp.LogUiTest.testForgotPasswordFlow(LogUiTest.java:70)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
@@ -39,7 +39,7 @@ Caused by: java.lang.IllegalArgumentException: Java 25 (69) is not supported by 
 	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
 	... 12 more
 
-mainapp.LogUiTest.testCreateAccountFlow -- Time elapsed: 0.081 s <<< ERROR!
+mainapp.LogUiTest.testCreateAccountFlow -- Time elapsed: 0.060 s <<< ERROR!
 org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.JOptionPane]
 	at mainapp.LogUiTest.testCreateAccountFlow(LogUiTest.java:38)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
@@ -76,7 +76,7 @@ Caused by: java.lang.IllegalArgumentException: Java 25 (69) is not supported by 
 	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
 	... 12 more
 
-mainapp.LogUiTest.testLoginFlowFailure -- Time elapsed: 0.082 s <<< ERROR!
+mainapp.LogUiTest.testLoginFlowFailure -- Time elapsed: 0.087 s <<< ERROR!
 org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.JOptionPane]
 	at mainapp.LogUiTest.testLoginFlowFailure(LogUiTest.java:57)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
