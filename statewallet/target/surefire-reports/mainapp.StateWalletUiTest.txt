@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.StateWalletUiTest
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.100 s <<< FAILURE! -- in mainapp.StateWalletUiTest
-mainapp.StateWalletUiTest.testMainMethodWithExceptions -- Time elapsed: 0.034 s <<< ERROR!
+Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.169 s <<< FAILURE! -- in mainapp.StateWalletUiTest
+mainapp.StateWalletUiTest.testMainMethodWithExceptions -- Time elapsed: 0.059 s <<< ERROR!
 org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.UIManager]
 	at mainapp.StateWalletUiTest.testMainMethodWithExceptions(StateWalletUiTest.java:50)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
@@ -39,7 +39,7 @@ Caused by: java.lang.IllegalArgumentException: Java 25 (69) is not supported by 
 	at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
 	... 12 more
 
-mainapp.StateWalletUiTest.testMainMethodWithUnsupportedLF -- Time elapsed: 0.035 s <<< ERROR!
+mainapp.StateWalletUiTest.testMainMethodWithUnsupportedLF -- Time elapsed: 0.040 s <<< ERROR!
 org.mockito.exceptions.base.MockitoException: Could not modify all classes [class javax.swing.UIManager]
 	at mainapp.StateWalletUiTest.testMainMethodWithUnsupportedLF(StateWalletUiTest.java:65)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)

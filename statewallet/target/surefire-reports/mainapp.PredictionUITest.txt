@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.PredictionUITest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.011 s <<< FAILURE! -- in mainapp.PredictionUITest
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.008 s <<< FAILURE! -- in mainapp.PredictionUITest
 mainapp.PredictionUITest.testInsufficientData -- Time elapsed: 0.003 s <<< ERROR!
 org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table esoda has 4 columns but 2 values were supplied)
 	at org.sqlite.core.DB.newSQLException(DB.java:1179)
@@ -18,7 +18,7 @@ org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table 
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
-mainapp.PredictionUITest.testAnalysisFlow -- Time elapsed: 0.003 s <<< ERROR!
+mainapp.PredictionUITest.testAnalysisFlow -- Time elapsed: 0.002 s <<< ERROR!
 org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table esoda has 4 columns but 2 values were supplied)
 	at org.sqlite.core.DB.newSQLException(DB.java:1179)
 	at org.sqlite.core.DB.newSQLException(DB.java:1190)
@@ -34,7 +34,7 @@ org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table 
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
-mainapp.PredictionUITest.testConstructorAndInit -- Time elapsed: 0.001 s <<< ERROR!
+mainapp.PredictionUITest.testConstructorAndInit -- Time elapsed: 0.002 s <<< ERROR!
 org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (table esoda has 4 columns but 2 values were supplied)
 	at org.sqlite.core.DB.newSQLException(DB.java:1179)
 	at org.sqlite.core.DB.newSQLException(DB.java:1190)
