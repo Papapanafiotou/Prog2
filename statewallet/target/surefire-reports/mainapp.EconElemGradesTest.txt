@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: mainapp.EconElemGradesTest
--------------------------------------------------------------------------------
-<<<<<<< HEAD
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in mainapp.EconElemGradesTest
-=======
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in mainapp.EconElemGradesTest
->>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394

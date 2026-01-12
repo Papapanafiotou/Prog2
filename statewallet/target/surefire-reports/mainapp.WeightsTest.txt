@@ -1,31 +1,22 @@
 -------------------------------------------------------------------------------
 Test set: mainapp.WeightsTest
 -------------------------------------------------------------------------------
-<<<<<<< HEAD
-Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.014 s <<< FAILURE! -- in mainapp.WeightsTest
-mainapp.WeightsTest.testGetWeightValidAndInvalid -- Time elapsed: 0.003 s <<< ERROR!
-=======
-Tests run: 4, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.033 s <<< FAILURE! -- in mainapp.WeightsTest
-mainapp.WeightsTest.testGetWeightValidAndInvalid -- Time elapsed: 0.005 s <<< ERROR!
->>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.066 s <<< FAILURE! -- in mainapp.WeightsTest
+mainapp.WeightsTest.testGetWeightValidAndInvalid -- Time elapsed: 0.033 s <<< ERROR!
 java.util.NoSuchElementException: No line found
 	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
 	at mainapp.Weights.getWeight(Weights.java:86)
-	at mainapp.WeightsTest.testGetWeightValidAndInvalid(WeightsTest.java:36)
+	at mainapp.WeightsTest.testGetWeightValidAndInvalid(WeightsTest.java:27)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 
-<<<<<<< HEAD
-mainapp.WeightsTest.testAddWeightsWithRetries -- Time elapsed: 0.002 s <<< ERROR!
-=======
-mainapp.WeightsTest.testAddWeightsWithRetries -- Time elapsed: 0.011 s <<< ERROR!
->>>>>>> 1e4e46e8fc95e153684eb6a24c6c1bd5a8c4e394
+mainapp.WeightsTest.testAddWeightsWithRetries -- Time elapsed: 0.008 s <<< ERROR!
 java.util.NoSuchElementException: No line found
 	at java.base/java.util.Scanner.nextLine(Scanner.java:1690)
 	at mainapp.Weights.getWeight(Weights.java:86)
 	at mainapp.Weights.addWeights(Weights.java:274)
-	at mainapp.WeightsTest.testAddWeightsWithRetries(WeightsTest.java:70)
+	at mainapp.WeightsTest.testAddWeightsWithRetries(WeightsTest.java:51)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
