@@ -466,6 +466,20 @@ public final class BudgetMenu {
         e.showPieChart(namesArray, percentages);
     }
 
+    /**
+     * Διαχειρίζεται την αλληλεπίδραση για τη λήψη εξειδικευμένης συμβουλής AI
+     * για μια συγκεκριμένη εγγραφή (Specific Advice).
+     * <p>
+     * Η μέθοδος καθοδηγεί τον χρήστη στα εξής βήματα:
+     * <ol>
+     * <li>Επιλογή πίνακα (Έσοδα, Έξοδα, Κράτος, Υπουργεία).</li>
+     * <li>Εισαγωγή του μοναδικού κωδικού (ID) της εγγραφής.</li>
+     * <li>Ανάκτηση του ονόματος και του τρέχοντος ποσού από τον {@code manager}.</li>
+     * <li>Καθορισμός ενός στόχου (goal) από τον χρήστη.</li>
+     * <li>Κλήση της κλάσης {@code AiBridge} για τη λήψη της συμβουλής.</li>
+     * </ol>
+     */
+
     private void handleAiSpecific() {
         System.out.println("\n--- AI Σύμβουλος (Specific) ---");
         System.out.println("Επιλέξτε πίνακα (1-4):");
@@ -525,6 +539,14 @@ public final class BudgetMenu {
         System.out.println(ai.getSpecificAdvice(
                 this.url, name, amount, goal));
     }
+
+    /**
+     * Διαχειρίζεται την αλληλεπίδραση για τον καθολικό στρατηγικό σχεδιασμό (Global Strategy).
+     * <p>
+     * Η μέθοδος ζητά από τον χρήστη έναν γενικό στόχο και ενεργοποιεί την ανάλυση
+     * ολόκληρης της βάσης δεδομένων (μέσω του URL) χρησιμοποιώντας την {@code AiBridge},
+     * επιστρέφοντας μια συνολική στρατηγική πρόταση.
+     */
 
     private void handleAiGlobal() {
         System.out.println("\n--- AI Στρατηγικός Σχεδιασμός ---");
