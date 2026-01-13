@@ -19,9 +19,15 @@ public final class Pdftocsv {
     /**
      * Εκτελεί τη διαδικασία μετατροπής για το επιλεγμένο έτος.
      *
+     * Επειδή χρησιμοποιούμε python script, δεν μπορεί να πάρει ορίσμτα.
+     * Για τον λόγο αυτό, μετονομάζουμε το αντίστοιχο PDF σε budgettouse.
+     * Έτσι η python πάντα επεξεργάζεται το PDF με το συγκεκριμένο όνομα.
+     *
      * @param year Το έτος προϋπολογισμού.
      */
     public static void run(final int year) {
+        /*  Εξέταση των Paths ωστε το πρόγραμμα να τρέχει
+            είτε απο το root, είτε απο άλλο module. */
         Path currentWorkingDir = Paths.get(".").toAbsolutePath().normalize();
         Path baseDir;
         if (Files.exists(currentWorkingDir.resolve("statewallet"))) {
@@ -29,12 +35,12 @@ public final class Pdftocsv {
         } else {
             baseDir = currentWorkingDir;
         }
-
+        /* Δημιουργία τελικής διαδρομής για τους φακέλους */
         Path sourceDir = baseDir.resolve(Paths.get("src", "main", "sources"));
         Path scriptsDir = baseDir.resolve(Paths.get("src", "scripts"));
         Path path = sourceDir.resolve("budget" + year + ".pdf");
         Path newpath = sourceDir.resolve("budgettouse.pdf");
-
+        /* Μετονομασία του αντίστοιχου PDF ωστε να περάσει στην python */
         try {
             Files.move(path, newpath, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Το αρχείο μετονομάστηκε επιτυχώς σε: "
@@ -43,7 +49,7 @@ public final class Pdftocsv {
             System.out.println("Σφάλμα κατά τη μετονομασία: "
                     + e.getMessage());
         }
-
+        /* Εκτέλεση του Python script. */
         try {
             Path scriptPath = scriptsDir.resolve("pdftocsv.py")
                     .toAbsolutePath();
@@ -64,7 +70,7 @@ public final class Pdftocsv {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        /* Επιστροφή PDF στην αρχική του ονομασία. */
         try {
             Files.move(newpath, path, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Το αρχείο μετονομάστηκε ξανά επιτυχώς σε: "

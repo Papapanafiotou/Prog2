@@ -32,15 +32,18 @@ public final class DatabaseChooser {
 
         DatabaseFinder finder = new DatabaseFinder();
         boolean databaseExists = finder.findYearbase(year);
+        /*Αν δεν υπάρχει η βάση, δημιουργία της. */
         if (!databaseExists) {
             Pdftocsv.run(year);
             PinakesImporter importer = new PinakesImporter(databaseUrl);
             importer.importAll();
         } else {
+            /*Αν υπάρχει βάση, ερώτηση αν θελει να δημιουργηθεί από την αρχή */
             System.out.println("Έχει γίνει επεξεργασία. "
                     + "Επανεκκίνηση; (1 για ΝΑΙ - 2 για ΟΧΙ)");
             int answer = scanner.nextInt();
             scanner.nextLine();
+            /*Για δημιουργία απο την αρχή, επανάληψη διαδικασίας δημιουργίας */
             if (answer == 1) {
                 System.out.println("Έγινε διαγραφή των παλιών στοιχείων");
                 Pdftocsv.run(year);

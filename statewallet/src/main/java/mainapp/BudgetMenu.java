@@ -535,7 +535,15 @@ public final class BudgetMenu {
         AiBridge ai = new AiBridge();
         System.out.println(ai.getGlobalStrategy(this.url, goal));
     }
-
+    /**
+    * Μέθοδος διαχείρισης της διαδικασίας προβλέψεων.
+    *
+    * Κλήση της collectHistory για την συλλογή των ιστορικών δεδομένων
+    * του στοιχείου του προϋπολογισμού που επιλέχθηκε.
+    *
+    * Μετά, κλήση της performPrediction για την εκτέλεση
+    * απλής γραμμικής παλινδρόμισης για την πρόβλεψη.
+    */
     private void predictValue() {
         System.out.println("\n--- Πρόβλεψη για το έτος 2027 ---");
         System.out.println("Επιλέξτε πίνακα (1-5):");
@@ -587,7 +595,7 @@ public final class BudgetMenu {
             System.out.println("Λάθος είσοδος ID.");
             return;
         }
-
+        /*Κλήση του collectHistory, ανάλογα με τα στοιχεία που δόθηκαν. */
         Map<Integer, Double> history = collectHistory(tableName, idColName, id);
 
         if (history.size() < 2) {
@@ -597,7 +605,32 @@ public final class BudgetMenu {
 
         performPrediction(history);
     }
-
+    /**
+     * Συλλέγει ιστορικά οικονομικά δεδομένα για μια συγκεκριμένη εγγραφή
+     * σε ένα εύρος ετών (από {@code START_YEAR} έως {@code END_YEAR}).
+     *
+     * Η μέθοδος λειτουργεί ως εξής για κάθε έτος:
+     *
+     * Ελέγχει αν υπάρχει ήδη η βάση δεδομένων για το συγκεκριμένο έτος.
+     * Αν δεν υπάρχει, την δημιουργεί δυναμικά μετατρέποντας
+     * το αντίστοιχο PDF του προϋπολογισμού σε δεδομένα.
+     * Ανακτά το ποσό για το ζητούμενο ID χρησιμοποιώντας
+     * τον {@link BudgetManager}.
+     * Αν η βάση δημιουργήθηκε προσωρινά μόνο για αυτή τη διαδικασία,
+     * την διαγράφει
+     * στο τέλος για να μην πιάνει χώρο.
+     *
+     *
+     *
+     * @param tableName   Το όνομα του πίνακα στη βάση δεδομένων στον
+     * οποίο θα γίνει η αναζήτηση.
+     * @param idColName   Το όνομα της στήλης που περιέχει το αναγνωριστικό
+     * @param id          Ο μοναδικός αριθμός (ID) της εγγραφής που αναζητούμε.
+     * @return            Ένα {@link Map} (συγκεκριμένα {@link LinkedHashMap}
+     * για διατήρηση της σειράς)
+     * που αντιστοιχεί το Έτος (Integer) στο Ποσό (Double).
+     * Επιστρέφει μόνο τα έτη για τα οποία βρέθηκαν έγκυρα δεδομένα.
+     */
     private Map<Integer, Double> collectHistory(final String tableName,
                                                 final String idColName,
                                                 final int id) {
@@ -644,7 +677,26 @@ public final class BudgetMenu {
         }
         return history;
     }
-
+    /**
+     * Εκτελεί οικονομική πρόβλεψη για το έτος {@code PREDICT_YEAR} βασισμένη
+     * στα ιστορικά δεδομένα, χρησιμοποιώντας τη μέθοδο της
+     * Γραμμικής Παλινδρόμησης.
+     *
+     *
+     * Ο αλγόριθμος υπολογίζει την εξίσωση της ευθείας (y = mx + b)
+     * που ταιριάζει
+     * καλύτερα στα δεδομένα.
+     *
+     *
+     * Στη συνέχεια, συγκρίνει την προβλεπόμενη τιμή με την τελευταία γνωστή
+     * τιμή
+     * (του έτους {@code END_YEAR}) για να καθορίσει και να εκτυπώσει την
+     * τάση (Αύξηση ή Μείωση).
+     *
+     * @param history Ένας χάρτης (Map) που περιέχει τα ιστορικά δεδομένα,
+     * όπου το κλειδί είναι το Έτος (ανεξάρτητη μεταβλητή x)
+     * και η τιμή είναι το Ποσό (εξαρτημένη μεταβλητή y).
+     */
     private void performPrediction(final Map<Integer, Double> history) {
         double n = history.size();
         double sumX = 0;
