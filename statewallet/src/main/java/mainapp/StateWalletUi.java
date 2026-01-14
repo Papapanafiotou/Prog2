@@ -33,3 +33,4 @@ public final class StateWalletUi {
         SwingUtilities.invokeLater(() -> new LogUi().setVisible(true));
     }
 }
+
