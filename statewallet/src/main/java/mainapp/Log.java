@@ -77,6 +77,7 @@ public final class Log {
         System.out.println("1 για τυχαίο κωδικό, άλλο για χειροκίνητο.");
         String pass;
         int an = scan.nextInt();
+        // Εισαγωγή τυχαίου κωδικού
         if (an == RANDOM_OPTION) {
             Random random = new Random();
             String chars = "abcdefghijklmnopqrstuvwxyz0123456789@#!$_+";
@@ -93,9 +94,11 @@ public final class Log {
             boolean valid;
             do {
                 pass = scan.nextLine();
+                // έλεγχος εγκυρότητας κωδικού
                 valid = Accounts.validatePassword(pass);
             } while (!valid);
         }
+        //καταχώρηση του λογαριασμού στην βάση
         acc.createAccount(name, pass, numID);
     }
 
@@ -103,13 +106,16 @@ public final class Log {
         scan.nextLine();
         System.out.println("Εισάγετε το username σας");
         String name = scan.nextLine();
+        //εύρεση πραγματικού κωδικού
         String realpass = acc.getPassword(name);
         int count = 0;
         boolean connect;
         do {
             System.out.println("Πληκτρολογήστε τον κωδικό πρόσβασης");
             String userPass = scan.nextLine();
+            // έλεγχος συμβατότητας του κωδικού
             connect = acc.logIn(realpass, userPass);
+            // όριο προσπαθειών σύνδεσης
             count++;
             if (connect) {
                 return true;
@@ -133,12 +139,14 @@ public final class Log {
         String realpass = acc.getPassword(name);
         System.out.println("Πληκτρολογήστε τον τρέχον κωδικό");
         String userPass = scan.nextLine();
+        // εισαγωγή νέου κωδικού αν είναι έγκυρος ο έλεγχος
         if (acc.logIn(realpass, userPass)) {
             boolean valid;
             String newP;
             System.out.println("Εισάγετε τον νέο κωδικό!");
             do {
                 newP = scan.nextLine();
+                // έλεγχος εγκυρότητας νέου κωδικού
                 valid = Accounts.validatePassword(newP);
             } while (!valid);
             acc.newPass(newP, name);
