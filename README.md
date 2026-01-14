@@ -80,221 +80,170 @@
 classDiagram
     class Accounts {
         -String DB_URL
-        -int MIN_PASS_LENGTH
-        +createTable()
-        +createAccount(name, pass, numID)
-        +getPassword(username)
-        +logIn(pass1, pass2)
-        +newPass(password, name)
-        +validatePassword(password)
-        +forgotPass(username)
-        +getId(username)
+        +createAccount()
+        +logIn()
+        +validatePassword()
     }
 
     class AiAdvisorDialog {
         -AiBridge aiBridge
-        -String dbPath
-        -JEditorPane responseArea
-        -JTabbedPane tabbedPane
-        +AiAdvisorDialog(parent, databasePath, recId, recName, recAmount)
-        -initComponents(id, name, amount)
-        -runAiTask(mode)
+        +AiAdvisorDialog()
+        -runAiTask()
     }
 
     class AiBridge {
         -String SCRIPT_NAME
-        -findScript()
-        -runPythonScript(goal, args)
-        +getSpecificAdvice(dbPath, name, amount, goal)
-        +getGlobalStrategy(dbUrl, goal)
+        +getSpecificAdvice()
+        +getGlobalStrategy()
     }
 
     class BudgetGUI {
         -BudgetManager manager
-        -String dbPath
         -JTable dataTable
-        -DefaultTableModel tableModel
-        +BudgetGUI(path)
-        -loadSelectedTable()
-        -updateAmount()
-        -loadChangesFromDb()
+        +BudgetGUI()
         -updateBudgetUI()
     }
 
     class TableInfo {
         -String displayName
-        -String tableName
-        -String idColumnName
         +toString()
     }
 
     class BudgetManager {
         -String url
-        +setUrl(dbUrl)
-        +printTable(tableName, idColumnName)
-        +updateAmount(tableName, idColName, id, newAmount)
-        +showChanges()
-        +getTotal(tablename)
-        +getBudgetCharacterism(revenue, expenses)
-        +getCurrentAmount(tableName, idColName, id)
-        +getNameById(tableName, idColName, id)
+        +printTable()
+        +updateAmount()
+        +getTotal()
+        +getBudgetCharacterism()
     }
 
     class BudgetMenu {
         -DatabaseChooser chooser
-        -String url
         -BudgetManager manager
         +start()
-        -printMenuOptions()
-        -processChoice(choice)
-        -handleCharacterism()
-        -handleAiSpecific()
-        -handleAiGlobal()
-        -predictValue()
+        -processChoice()
     }
 
     class Constrains {
-        +negativeAmount(scanner, amount)
-        +isReasonableChange(originalAmount, newAmount)
-        +deficitLimit(esoda, eksoda)
+        +negativeAmount()
+        +isReasonableChange()
     }
 
     class DatabaseChooser {
         +getUrl()
     }
 
-    class DatabaseFinder {
-        +findYearbase(year)
-    }
-
     class DataforGrade {
-        +getData(year)
-        +chooseYear()
+        +getData()
     }
 
     class EconElemGrades {
-        +getGDPGrowthGrade(percent)
-        +getPublicDebtGrade(percent)
-        +getSurplusGrade(percent)
-        +getEconomicGrade(w1, w2, w3, surplus, debt, gdp)
+        +getGDPGrowthGrade()
+        +getEconomicGrade()
     }
 
     class EconomicsChart {
-        +displayGraph(titlos, xronies, vathmoi)
-        +showPieChart(names, percentages)
+        +displayGraph()
+        +showPieChart()
     }
 
     class EnvElemGrades {
-        +getResGrade(percent)
-        +getEmissionGrade(percent)
-        +getRecycleGrade(percent)
-        +getEnvironmentalGrade(w1, w2, w3, res, emission, recycle)
+        +getResGrade()
+        +getEnvironmentalGrade()
     }
 
     class GradeChar {
-        +gdpGrowthChar(grade)
-        +surplusChar(grade)
-        +giniChar(grade)
-        +crimeRateChar(grade)
-        +edHealthChar(grade)
+        +gdpGrowthChar()
     }
 
     class Log {
         +logMenu()
-        -handleCreate(scan, acc)
-        -handleLogin(scan, acc)
-        -handleChange(scan, acc)
     }
 
     class LogUi {
         -Accounts acc
         +LogUi()
-        -createAccount()
-        -login()
-        -changePassword()
-        -forgotPassword()
     }
 
     class MinMaX {
-        -String databaseUrl
         +showMinMax()
-        +getMinMax(opType, catType)
     }
 
     class Pdftocsv {
-        +run(year)
+        +run()
     }
 
     class PercentageUI {
-        +PercentageUI(manager, dbPath)
+        +PercentageUI()
     }
 
     class PinakesImporter {
-        -String dbUrl
         +importAll()
-        -createTables(conn)
-        -importEsoda(conn, csvPath)
     }
 
     class PredictionUI {
-        -String tableName
-        -int idValue
-        +PredictionUI(dbPath, table, idCol, idVal, name)
+        +PredictionUI()
         -collectDataFromYears()
     }
 
     class Search {
-        -String url
-        +searchAmount(name)
-        +searchString(amount1)
-        +searchTable(name2)
-        +searchAmountInTable(name, tableName)
+        +searchAmount()
+        +searchTable()
     }
 
     class SocElemGrades {
-        +getGINIGrade(gini)
-        +getCrimeGrade(percent)
-        +getMentalHealthGrade(percent)
-        +getSocialGrade(weights, gini, crime, mental, edu)
+        +getSocialGrade()
     }
 
     class StateWallet {
-        +main(args)
+        +main()
     }
 
     class StateWalletLauncher {
-        -JComboBox yearSelector
         -JButton startButton
         -startProcess()
     }
 
-    class StateWalletUi {
-        +main(args)
-    }
-
-    class TotalGrade {
-        +getTotalGrade()
-    }
-
     class TotalsPanel {
         -BudgetManager manager
-        +updateTotals(tableName)
+        +updateTotals()
     }
 
     class Weights {
-        -Scanner scanner
         +getWeight()
-        +showTotalWeights(a, w1, w2, w3)
-        +getAllGrades(a)
+        +getAllGrades()
     }
 
-    %% Relationships
+    %% --- ΣΥΝΔΕΣΕΙΣ (RELATIONSHIPS) ---
+    %% Βασική ροή
+    StateWallet ..> StateWalletLauncher : launches
+    StateWalletLauncher ..> LogUi : opens
+    LogUi ..> BudgetMenu : on success
+    LogUi *-- Accounts
+
+    %% BudgetMenu Συνδέσεις (Το κέντρο ελέγχου)
+    BudgetMenu *-- BudgetManager
+    BudgetMenu *-- DatabaseChooser
+    BudgetMenu ..> Search : uses
+    BudgetMenu ..> MinMaX : uses
+    BudgetMenu ..> PredictionUI : opens
+    BudgetMenu ..> PercentageUI : opens
+    BudgetMenu ..> AiAdvisorDialog : opens
+    BudgetMenu ..> GradeChar : uses
+    BudgetMenu ..> EconomicsChart : shows
+    BudgetMenu ..> Pdftocsv : calls
+    BudgetMenu ..> PinakesImporter : calls
+
+    %% Υποσυστήματα
     AiAdvisorDialog *-- AiBridge
     BudgetGUI *-- BudgetManager
     BudgetGUI o-- TableInfo
-    BudgetMenu *-- DatabaseChooser
-    BudgetMenu *-- BudgetManager
-    Log ..> Accounts
-    LogUi *-- Accounts
-    PercentageUI ..> BudgetManager
     TotalsPanel *-- BudgetManager
+    PercentageUI ..> BudgetManager
+    Log ..> Accounts
+    
+    %% Grades Logic
+    Weights ..> EconElemGrades : uses
+    Weights ..> SocElemGrades : uses
+    Weights ..> EnvElemGrades : uses
+    Weights ..> DataforGrade : reads
