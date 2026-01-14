@@ -133,6 +133,7 @@ public final class TotalGrade {
                     + year + " με βάση τα στοιχεία είναι "
                     + String.format("%.2f", finalGrade));
 
+            //υπολογισμός συνολικών βαρών για κάθε στοιχείο        
             double[] totalWeights = w.showTotalWeights(weights, wEcon,
                     wEnv, wSoc);
             String[] names = {
@@ -147,14 +148,17 @@ public final class TotalGrade {
                 "ΠΟΣΟΣΤΟ ΑΝΘΡΩΠΩΝ ΜΕ ΠΡΟΒΛΗΜΑΤΑ ΨΥΧΙΚΗΣ ΥΓΕΙΑΣ",
                 "ΜΕΤΑΒΟΛΗ ΕΓΚΛΗΜΑΤΙΚΟΤΗΤΑΣ"
             };
+            //εμφάνιση πίτας με τα βάρη
             e.showPieChart(names, totalWeights);
 
         } else if (answer == OPTION_ALL_YEARS) {
+            // εισαγωγή βαρών για τα στοιχεία    
             double[] weights = w.addWeights();
             double t = 0;
             double wEcon;
             double wEnv;
             double wSoc;
+            //εισαγωγή βαρών για τις 3 βασικές κατηγορίες
             do {
                 System.out.println("Εισάγετε τα βάρη του τελικού βαθμού για "
                         + "τους τρεις τομείς");
@@ -174,8 +178,10 @@ public final class TotalGrade {
                 }
             } while (Math.abs(t - 1.0) > TOLERANCE);
 
+            // υπολογισμός τελικών βαρών για κάθε στοιχείο
             double[] finalWeights = w.showTotalWeights(weights, wEcon,
                     wEnv, wSoc);
+            // υπολογισμός όλων των βαθμών με βάση τα βάρη και συγκρίσεις        
             w.getAllGrades(finalWeights);
         }
     }

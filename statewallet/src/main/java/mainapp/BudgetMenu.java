@@ -404,6 +404,7 @@ public final class BudgetMenu {
      * Υπολογίζει και εμφανίζει τα ποσοστά των εγγραφών.
      */
     public void getPercentage() {
+        // επιλογή κατηγορίας
         System.out.println("Για έσοδα πατήστε 1, έξοδα 2, υπουργεία 3.");
         String tablename = null;
         do {
@@ -422,6 +423,7 @@ public final class BudgetMenu {
             }
         } while (tablename == null);
 
+        // υπολογισμός συνολικού ποσού της κατηγορίας
         double[] total = manager.getTotal(tablename);
         System.out.println("1: Μεμονωμένο ποσοστό, 2: Όλα τα ποσοστά");
         int answer2 = scanner.nextInt();
@@ -432,6 +434,7 @@ public final class BudgetMenu {
             scanner.nextLine();
             String name = scanner.nextLine();
             Search search = new Search(url);
+            // εύρεση ποσού του λογαριασμού
             double amount = search.searchAmountInTable(name, tablename);
             try {
                 percent = (amount / total[1]) * PERCENT_MULTIPLIER;
@@ -441,6 +444,7 @@ public final class BudgetMenu {
             }
 
         } else if (answer2 == 2) {
+            // υπολογισμός όλων των ποσοστών για μια κατηγορία
             processAllPercentages(tablename, total[1]);
         }
     }
