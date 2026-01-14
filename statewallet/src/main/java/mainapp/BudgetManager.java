@@ -1,4 +1,5 @@
 package mainapp;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -21,6 +22,16 @@ public final class BudgetManager {
     private static final int IDX_1 = 1;
     /** Δείκτης SQL 2. */
     private static final int IDX_2 = 2;
+    /** Τιμή επιστροφής όταν δεν βρεθεί ποσό. */
+    private static final double AMOUNT_NOT_FOUND = -1.0;
+
+    // Σταθερές Format
+    /** Format string για εκτύπωση γραμμής πίνακα. */
+    private static final String FMT_TABLE_ROW
+            = "%-5d | %-40s | %12.2f EUR | %12.2f EUR\n";
+    /** Format string για εκτύπωση αλλαγών. */
+    private static final String FMT_CHANGE_ROW
+            = "ID: %-3d | %-30s | Αρχικό: %10.2f | Νέο: %10.2f\n";
 
     /** Το URL σύνδεσης στη βάση. */
     private String url;
@@ -65,8 +76,7 @@ public final class BudgetManager {
                     "-------------------------------------------------------");
 
             while (rs.next()) {
-                System.out.printf(
-                        "%-5d | %-40s | %12.2f EUR | %12.2f EUR\n",
+                System.out.printf(FMT_TABLE_ROW,
                         rs.getInt(idColumnName),
                         limitString(rs.getString("name"), NAME_LIMIT),
                         rs.getDouble("original_amount"),
@@ -81,10 +91,10 @@ public final class BudgetManager {
     /**
      * Ενημερώνει το ποσό μιας εγγραφής.
      *
-     * @param tableName  Ο πίνακας.
-     * @param idColName  Το όνομα στήλης ID.
-     * @param id         Το ID της εγγραφής.
-     * @param newAmount  Το νέο ποσό.
+     * @param tableName Το όνομα του πίνακα.
+     * @param idColName Το όνομα στήλης ID.
+     * @param id        Το ID της εγγραφής.
+     * @param newAmount Το νέο ποσό.
      * @return true αν έγινε η ενημέρωση, false διαφορετικά.
      */
     public boolean updateAmount(final String tableName, final String idColName,
@@ -140,8 +150,7 @@ public final class BudgetManager {
                             + tableName.toUpperCase());
                     found = true;
                 }
-                System.out.printf(
-                        "ID: %-3d | %-30s | Αρχικό: %10.2f | Νέο: %10.2f\n",
+                System.out.printf(FMT_CHANGE_ROW,
                         rs.getInt(idColName),
                         limitString(rs.getString("name"), CHANGE_NAME_LIMIT),
                         rs.getDouble("original_amount"),
@@ -199,47 +208,68 @@ public final class BudgetManager {
     public String getBudgetCharacterism(final double revenue,
                                         final double expenses) {
         if (revenue > expenses) {
-            return "Πλεονασματικός (+" + (long) (revenue - expenses) + " EUR)";
+            return "Πλεονασματικός (+"
+                    + (long) (revenue - expenses) + " EUR)";
         } else if (revenue < expenses) {
-            return "Ελλειμματικός (-" + (long) (expenses - revenue) + " EUR)";
+            return "Ελλειμματικός (-"
+                    + (long) (expenses - revenue) + " EUR)";
         } else {
             return "Ισοσκελισμένος";
         }
     }
 
-    public double getCurrentAmount(String tableName, String idColName, int id) {
-    String sql = "SELECT amount FROM " + tableName + " WHERE " + idColName + " = ?";
-    try (Connection conn = DriverManager.getConnection(url);
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-        
-        pstmt.setInt(1, id);
-        ResultSet rs = pstmt.executeQuery();
-        
-        if (rs.next()) {
-            return rs.getDouble("amount");
-        }
-    } catch (SQLException e) {
-        System.out.println("Σφάλμα κατά την ανάκτηση του ποσού: " + e.getMessage());
-    }
-    return -1; // Επιστρέφει -1 αν δεν βρεθεί το ID //
-}
+    /**
+     * Ανακτά το τρέχον ποσό μιας εγγραφής βάσει ID.
+     *
+     * @param tableName Το όνομα του πίνακα.
+     * @param idColName Το όνομα της στήλης ID.
+     * @param id        Το ID της εγγραφής.
+     * @return Το ποσό της εγγραφής, ή -1 αν δεν βρεθεί.
+     */
+    public double getCurrentAmount(final String tableName,
+                                   final String idColName, final int id) {
+        String sql = "SELECT amount FROM " + tableName
+                + " WHERE " + idColName + " = ?";
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-/* Βρίσκει το όνομα μιας εγγραφής βάσει ID. Χρήσιμο για την επιλογή ID απο τον χρήστη στο specific_ai assistant 
-*/
-public String getNameById(String tableName, String idColName, int id) {
-    String sql = "SELECT name FROM " + tableName + " WHERE " + idColName + " = ?";
-    try (Connection conn = DriverManager.getConnection(url);
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-        
-        pstmt.setInt(1, id);
-        ResultSet rs = pstmt.executeQuery();
-        
-        if (rs.next()) {
-            return rs.getString("name");
+            pstmt.setInt(IDX_1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble("amount");
+            }
+        } catch (SQLException e) {
+            System.out.println("Σφάλμα κατά την ανάκτηση του ποσού: "
+                    + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("Σφάλμα ανάκτησης ονόματος: " + e.getMessage());
+        return AMOUNT_NOT_FOUND;
     }
-    return null; // Αν δεν βρεθεί
-}
+
+    /**
+     * Βρίσκει το όνομα μιας εγγραφής βάσει ID.
+     *
+     * @param tableName Το όνομα του πίνακα.
+     * @param idColName Το όνομα της στήλης ID.
+     * @param id        Το ID της εγγραφής.
+     * @return Το όνομα της εγγραφής, ή null αν δεν βρεθεί.
+     */
+    public String getNameById(final String tableName,
+                              final String idColName, final int id) {
+        String sql = "SELECT name FROM " + tableName
+                + " WHERE " + idColName + " = ?";
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(IDX_1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("name");
+            }
+        } catch (SQLException e) {
+            System.out.println("Σφάλμα ανάκτησης ονόματος: " + e.getMessage());
+        }
+        return null;
+    }
 }

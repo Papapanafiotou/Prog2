@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.Serial;
 import java.util.Random;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -16,7 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField; 
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -28,6 +27,7 @@ public final class LogUi extends JFrame {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    // Σταθερές Παραθύρου
     /** Πλάτος παραθύρου. */
     private static final int WINDOW_WIDTH = 400;
     /** Ύψος παραθύρου. */
@@ -41,13 +41,13 @@ public final class LogUi extends JFrame {
     /** Padding Οριζόντιο. */
     private static final int PAD_HOR = 50;
 
+    // Σταθερές Χρωμάτων (RGB)
     /** Red component φόντου. */
     private static final int BG_R = 245;
     /** Green component φόντου. */
     private static final int BG_G = 245;
     /** Blue component φόντου. */
     private static final int BG_B = 250;
-
     /** Red component κειμένου. */
     private static final int TXT_R = 45;
     /** Green component κειμένου. */
@@ -55,6 +55,7 @@ public final class LogUi extends JFrame {
     /** Blue component κειμένου. */
     private static final int TXT_B = 54;
 
+    // Σταθερές Σχεδίασης
     /** Μέγεθος εικονιδίου. */
     private static final int ICON_SIZE = 60;
     /** Κενό μετά το εικονίδιο. */
@@ -71,6 +72,8 @@ public final class LogUi extends JFrame {
     private static final int BTN_FONT = 13;
     /** Μήκος τυχαίου κωδικού. */
     private static final int RND_PASS_LEN = 10;
+    /** Κενό μεταξύ στοιχείων στο password panel. */
+    private static final int PASS_PANEL_GAP = 5;
 
     /** Αντικείμενο λογαριασμών. */
     private final Accounts acc = new Accounts();
@@ -142,28 +145,28 @@ public final class LogUi extends JFrame {
     }
 
     /**
-     * Βοηθητική μέθοδος για λήψη κωδικού με αστεράκια.
+     * Βοηθητική μέθοδος για λήψη κωδικού με επιλογή εμφάνισης (masking).
+     *
+     * @param message Το μήνυμα προτροπής προς τον χρήστη.
+     * @return Ο κωδικός που πληκτρολογήθηκε ή null αν ακυρώθηκε.
      */
-    /**
-     * Βοηθητική μέθοδος για λήψη κωδικού με επιλογή εμφάνισης.
-     */
-    private String getPasswordInput(String message) {
+    private String getPasswordInput(final String message) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        
+
         JLabel label = new JLabel(message);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         JPasswordField pf = new JPasswordField();
         pf.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         // Αποθήκευση του αρχικού χαρακτήρα απόκρυψης (συνήθως • ή *)
         char defaultEcho = pf.getEchoChar();
 
         JCheckBox showPass = new JCheckBox("Εμφάνιση κωδικού");
         showPass.setAlignmentX(Component.LEFT_ALIGNMENT);
-        showPass.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        
+        showPass.setFont(new Font("Segoe UI", Font.PLAIN, BTN_FONT));
+
         // Λειτουργία εμφάνισης/απόκρυψης
         showPass.addActionListener(e -> {
             if (showPass.isSelected()) {
@@ -174,22 +177,23 @@ public final class LogUi extends JFrame {
         });
 
         panel.add(label);
-        panel.add(Box.createVerticalStrut(5)); // Κενό
+        panel.add(Box.createVerticalStrut(PASS_PANEL_GAP));
         panel.add(pf);
-        panel.add(Box.createVerticalStrut(5)); // Κενό
+        panel.add(Box.createVerticalStrut(PASS_PANEL_GAP));
         panel.add(showPass);
 
-        int action = JOptionPane.showConfirmDialog(null, 
-                panel, 
-                "Εισαγωγή Κωδικού", 
+        int action = JOptionPane.showConfirmDialog(null,
+                panel,
+                "Εισαγωγή Κωδικού",
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE);
-        
+
         if (action == JOptionPane.OK_OPTION) {
             return new String(pf.getPassword());
         }
         return null;
     }
+
     private void createAccount() {
         String username = JOptionPane.showInputDialog("Username:");
         if (username == null || username.trim().isEmpty()) {
@@ -204,7 +208,7 @@ public final class LogUi extends JFrame {
         if (id == null) {
             return;
         }
-        String password = "";
+        String password;
         String[] options = {"Τυχαίος", "Χειροκίνητος"};
         int choice = JOptionPane.showOptionDialog(null, "Επιλογή κωδικού",
                 "Κωδικός", 0, JOptionPane.QUESTION_MESSAGE,
@@ -222,7 +226,7 @@ public final class LogUi extends JFrame {
         } else {
             // Χρήση της μεθόδου για απόκρυψη κωδικού
             password = getPasswordInput("Δώστε κωδικό (8+ chars):");
-            
+
             if (password == null) {
                 return;
             }
@@ -245,10 +249,10 @@ public final class LogUi extends JFrame {
             JOptionPane.showMessageDialog(null, "Ο χρήστης δεν βρέθηκε.");
             return;
         }
-        
+
         // Χρήση της μεθόδου για απόκρυψη κωδικού
         String pass = getPasswordInput("Κωδικός:");
-        
+
         if (pass == null) {
             return;
         }
@@ -266,17 +270,17 @@ public final class LogUi extends JFrame {
         if (user == null) {
             return;
         }
-        
+
         // Χρήση της μεθόδου για τον παλιό κωδικό
         String oldP = getPasswordInput("Τρέχων κωδικός:");
-        
+
         if (oldP == null) {
             return;
         }
         if (acc.logIn(acc.getPassword(user), oldP)) {
             // Χρήση της μεθόδου για τον νέο κωδικό
             String newP = getPasswordInput("Νέος κωδικός:");
-            
+
             if (newP != null && Accounts.validatePassword(newP)) {
                 acc.newPass(newP, user);
                 JOptionPane.showMessageDialog(null, "Ο κωδικός ενημερώθηκε!");

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.1" name="mainapp.AiAdvisorDialogTest" time="0.756" tests="2" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="25"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1253"/>
+    <property name="java.class.path" value="D:\programs\Prog2\statewallet\target\test-classes;D:\programs\Prog2\statewallet\target\classes;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\user\.m2\repository\com\h2database\h2\2.2.224\h2-2.2.224.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.0\junit-jupiter-api-5.11.0.jar;C:\Users\user\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-commons\1.11.0\junit-platform-commons-1.11.0.jar;C:\Users\user\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.0\junit-jupiter-params-5.11.0.jar;C:\Users\user\.m2\repository\org\xerial\sqlite-jdbc\3.45.3.0\sqlite-jdbc-3.45.3.0.jar;C:\Users\user\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar;"/>
+    <property name="sun.awt.enableExtraMouseButtons" value="true"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="user.timezone" value="Europe/Athens"/>
+    <property name="os.name" value="Windows 10"/>
+    <property name="java.vm.specification.version" value="25"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="GR"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-25\bin"/>
+    <property name="sun.java.command" value="C:\Users\user\AppData\Local\Temp\surefire7927370183418266510\surefirebooter-20260114141303846_3.jar C:\Users\user\AppData\Local\Temp\surefire7927370183418266510 2026-01-14T14-13-03_544-jvmRun1 surefire-20260114141303846_1tmp surefire_0-20260114141303846_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="D:\programs\Prog2\statewallet\target\test-classes;D:\programs\Prog2\statewallet\target\classes;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\user\.m2\repository\com\h2database\h2\2.2.224\h2-2.2.224.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar;C:\Users\user\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.0\junit-jupiter-api-5.11.0.jar;C:\Users\user\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\user\.m2\repository\org\junit\platform\junit-platform-commons\1.11.0\junit-platform-commons-1.11.0.jar;C:\Users\user\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\user\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.0\junit-jupiter-params-5.11.0.jar;C:\Users\user\.m2\repository\org\xerial\sqlite-jdbc\3.45.3.0\sqlite-jdbc-3.45.3.0.jar;C:\Users\user\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\user"/>
+    <property name="user.language" value="el"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2025-09-16"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk-25"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="D:\programs\Prog2\statewallet"/>
+    <property name="java.vm.compressedOopsMode" value="32-bit"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="surefire.real.class.path" value="C:\Users\user\AppData\Local\Temp\surefire7927370183418266510\surefirebooter-20260114141303846_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="25+37-LTS-3491"/>
+    <property name="user.name" value="user"/>
+    <property name="stdout.encoding" value="Cp1253"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="localRepository" value="C:\Users\user\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="C:\Users\user\AppData\Local\Temp\"/>
+    <property name="java.version" value="25"/>
+    <property name="user.dir" value="D:\programs\Prog2\statewallet"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="native.encoding" value="Cp1253"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-25\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Razer Chroma SDK\bin;C:\Program Files\Razer Chroma SDK\bin;C:\Program Files (x86)\Razer\ChromaBroadcast\bin;C:\Program Files\Razer\ChromaBroadcast\bin;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\WindowsApps;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;D:\vpn\OpenVPN\bin;C:\Program Files\PuTTY\;C:\Program Files\Java\jdk-25\bin;C:\Program Files\Git\cmd;C:\Users\user\AppData\Local\Microsoft\WindowsApps;D:\Microsoft VS Code\bin;C:\Program Files\Apache\apache-maven-3.9.11\bin;C:\Users\user\AppData\Local\Python\bin;c:\Users\user\.vscode\extensions\vscjava.vscode-java-debug-0.58.5\bundled\scripts\noConfigScripts;c:\Users\user\.vscode\extensions\ms-python.debugpy-2025.18.0-win32-x64\bundled\scripts\noConfigScripts;c:\Users\user\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="Cp1253"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.version" value="25+37-LTS-3491"/>
+    <property name="stdin.encoding" value="Cp1253"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="69.0"/>
+  </properties>
+  <testcase name="testInitializationWithSelection" classname="mainapp.AiAdvisorDialogTest" time="0.722">
+    <system-err><![CDATA[java.lang.instrument.IllegalClassFormatException: Error while instrumenting sun/util/resources/provider/NonBaseLocaleDataMetaInfo with JaCoCo 0.8.12.202403310830/dbfb6f2.
+	at org.jacoco.agent.rt.internal_aeaf9ab.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:176)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClass(BuiltinClassLoader.java:560)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:602)
+	at java.base/java.lang.Class.forName(Class.java:599)
+	at java.base/java.util.ServiceLoader.loadProvider(ServiceLoader.java:755)
+	at java.base/java.util.ServiceLoader$ModuleServicesLookupIterator.hasNext(ServiceLoader.java:955)
+	at java.base/java.util.ServiceLoader$1.hasNext(ServiceLoader.java:1164)
+	at java.base/java.util.ServiceLoader$2.hasNext(ServiceLoader.java:1246)
+	at java.base/sun.util.locale.provider.JRELocaleProviderAdapter.createSupportedLocaleString(JRELocaleProviderAdapter.java:423)
+	at java.base/sun.util.locale.provider.JRELocaleProviderAdapter.createLanguageTagSet(JRELocaleProviderAdapter.java:410)
+	at java.base/sun.util.locale.provider.FallbackLocaleProviderAdapter.createLanguageTagSet(FallbackLocaleProviderAdapter.java:67)
+	at java.base/sun.util.locale.provider.JRELocaleProviderAdapter.getLanguageTagSet(JRELocaleProviderAdapter.java:400)
+	at java.base/sun.util.locale.provider.FallbackLocaleProviderAdapter.getBreakIteratorProvider(FallbackLocaleProviderAdapter.java:88)
+	at java.base/sun.util.locale.provider.JRELocaleProviderAdapter.getLocaleServiceProvider(JRELocaleProviderAdapter.java:86)
+	at java.base/sun.util.locale.provider.LocaleProviderAdapter.findAdapter(LocaleProviderAdapter.java:282)
+	at java.base/sun.util.locale.provider.LocaleProviderAdapter.getAdapter(LocaleProviderAdapter.java:251)
+	at java.base/java.text.BreakIterator.createBreakInstance(BreakIterator.java:562)
+	at java.base/java.text.BreakIterator.getBreakInstance(BreakIterator.java:554)
+	at java.base/java.text.BreakIterator.getLineInstance(BreakIterator.java:493)
+	at java.base/java.text.BreakIterator.getLineInstance(BreakIterator.java:480)
+	at java.desktop/javax.swing.text.Utilities.getBreakLocation(Utilities.java:642)
+	at java.desktop/javax.swing.text.Utilities.getBreakLocation(Utilities.java:673)
+	at java.desktop/javax.swing.text.WrappedPlainView.calculateBreakPosition(WrappedPlainView.java:361)
+	at java.desktop/javax.swing.text.WrappedPlainView$WrappedLine.breakLines(WrappedPlainView.java:919)
+	at java.desktop/javax.swing.text.WrappedPlainView$WrappedLine.update(WrappedPlainView.java:869)
+	at java.desktop/javax.swing.text.WrappedPlainView$WrappedLine.insertUpdate(WrappedPlainView.java:860)
+	at java.desktop/javax.swing.text.WrappedPlainView.insertUpdate(WrappedPlainView.java:601)
+	at java.desktop/javax.swing.plaf.basic.BasicTextUI$RootView.insertUpdate(BasicTextUI.java:1711)
+	at java.desktop/javax.swing.plaf.basic.BasicTextUI$UpdateHandler.insertUpdate(BasicTextUI.java:1978)
+	at java.desktop/javax.swing.text.AbstractDocument.fireInsertUpdate(AbstractDocument.java:220)
+	at java.desktop/javax.swing.text.AbstractDocument.handleInsertString(AbstractDocument.java:774)
+	at java.desktop/javax.swing.text.AbstractDocument.insertString(AbstractDocument.java:733)
+	at java.desktop/javax.swing.text.PlainDocument.insertString(PlainDocument.java:131)
+	at java.desktop/javax.swing.text.AbstractDocument.replace(AbstractDocument.java:692)
+	at java.desktop/javax.swing.text.JTextComponent.setText(JTextComponent.java:1721)
+	at mainapp.AiAdvisorDialog.initComponents(AiAdvisorDialog.java:163)
+	at mainapp.AiAdvisorDialog.<init>(AiAdvisorDialog.java:134)
+	at mainapp.AiAdvisorDialogTest.lambda$testInitializationWithSelection$0(AiAdvisorDialogTest.java:24)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:313)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:723)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:702)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+Caused by: java.io.IOException: Error while instrumenting sun/util/resources/provider/NonBaseLocaleDataMetaInfo with JaCoCo 0.8.12.202403310830/dbfb6f2.
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_aeaf9ab.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 54 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 69
+	at org.jacoco.agent.rt.internal_aeaf9ab.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_aeaf9ab.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_aeaf9ab.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 55 more
+]]></system-err>
+  </testcase>
+  <testcase name="testInitializationWithoutSelection" classname="mainapp.AiAdvisorDialogTest" time="0.031"/>
+</testsuite>

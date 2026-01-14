@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BudgetManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">BudgetManager.java</span></div><h1>BudgetManager.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/**
+ * Διαχειρίζεται τις λειτουργίες του προϋπολογισμού στη βάση δεδομένων.
+ */
+public final class BudgetManager {
+
+    /** Μέγιστο μήκος ονόματος για εμφάνιση. */
+    private static final int NAME_LIMIT = 40;
+    /** Μέγιστο μήκος ονόματος για εμφάνιση αλλαγών. */
+    private static final int CHANGE_NAME_LIMIT = 30;
+    /** Μήκος κατάληξης &quot;...&quot; (3 χαρακτήρες). */
+    private static final int DOTS_LEN = 3;
+    /** Δείκτης SQL 1. */
+    private static final int IDX_1 = 1;
+    /** Δείκτης SQL 2. */
+    private static final int IDX_2 = 2;
+    /** Τιμή επιστροφής όταν δεν βρεθεί ποσό. */
+    private static final double AMOUNT_NOT_FOUND = -1.0;
+
+    // Σταθερές Format
+    /** Format string για εκτύπωση γραμμής πίνακα. */
+    private static final String FMT_TABLE_ROW
+            = &quot;%-5d | %-40s | %12.2f EUR | %12.2f EUR\n&quot;;
+    /** Format string για εκτύπωση αλλαγών. */
+    private static final String FMT_CHANGE_ROW
+            = &quot;ID: %-3d | %-30s | Αρχικό: %10.2f | Νέο: %10.2f\n&quot;;
+
+    /** Το URL σύνδεσης στη βάση. */
+    private String url;
+
+    /**
+     * Κατασκευαστής.
+     *
+     * @param dbUrl Το URL της βάσης δεδομένων.
+     */
+<span class="fc" id="L44">    public BudgetManager(final String dbUrl) {</span>
+<span class="fc" id="L45">        this.url = dbUrl;</span>
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * Ορίζει νέο URL βάσης δεδομένων.
+     *
+     * @param dbUrl Το νέο URL.
+     */
+    public void setUrl(final String dbUrl) {
+<span class="fc" id="L54">        this.url = dbUrl;</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Εκτυπώνει τα περιεχόμενα ενός πίνακα στην κονσόλα.
+     *
+     * @param tableName    Το όνομα του πίνακα.
+     * @param idColumnName Το όνομα της στήλης ID.
+     */
+    public void printTable(final String tableName, final String idColumnName) {
+<span class="fc" id="L64">        String sql = &quot;SELECT &quot; + idColumnName</span>
+                + &quot;, name, original_amount, amount FROM &quot; + tableName;
+
+<span class="fc" id="L67">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="fc" id="L68">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L69">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="fc" id="L71">            System.out.println(&quot;\n--- Πίνακας: &quot; + tableName.toUpperCase()</span>
+                    + &quot; ---&quot;);
+<span class="fc" id="L73">            System.out.printf(&quot;%-5s | %-40s | %-15s | %-15s\n&quot;,</span>
+                    &quot;ID&quot;, &quot;Περιγραφή&quot;, &quot;Αρχικό Ποσό&quot;, &quot;Τρέχον Ποσό&quot;);
+<span class="fc" id="L75">            System.out.println(</span>
+                    &quot;-------------------------------------------------------&quot;);
+
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L79">                System.out.printf(FMT_TABLE_ROW,</span>
+<span class="fc" id="L80">                        rs.getInt(idColumnName),</span>
+<span class="fc" id="L81">                        limitString(rs.getString(&quot;name&quot;), NAME_LIMIT),</span>
+<span class="fc" id="L82">                        rs.getDouble(&quot;original_amount&quot;),</span>
+<span class="fc" id="L83">                        rs.getDouble(&quot;amount&quot;)</span>
+                );
+            }
+<span class="nc" id="L86">        } catch (SQLException e) {</span>
+<span class="nc" id="L87">            System.out.println(&quot;Σφάλμα: &quot; + e.getMessage());</span>
+<span class="fc" id="L88">        }</span>
+<span class="fc" id="L89">    }</span>
+
+    /**
+     * Ενημερώνει το ποσό μιας εγγραφής.
+     *
+     * @param tableName Το όνομα του πίνακα.
+     * @param idColName Το όνομα στήλης ID.
+     * @param id        Το ID της εγγραφής.
+     * @param newAmount Το νέο ποσό.
+     * @return true αν έγινε η ενημέρωση, false διαφορετικά.
+     */
+    public boolean updateAmount(final String tableName, final String idColName,
+                                final int id, final double newAmount) {
+<span class="fc" id="L102">        String sql = &quot;UPDATE &quot; + tableName + &quot; SET amount = ? WHERE &quot;</span>
+                + idColName + &quot; = ?&quot;;
+
+<span class="fc" id="L105">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="fc" id="L106">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="fc" id="L108">            pstmt.setDouble(IDX_1, newAmount);</span>
+<span class="fc" id="L109">            pstmt.setInt(IDX_2, id);</span>
+
+<span class="fc" id="L111">            int rowsAffected = pstmt.executeUpdate();</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">            return rowsAffected &gt; 0;</span>
+
+<span class="fc" id="L114">        } catch (SQLException e) {</span>
+<span class="fc" id="L115">            System.out.println(&quot;Σφάλμα SQL: &quot; + e.getMessage());</span>
+<span class="fc" id="L116">            return false;</span>
+        }
+    }
+
+    /**
+     * Εμφανίζει τις αλλαγές που έχουν γίνει σε όλους τους πίνακες.
+     */
+    public void showChanges() {
+<span class="fc" id="L124">        System.out.println(&quot;\n--- Αλλαγές Προϋπολογισμού ---&quot;);</span>
+<span class="fc" id="L125">        boolean c1 = checkTableForChanges(&quot;esoda&quot;, &quot;code&quot;);</span>
+<span class="fc" id="L126">        boolean c2 = checkTableForChanges(&quot;eksoda&quot;, &quot;code&quot;);</span>
+<span class="fc" id="L127">        boolean c3 = checkTableForChanges(&quot;kratos&quot;, &quot;number&quot;);</span>
+<span class="fc" id="L128">        boolean c4 = checkTableForChanges(&quot;ypourgeia&quot;, &quot;number&quot;);</span>
+<span class="fc" id="L129">        boolean c5 = checkTableForChanges(&quot;apokentromenes&quot;, &quot;number&quot;);</span>
+
+<span class="pc bpc" id="L131" title="9 of 10 branches missed.">        if (!(c1 || c2 || c3 || c4 || c5)) {</span>
+<span class="nc" id="L132">            System.out.println(&quot;Δεν βρέθηκαν αλλαγές σε κανέναν πίνακα.&quot;);</span>
+        }
+<span class="fc" id="L134">    }</span>
+
+    private boolean checkTableForChanges(final String tableName,
+                                         final String idColName) {
+<span class="fc" id="L138">        String sql = &quot;SELECT &quot; + idColName</span>
+                + &quot;, name, amount, original_amount FROM &quot;
+                + tableName + &quot; WHERE amount != original_amount&quot;;
+<span class="fc" id="L141">        boolean found = false;</span>
+
+<span class="fc" id="L143">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="fc" id="L144">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L145">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="fc bfc" id="L147" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">                if (!found) {</span>
+<span class="fc" id="L149">                    System.out.println(&quot;\nΑλλαγές στον πίνακα: &quot;</span>
+<span class="fc" id="L150">                            + tableName.toUpperCase());</span>
+<span class="fc" id="L151">                    found = true;</span>
+                }
+<span class="fc" id="L153">                System.out.printf(FMT_CHANGE_ROW,</span>
+<span class="fc" id="L154">                        rs.getInt(idColName),</span>
+<span class="fc" id="L155">                        limitString(rs.getString(&quot;name&quot;), CHANGE_NAME_LIMIT),</span>
+<span class="fc" id="L156">                        rs.getDouble(&quot;original_amount&quot;),</span>
+<span class="fc" id="L157">                        rs.getDouble(&quot;amount&quot;)</span>
+                );
+            }
+<span class="fc" id="L160">        } catch (SQLException e) {</span>
+<span class="fc" id="L161">            System.out.println(&quot;Σφάλμα: &quot; + e.getMessage());</span>
+<span class="fc" id="L162">        }</span>
+<span class="fc" id="L163">        return found;</span>
+    }
+
+    private String limitString(final String str, final int len) {
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">        if (str == null) {</span>
+<span class="nc" id="L168">            return &quot;&quot;;</span>
+        }
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        if (str.length() &gt; len) {</span>
+<span class="nc" id="L171">            return str.substring(0, len - DOTS_LEN) + &quot;...&quot;;</span>
+        }
+<span class="fc" id="L173">        return str;</span>
+    }
+
+    /**
+     * Υπολογίζει τα σύνολα για έναν πίνακα.
+     *
+     * @param tablename Το όνομα του πίνακα.
+     * @return Πίνακας double με [αρχικό σύνολο, τρέχον σύνολο].
+     */
+    public double[] getTotal(final String tablename) {
+<span class="fc" id="L183">        String sql = &quot;SELECT SUM(amount) AS total_amount, &quot;</span>
+                + &quot;SUM(original_amount) AS total_original FROM &quot; + tablename;
+<span class="fc" id="L185">        double[] results = new double[2];</span>
+<span class="fc" id="L186">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="fc" id="L187">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L188">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L191">                results[0] = rs.getDouble(&quot;total_original&quot;);</span>
+<span class="fc" id="L192">                results[1] = rs.getDouble(&quot;total_amount&quot;);</span>
+            }
+
+<span class="fc" id="L195">        } catch (SQLException e) {</span>
+<span class="fc" id="L196">            System.err.println(&quot;Σφάλμα σύνδεσης: &quot; + e.getMessage());</span>
+<span class="fc" id="L197">        }</span>
+<span class="fc" id="L198">        return results;</span>
+    }
+
+    /**
+     * Επιστρέφει τον χαρακτηρισμό του προϋπολογισμού.
+     *
+     * @param revenue  Τα έσοδα.
+     * @param expenses Τα έξοδα.
+     * @return String με τον χαρακτηρισμό (Πλεονασματικός/Ελλειμματικός/Ισος).
+     */
+    public String getBudgetCharacterism(final double revenue,
+                                        final double expenses) {
+<span class="fc bfc" id="L210" title="All 2 branches covered.">        if (revenue &gt; expenses) {</span>
+<span class="fc" id="L211">            return &quot;Πλεονασματικός (+&quot;</span>
+                    + (long) (revenue - expenses) + &quot; EUR)&quot;;
+<span class="fc bfc" id="L213" title="All 2 branches covered.">        } else if (revenue &lt; expenses) {</span>
+<span class="fc" id="L214">            return &quot;Ελλειμματικός (-&quot;</span>
+                    + (long) (expenses - revenue) + &quot; EUR)&quot;;
+        } else {
+<span class="fc" id="L217">            return &quot;Ισοσκελισμένος&quot;;</span>
+        }
+    }
+
+    /**
+     * Ανακτά το τρέχον ποσό μιας εγγραφής βάσει ID.
+     *
+     * @param tableName Το όνομα του πίνακα.
+     * @param idColName Το όνομα της στήλης ID.
+     * @param id        Το ID της εγγραφής.
+     * @return Το ποσό της εγγραφής, ή -1 αν δεν βρεθεί.
+     */
+    public double getCurrentAmount(final String tableName,
+                                   final String idColName, final int id) {
+<span class="fc" id="L231">        String sql = &quot;SELECT amount FROM &quot; + tableName</span>
+                + &quot; WHERE &quot; + idColName + &quot; = ?&quot;;
+<span class="fc" id="L233">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="fc" id="L234">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="fc" id="L236">            pstmt.setInt(IDX_1, id);</span>
+<span class="fc" id="L237">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L240">                return rs.getDouble(&quot;amount&quot;);</span>
+            }
+<span class="nc bnc" id="L242" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L243">            System.out.println(&quot;Σφάλμα κατά την ανάκτηση του ποσού: &quot;</span>
+<span class="nc" id="L244">                    + e.getMessage());</span>
+<span class="fc" id="L245">        }</span>
+<span class="fc" id="L246">        return AMOUNT_NOT_FOUND;</span>
+    }
+
+    /**
+     * Βρίσκει το όνομα μιας εγγραφής βάσει ID.
+     *
+     * @param tableName Το όνομα του πίνακα.
+     * @param idColName Το όνομα της στήλης ID.
+     * @param id        Το ID της εγγραφής.
+     * @return Το όνομα της εγγραφής, ή null αν δεν βρεθεί.
+     */
+    public String getNameById(final String tableName,
+                              final String idColName, final int id) {
+<span class="fc" id="L259">        String sql = &quot;SELECT name FROM &quot; + tableName</span>
+                + &quot; WHERE &quot; + idColName + &quot; = ?&quot;;
+<span class="fc" id="L261">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="fc" id="L262">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="fc" id="L264">            pstmt.setInt(IDX_1, id);</span>
+<span class="fc" id="L265">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="pc bpc" id="L267" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L268">                return rs.getString(&quot;name&quot;);</span>
+            }
+<span class="nc bnc" id="L270" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L271">            System.out.println(&quot;Σφάλμα ανάκτησης ονόματος: &quot; + e.getMessage());</span>
+<span class="fc" id="L272">        }</span>
+<span class="fc" id="L273">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

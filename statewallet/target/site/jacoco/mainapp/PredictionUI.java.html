@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PredictionUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">PredictionUI.java</span></div><h1>PredictionUI.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.io.Serial;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+
+/**
+ * Παρέχει γραφική διεπαφή για την πρόβλεψη τιμών μελλοντικών ετών βάσει
+ * ιστορικών δεδομένων (2023-2026).
+ */
+public final class PredictionUI extends JFrame {
+
+    /** Serial Version UID. */
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    // Σταθερές παραθύρου
+    /** Πλάτος παραθύρου. */
+    private static final int WIN_WIDTH = 500;
+    /** Ύψος παραθύρου. */
+    private static final int WIN_HEIGHT = 450;
+    /** Κενό (gap) στη διάταξη. */
+    private static final int LAYOUT_GAP = 10;
+
+    // Σταθερές γραμματοσειρών
+    /** Μέγεθος γραμματοσειράς περιοχής κειμένου. */
+    private static final int FONT_SIZE_AREA = 13;
+    /** Μέγεθος γραμματοσειράς κουμπιού. */
+    private static final int FONT_SIZE_BTN = 14;
+
+    // Σταθερές ετών
+    /** Έτος έναρξης ιστορικών δεδομένων. */
+    private static final int START_YEAR = 2023;
+    /** Έτος λήξης ιστορικών δεδομένων. */
+    private static final int END_YEAR = 2026;
+    /** Έτος στόχος πρόβλεψης. */
+    private static final int TARGET_YEAR = 2027;
+
+    // Πεδία δεδομένων
+    /** Το όνομα του πίνακα στη βάση. */
+    private final String tableName;
+    /** Το όνομα της στήλης ID. */
+    private final String idColName;
+    /** Η τιμή του ID της εγγραφής. */
+    private final int idValue;
+    /** Το όνομα/περιγραφή της εγγραφής. */
+    private final String itemName;
+
+    /**
+     * Κατασκευαστής της διεπαφής πρόβλεψης.
+     *
+     * @param dbPath    Η διαδρομή της βάσης δεδομένων (δεν χρησιμοποιείται
+     * άμεσα εδώ, αλλά για συμβατότητα).
+     * @param table     Το όνομα του πίνακα στη βάση.
+     * @param idCol     Το όνομα της στήλης ID.
+     * @param idVal     Η τιμή του ID της εγγραφής.
+     * @param name      Το όνομα/περιγραφή της εγγραφής.
+     */
+    public PredictionUI(final String dbPath, final String table,
+                        final String idCol, final int idVal,
+<span class="fc" id="L69">                        final String name) {</span>
+<span class="fc" id="L70">        this.tableName = table;</span>
+<span class="fc" id="L71">        this.idColName = idCol;</span>
+<span class="fc" id="L72">        this.idValue = idVal;</span>
+<span class="fc" id="L73">        this.itemName = name;</span>
+
+<span class="fc" id="L75">        setTitle(&quot;Πρόβλεψη 2027 - &quot; + itemName);</span>
+<span class="fc" id="L76">        setSize(WIN_WIDTH, WIN_HEIGHT);</span>
+<span class="fc" id="L77">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L78">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="fc" id="L79">        setLayout(new BorderLayout(LAYOUT_GAP, LAYOUT_GAP));</span>
+
+<span class="fc" id="L81">        JTextArea reportArea = new JTextArea();</span>
+<span class="fc" id="L82">        reportArea.setEditable(false);</span>
+<span class="fc" id="L83">        reportArea.setFont(new Font(&quot;Monospaced&quot;, Font.PLAIN, FONT_SIZE_AREA));</span>
+<span class="fc" id="L84">        reportArea.setText(&quot;Στοιχείο: &quot; + itemName + &quot;\nID: &quot; + idValue</span>
+                + &quot;\n&quot; + &quot;Αναζήτηση ιστορικών δεδομένων (2023-2026)...&quot;);
+
+<span class="fc" id="L87">        JButton runAnalysisBtn = new JButton(&quot;📊 Έναρξη Στατιστικής Ανάλυσης&quot;);</span>
+<span class="fc" id="L88">        runAnalysisBtn.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE_BTN));</span>
+
+<span class="fc" id="L90">        runAnalysisBtn.addActionListener(e -&gt; {</span>
+<span class="nc" id="L91">            Map&lt;Integer, Double&gt; history = collectDataFromYears();</span>
+
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            if (history.size() &lt; 2) {</span>
+<span class="nc" id="L94">                reportArea.setText(&quot;Σφάλμα: Δεν βρέθηκαν επαρκή δεδομένα για &quot;</span>
+                        + &quot;'&quot; + itemName + &quot;'\n&quot;
+                        + &quot;στα αρχεία budget_2023.db έως budget_2026.db.&quot;);
+<span class="nc" id="L97">                return;</span>
+            }
+
+            // Υπολογισμός Γραμμικής Παλινδρόμησης (y = mx + b)
+<span class="nc" id="L101">            double n = history.size();</span>
+<span class="nc" id="L102">            double sumX = 0;</span>
+<span class="nc" id="L103">            double sumY = 0;</span>
+<span class="nc" id="L104">            double sumXY = 0;</span>
+<span class="nc" id="L105">            double sumX2 = 0;</span>
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">            for (Map.Entry&lt;Integer, Double&gt; entry : history.entrySet()) {</span>
+<span class="nc" id="L108">                double x = entry.getKey();</span>
+<span class="nc" id="L109">                double y = entry.getValue();</span>
+<span class="nc" id="L110">                sumX += x;</span>
+<span class="nc" id="L111">                sumY += y;</span>
+<span class="nc" id="L112">                sumXY += (x * y);</span>
+<span class="nc" id="L113">                sumX2 += (x * x);</span>
+<span class="nc" id="L114">            }</span>
+
+<span class="nc" id="L116">            double slope = (n * sumXY - sumX * sumY)</span>
+                    / (n * sumX2 - sumX * sumX);
+<span class="nc" id="L118">            double intercept = (sumY - slope * sumX) / n;</span>
+<span class="nc" id="L119">            double predicted = slope * TARGET_YEAR + intercept;</span>
+
+<span class="nc" id="L121">            StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L122">            sb.append(&quot;--- ΣΤΑΤΙΣΤΙΚΗ ΑΝΑΦΟΡΑ ---\n&quot;);</span>
+<span class="nc" id="L123">            sb.append(&quot;Στοιχείο: &quot;).append(itemName).append(&quot;\n\n&quot;);</span>
+<span class="nc" id="L124">            history.forEach((year, val) -&gt; sb.append(</span>
+<span class="nc" id="L125">                    String.format(&quot;Έτος %d: %,.2f €\n&quot;, year, val)));</span>
+<span class="nc" id="L126">            sb.append(&quot;-----------------------------\n&quot;);</span>
+<span class="nc" id="L127">            sb.append(String.format(&quot;ΠΡΟΒΛΕΨΗ ΓΙΑ ΤΟ 2027: %,.2f €\n&quot;,</span>
+<span class="nc" id="L128">                    predicted));</span>
+<span class="nc" id="L129">            sb.append(&quot;-----------------------------\n&quot;);</span>
+<span class="nc" id="L130">            sb.append(String.format(&quot;Τάση: %s\n&quot;,</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">                    (slope &gt; 0 ? &quot;Ανοδική ▲&quot; : &quot;Καθοδική ▼&quot;)));</span>
+
+<span class="nc" id="L133">            reportArea.setText(sb.toString());</span>
+<span class="nc" id="L134">        });</span>
+
+<span class="fc" id="L136">        add(new JLabel(&quot;Πρόβλεψη βάσει Ιστορικών Στοιχείων&quot;,</span>
+                SwingConstants.CENTER), BorderLayout.NORTH);
+<span class="fc" id="L138">        add(new JScrollPane(reportArea), BorderLayout.CENTER);</span>
+<span class="fc" id="L139">        add(runAnalysisBtn, BorderLayout.SOUTH);</span>
+<span class="fc" id="L140">    }</span>
+
+    private Map&lt;Integer, Double&gt; collectDataFromYears() {
+<span class="nc" id="L143">        Map&lt;Integer, Double&gt; history = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        for (int year = START_YEAR; year &lt;= END_YEAR; year++) {</span>
+<span class="nc" id="L145">            String yearDbUrl = &quot;jdbc:sqlite:budget_&quot; + year + &quot;.db&quot;;</span>
+<span class="nc" id="L146">            BudgetManager tempManager = new BudgetManager(yearDbUrl);</span>
+            // Χρήση της μεθόδου ανάκτησης ποσού
+<span class="nc" id="L148">            double amount = tempManager.getCurrentAmount(</span>
+                    tableName, idColName, idValue);
+<span class="nc bnc" id="L150" title="All 2 branches missed.">            if (amount != -1) {</span>
+<span class="nc" id="L151">                history.put(year, amount);</span>
+            }
+        }
+<span class="nc" id="L154">        return history;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

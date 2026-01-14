@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StateWalletLauncher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">StateWalletLauncher.java</span></div><h1>StateWalletLauncher.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.io.Serial;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
+
+/**
+ * Η αρχική οθόνη εκκίνησης (Launcher) της εφαρμογής.
+ */
+public final class StateWalletLauncher extends JFrame {
+
+    /** Serial Version UID. */
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /** Πλάτος παραθύρου. */
+    private static final int WINDOW_WIDTH = 450;
+    /** Ύψος παραθύρου. */
+    private static final int WINDOW_HEIGHT = 350;
+    /** Κάθετο περιθώριο. */
+    private static final int BORDER_VERT = 30;
+    /** Οριζόντιο περιθώριο. */
+    private static final int BORDER_HORIZ = 40;
+
+    /** Μέγεθος Emoji. */
+    private static final int FONT_SIZE_EMOJI = 70;
+    /** Μέγεθος Τίτλου. */
+    private static final int FONT_SIZE_TITLE = 24;
+    /** Μέγεθος Υπότιτλου. */
+    private static final int FONT_SIZE_SUBTITLE = 12;
+    /** Μέγεθος Κειμένου. */
+    private static final int FONT_SIZE_NORMAL = 14;
+    /** Μέγεθος Μικρού Κειμένου. */
+    private static final int FONT_SIZE_SMALL = 11;
+
+    /** Πλάτος Combo. */
+    private static final int COMBO_WIDTH = 150;
+    /** Ύψος Combo. */
+    private static final int COMBO_HEIGHT = 30;
+    /** Πλάτος κουμπιού. */
+    private static final int BTN_WIDTH = 200;
+    /** Ύψος κουμπιού. */
+    private static final int BTN_HEIGHT = 40;
+    /** Πλάτος μπάρας προόδου. */
+    private static final int PROGRESS_WIDTH = 200;
+    /** Ύψος μπάρας προόδου. */
+    private static final int PROGRESS_HEIGHT = 5;
+
+    /** Πολύ μικρό κενό. */
+    private static final int GAP_TINY = 5;
+    /** Μικρό κενό. */
+    private static final int GAP_SMALL = 15;
+    /** Μεσαίο κενό. */
+    private static final int GAP_MEDIUM = 20;
+    /** Μεγάλο κενό. */
+    private static final int GAP_LARGE = 30;
+
+    /** Καθυστέρηση. */
+    private static final int DELAY_MS = 500;
+    /** Μέγιστη πρόοδος. */
+    private static final int PROGRESS_MAX = 100;
+
+    /** Βασικό χρώμα. */
+<span class="fc" id="L81">    private static final Color PRIMARY = new Color(70, 130, 180);</span>
+    /** Χρώμα φόντου. */
+<span class="fc" id="L83">    private static final Color BG = new Color(245, 245, 250);</span>
+
+    /** Επιλογέας έτους. */
+    private final JComboBox&lt;String&gt; yearSelector;
+    /** Κουμπί έναρξης. */
+    private final JButton startButton;
+    /** Ετικέτα κατάστασης. */
+    private final JLabel statusLabel;
+    /** Μπάρα προόδου. */
+    private final JProgressBar progressBar;
+
+    /**
+     * Κατασκευαστής.
+     */
+<span class="fc" id="L97">    public StateWalletLauncher() {</span>
+
+<span class="fc" id="L99">        setTitle(&quot;State Wallet&quot;);</span>
+<span class="fc" id="L100">        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);</span>
+<span class="fc" id="L101">        setDefaultCloseOperation(EXIT_ON_CLOSE);</span>
+<span class="fc" id="L102">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L103">        setResizable(false);</span>
+
+<span class="fc" id="L105">        JPanel mainPanel = new JPanel();</span>
+<span class="fc" id="L106">        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));</span>
+<span class="fc" id="L107">        mainPanel.setBackground(BG);</span>
+<span class="fc" id="L108">        mainPanel.setBorder(new EmptyBorder(BORDER_VERT, BORDER_HORIZ,</span>
+                BORDER_VERT, BORDER_HORIZ));
+
+<span class="fc" id="L111">        addComp(mainPanel, new JLabel(&quot;🏛️&quot;),</span>
+                new Font(&quot;Segoe UI Emoji&quot;, Font.PLAIN, FONT_SIZE_EMOJI),
+                Color.BLACK, GAP_TINY);
+
+<span class="fc" id="L115">        addComp(mainPanel, new JLabel(&quot;State Wallet&quot;),</span>
+                new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE_TITLE),
+                PRIMARY, GAP_TINY);
+
+<span class="fc" id="L119">        addComp(mainPanel, new JLabel(&quot;Επιλέξτε οικονομικό έτος&quot;),</span>
+                new Font(&quot;Segoe UI&quot;, Font.PLAIN, FONT_SIZE_SUBTITLE),
+                Color.GRAY, GAP_LARGE);
+
+<span class="fc" id="L123">        yearSelector = new JComboBox&lt;&gt;(</span>
+                new String[]{&quot;2023&quot;, &quot;2024&quot;, &quot;2025&quot;, &quot;2026&quot;});
+<span class="fc" id="L125">        yearSelector.setMaximumSize(new Dimension(COMBO_WIDTH, COMBO_HEIGHT));</span>
+<span class="fc" id="L126">        yearSelector.setBackground(Color.WHITE);</span>
+<span class="fc" id="L127">        addComp(mainPanel, yearSelector,</span>
+                new Font(&quot;Segoe UI&quot;, Font.PLAIN, FONT_SIZE_NORMAL),
+                Color.BLACK, GAP_SMALL);
+
+<span class="fc" id="L131">        startButton = new JButton(&quot;Φόρτωση &amp; Είσοδος&quot;);</span>
+<span class="fc" id="L132">        startButton.setBackground(PRIMARY);</span>
+<span class="fc" id="L133">        startButton.setForeground(Color.BLACK);</span>
+<span class="fc" id="L134">        startButton.setFocusPainted(false);</span>
+<span class="fc" id="L135">        startButton.setMaximumSize(new Dimension(BTN_WIDTH, BTN_HEIGHT));</span>
+<span class="fc" id="L136">        startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));</span>
+<span class="fc" id="L137">        addComp(mainPanel, startButton,</span>
+                new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE_NORMAL),
+                null, GAP_MEDIUM);
+
+<span class="fc" id="L141">        progressBar = new JProgressBar();</span>
+<span class="fc" id="L142">        progressBar.setMaximumSize(</span>
+                new Dimension(PROGRESS_WIDTH, PROGRESS_HEIGHT));
+<span class="fc" id="L144">        progressBar.setForeground(PRIMARY);</span>
+<span class="fc" id="L145">        progressBar.setVisible(false);</span>
+<span class="fc" id="L146">        addComp(mainPanel, progressBar, null, null, GAP_TINY);</span>
+
+<span class="fc" id="L148">        statusLabel = new JLabel(&quot;Αναμονή...&quot;);</span>
+<span class="fc" id="L149">        addComp(mainPanel, statusLabel,</span>
+                new Font(&quot;Segoe UI&quot;, Font.ITALIC, FONT_SIZE_SMALL),
+                Color.GRAY, 0);
+
+<span class="fc" id="L153">        add(mainPanel);</span>
+<span class="pc" id="L154">        startButton.addActionListener(e -&gt; startProcess());</span>
+<span class="fc" id="L155">    }</span>
+
+    private void addComp(final JPanel p, final JComponent c,
+                         final Font f, final Color col, final int gap) {
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (f != null) {</span>
+<span class="fc" id="L160">            c.setFont(f);</span>
+        }
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        if (col != null) {</span>
+<span class="fc" id="L163">            c.setForeground(col);</span>
+        }
+<span class="fc" id="L165">        c.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="fc" id="L166">        p.add(c);</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (gap &gt; 0) {</span>
+<span class="fc" id="L168">            p.add(Box.createRigidArea(new Dimension(0, gap)));</span>
+        }
+<span class="fc" id="L170">    }</span>
+
+    private void startProcess() {
+<span class="nc" id="L173">        int year = Integer.parseInt((String) yearSelector.getSelectedItem());</span>
+<span class="nc" id="L174">        DatabaseFinder finder = new DatabaseFinder();</span>
+
+<span class="nc" id="L176">        startButton.setEnabled(false);</span>
+<span class="nc" id="L177">        progressBar.setVisible(true);</span>
+<span class="nc" id="L178">        progressBar.setIndeterminate(true);</span>
+
+<span class="nc" id="L180">        new Thread(() -&gt; {</span>
+            try {
+<span class="nc" id="L182">                boolean reProcess = false;</span>
+                // Έλεγχος αν η βάση υπάρχει ήδη
+<span class="nc bnc" id="L184" title="All 2 branches missed.">                if (finder.findYearbase(year)) {</span>
+<span class="nc" id="L185">                    int choice = JOptionPane.showConfirmDialog(</span>
+                            null,
+                            &quot;Η βάση δεδομένων για το έτος &quot; + year
+                            + &quot; βρέθηκε.\nΘέλετε να ξεκινήσετε την &quot;
+                            + &quot;επεξεργασία από την αρχή;&quot;,
+                            &quot;Υπάρχουσα Βάση&quot;,
+                            JOptionPane.YES_NO_OPTION
+                    );
+
+<span class="nc bnc" id="L194" title="All 2 branches missed.">                    if (choice == JOptionPane.YES_OPTION) {</span>
+<span class="nc" id="L195">                        reProcess = true;</span>
+                    }
+<span class="nc" id="L197">                } else {</span>
+                    // Αν δεν υπάρχει η βάση, η επεξεργασία είναι υποχρεωτική
+<span class="nc" id="L199">                    reProcess = true;</span>
+                }
+
+<span class="nc bnc" id="L202" title="All 2 branches missed.">                if (reProcess) {</span>
+<span class="nc" id="L203">                    SwingUtilities.invokeLater(() -&gt; statusLabel.setText(</span>
+                            &quot;Επεξεργασία δεδομένων (από την αρχή)...&quot;));
+                    // Εκτέλεση επεξεργασίας
+<span class="nc" id="L206">                    Pdftocsv.run(year);</span>
+<span class="nc" id="L207">                    String dbPath = &quot;jdbc:sqlite:budget_&quot; + year + &quot;.db&quot;;</span>
+<span class="nc" id="L208">                    new PinakesImporter(dbPath).importAll();</span>
+<span class="nc" id="L209">                } else {</span>
+<span class="nc" id="L210">                    SwingUtilities.invokeLater(() -&gt; statusLabel.setText(</span>
+                            &quot;Φόρτωση υπάρχουσας βάσης...&quot;));
+                    // Μικρή παύση για την εμπειρία χρήστη
+<span class="nc" id="L213">                    Thread.sleep(DELAY_MS);</span>
+                }
+
+<span class="nc" id="L216">                SwingUtilities.invokeLater(() -&gt; {</span>
+<span class="nc" id="L217">                    progressBar.setIndeterminate(false);</span>
+<span class="nc" id="L218">                    progressBar.setValue(PROGRESS_MAX);</span>
+<span class="nc" id="L219">                    statusLabel.setText(&quot;Ολοκληρώθηκε!&quot;);</span>
+
+<span class="nc" id="L221">                    Timer timer = new Timer(DELAY_MS, e -&gt; {</span>
+<span class="nc" id="L222">                        dispose();</span>
+<span class="nc" id="L223">                        String dbPath = &quot;jdbc:sqlite:budget_&quot; + year + &quot;.db&quot;;</span>
+<span class="nc" id="L224">                        new BudgetGUI(dbPath).setVisible(true);</span>
+<span class="nc" id="L225">                    });</span>
+<span class="nc" id="L226">                    timer.setRepeats(false);</span>
+<span class="nc" id="L227">                    timer.start();</span>
+<span class="nc" id="L228">                });</span>
+
+<span class="nc" id="L230">            } catch (Exception ex) {</span>
+<span class="nc" id="L231">                SwingUtilities.invokeLater(() -&gt; {</span>
+<span class="nc" id="L232">                    progressBar.setVisible(false);</span>
+<span class="nc" id="L233">                    statusLabel.setText(&quot;Σφάλμα!&quot;);</span>
+<span class="nc" id="L234">                    startButton.setEnabled(true);</span>
+<span class="nc" id="L235">                    JOptionPane.showMessageDialog(this,</span>
+<span class="nc" id="L236">                            &quot;Σφάλμα: &quot; + ex.getMessage(),</span>
+                            &quot;Error&quot;,
+                            JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L239">                });</span>
+<span class="nc" id="L240">            }</span>
+<span class="nc" id="L241">        }).start();</span>
+<span class="nc" id="L242">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

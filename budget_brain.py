@@ -1,10 +1,11 @@
 import sys
 import sqlite3
 import os
-import time
 import io
+from dotenv import load_dotenv # 1. Import για το .env
 
-# --- 1. ΡΥΘΜΙΣΗ ENCODING (Για Ελληνικά στα Windows) ---
+# --- 1. ΡΥΘΜΙΣΗ ENCODING ---
+# Εξασφαλίζει ότι τα Ελληνικά θα περάσουν σωστά από/προς την Java
 sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
@@ -15,81 +16,115 @@ try:
     from google.genai import types
 except ImportError:
     print("Σφάλμα: Η βιβλιοθήκη 'google-genai' λείπει.")
-    print("Εκτελέστε: pip install google-genai")
     sys.exit(1)
 
-# --- 3. ΦΟΡΤΩΣΗ API KEY ---
-script_dir = os.path.dirname(os.path.abspath(__file__))
-# Ψάχνουμε το κλειδί σε δύο πιθανά σημεία
-key_paths = [
-    os.path.join(script_dir, "statewallet", "api_key.txt"),
-    os.path.join(script_dir, "api_key.txt")
-]
-
-API_KEY = None
-for path in key_paths:
-    try:
-        with open(path, "r", encoding='utf-8') as f:
-            API_KEY = f.read().strip()
-        if API_KEY: break
-    except:
-        continue
+# --- 3. ΦΟΡΤΩΣΗ API KEY ΑΠΟ .ENV (Ο Επαγγελματικός Τρόπος) ---
+load_dotenv() # Διαβάζει το αρχείο .env
+API_KEY = os.getenv("GOOGLE_API_KEY") 
 
 if not API_KEY:
-    print("Σφάλμα: Δεν βρέθηκε το αρχείο api_key.txt")
+    print("Σφάλμα: Δεν βρέθηκε το GOOGLE_API_KEY στο αρχείο .env")
     sys.exit(1)
 
+# --- 4. ΑΡΧΙΚΟΠΟΙΗΣΗ CLIENT ---
 client = genai.Client(api_key=API_KEY)
 
-# --- 4. ΛΙΣΤΑ ΜΟΝΤΕΛΩΝ (ΑΥΤΟΜΑΤΗ ΕΝΑΛΛΑΓΗ) ---
-# Δοκιμάζουμε αυτά τα μοντέλα με τη σειρά μέχρι να πετύχουμε κάποιο ενεργό
-MODEL_LIST = [
-    "gemini-2.0-flash",        # Ο βασικός στόχος
-    "gemini-2.0-flash-lite",   # Ελαφρύ backup
-    "gemini-2.5-flash",        # Σταθερό backup
-    "gemini-2.5-flash-lite"    # Ισχυρό backup
-]
+def get_available_models():
+    """
+    Ρωτάει το API ποια μοντέλα είναι διαθέσιμα αυτή τη στιγμή.
+    Επιστρέφει μια λίστα ταξινομημένη ώστε να προτιμά τα νεότερα.
+    """
+    try:
+        print("🔄 Ανάκτηση λίστας μοντέλων από το Google Cloud...", file=sys.stderr)
+        
+        # Ζητάμε όλα τα μοντέλα
+        all_models = list(client.models.list())
+        
+        candidates = []
+        for m in all_models:
+            # Το m.name συνήθως είναι 'models/gemini-2.0-flash'
+            name = m.name.replace("models/", "")
+            
+            # ΦΙΛΤΡΑ:
+            # 1. Να περιέχει 'gemini'
+            # 2. Να ΜΗΝ είναι 'vision' only (αν θέλουμε κείμενο) ή 'embedding'
+            # 3. Να ΜΗΝ είναι experimental (προαιρετικά, αν θέλουμε σταθερότητα)
+            if "gemini" in name and "embedding" not in name:
+                candidates.append(name)
+        
+        # Ταξινόμηση: Θέλουμε τα μεγαλύτερα νούμερα πρώτα (π.χ. 2.0 > 1.5)
+        # και τα 'pro' πριν τα 'flash' αν έχουν τον ίδιο αριθμό (προτίμηση ποιότητας).
+        candidates.sort(key=lambda x: x, reverse=True)
+        
+        if not candidates:
+            print("⚠️ Δεν βρέθηκαν μοντέλα μέσω API. Χρήση Fallback.", file=sys.stderr)
+            return ["gemini-2.0-flash", "gemini-1.5-flash"] # Έσχατη λύση
+            
+        print(f"✅ Βρέθηκαν {len(candidates)} μοντέλα: {candidates}", file=sys.stderr)
+        return candidates
+
+    except Exception as e:
+        print(f"⚠️ Σφάλμα στην ανάκτηση λίστας: {e}", file=sys.stderr)
+        # Σε περίπτωση που αποτύχει το list()
+        return ["gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash"]
+
+# Καλούμε τη συνάρτηση κατά την εκκίνηση
+MODEL_LIST = get_available_models()
 
 def generate_safe(prompt):
-    """
-    Δοκιμάζει όλα τα μοντέλα της λίστας. Αν αποτύχει το ένα (λόγω ορίου), πάει στο επόμενο.
+    """ 
+    Στέλνει το αίτημα στο Google Gemini με μηχανισμό ασφαλείας (Failover).
+    
+    Δοκιμάζει τα μοντέλα της λίστας MODEL_LIST σειριακά. Αν κάποιο μοντέλο
+    επιστρέψει σφάλμα (π.χ. 429 Too Many Requests ή 503 Service Unavailable),
+    η συνάρτηση δοκιμάζει αυτόματα το επόμενο.
+    
+    Args:
+        prompt (str): Το κείμενο της εντολής προς το AI.
+        
+    Returns:
+        str: Η απάντηση του AI καθαρισμένη από Markdown tags, έτοιμη για HTML render.
     """
     for model_name in MODEL_LIST:
         try:
-            # print(f"👉 Δοκιμή με μοντέλο: {model_name}...", flush=True) # (Για debugging)
+            # print(f"  👉 Δοκιμή με: {model_name}...", file=sys.stderr) Αυτό το χρειάζομαι μόνο αν θεωρώ ότι 
+            # κάτι δε πάει καλά με τα μοντελα και θελω να τα δω
             response = client.models.generate_content(
                 model=model_name,
                 contents=prompt
             )
+            # Καθαρισμός από Markdown ```html αν το στείλει το AI
             if response.text:
-                return response.text
+                return response.text.replace("```html", "").replace("```", "").strip()
                 
         except Exception as e:
             err_msg = str(e)
-            # Αν είναι θέμα υπερφόρτωσης (503) ή ορίου (429), πάμε αμέσως στο επόμενο
+            # Εκτύπωση του πραγματικού σφάλματος στο stderr για να το δεις στην κονσόλα
+            print(f"⚠️ Αποτυχία στο {model_name}: {err_msg}", file=sys.stderr)
             if "429" in err_msg or "503" in err_msg or "ResourceExhausted" in err_msg:
                 continue 
-            # Αν το μοντέλο δεν υπάρχει (404), πάμε στο επόμενο
             elif "NotFound" in err_msg or "404" in err_msg:
                 continue
             else:
-                # Άλλο σφάλμα
                 continue
 
-    return "❌ ΣΦΑΛΜΑ: Κανένα μοντέλο AI δεν είναι διαθέσιμο αυτή τη στιγμή (Όριο Χρήσης)."
+    return "<b>❌ ΣΦΑΛΜΑ:</b> Κανένα μοντέλο AI δεν είναι διαθέσιμο."
 
 # ---------------------------------------------------------
 def get_summary(db_path):
-    """
-    Διαβάζει τη βάση και επιστρέφει τη συνολική οικονομική εικόνα.
-    """
-    # print(f"⏳ Ανάλυση βάσης στο: {db_path}...", flush=True) # Debug
-    try:
-        # Καθαρισμός του path αν έρχεται από Java JDBC URL
-        real_path = db_path.replace("jdbc:sqlite:", "")
+    """ 
+    Ανακτά συνοπτικά οικονομικά δεδομένα από τη βάση SQLite και τα επιστρέφει ως HTML.
+    
+    Args:
+        db_path (str): Το μονοπάτι της βάσης δεδομένων.
         
+    Returns:
+        str: HTML κώδικας (λίστες <ul>, <li>) με τα σύνολα εσόδων/εξόδων και τα top υπουργεία.
+    """
+    try:
+        real_path = db_path.replace("jdbc:sqlite:", "")
         if not os.path.exists(real_path):
-            return f"Σφάλμα: Δεν βρέθηκε η βάση δεδομένων στη διαδρομή: {real_path}"
+            return f"Σφάλμα: Δεν βρέθηκε η βάση: {real_path}"
 
         conn = sqlite3.connect(real_path)
         cursor = conn.cursor()
@@ -100,111 +135,94 @@ def get_summary(db_path):
         cursor.execute("SELECT SUM(amount) FROM eksoda")
         res = cursor.fetchone(); total_expenses = res[0] if res and res[0] else 0
         
-        # Παίρνουμε τα υπουργεία για context
-        cursor.execute("SELECT name, amount FROM ypourgeia ORDER BY amount")
+        # HTML Λίστα για τα υπουργεία
+        cursor.execute("SELECT name, amount FROM ypourgeia ORDER BY amount DESC LIMIT 5")
         ministries = cursor.fetchall()
-        ministries_text = "\n".join([f"- {m[0]}: {m[1]:,.0f}€" for m in ministries])
+        ministries_text = "".join([f"<li><b>{m[0]}</b>: {m[1]:,.0f}€</li>" for m in ministries])
         
         conn.close()
 
         deficit = total_expenses - total_income
-        state = "ΠΛΕΟΝΑΣΜΑ" if deficit < 0 else "ΕΛΛΕΙΜΜΑ"
+        state = "<span style='color:#50fa7b'>ΠΛΕΟΝΑΣΜΑ</span>" if deficit < 0 else "<span style='color:#ff5555'>ΕΛΛΕΙΜΜΑ</span>"
         
         return f"""
-        ΣΥΝΟΠΤΙΚΗ ΕΙΚΟΝΑ ΚΡΑΤΙΚΩΝ ΟΙΚΟΝΟΜΙΚΩΝ:
-        Συνολικά Έσοδα: {total_income:,.0f}€
-        Συνολικά Έξοδα: {total_expenses:,.0f}€
-        Τρέχουσα Κατάσταση: {state} ύψους {abs(deficit):,.0f}€
-        
-        ΔΑΠΑΝΕΣ (ΥΠΟΥΡΓΕΙΑ):
-        {ministries_text}
+        <ul>
+            <li>Συνολικά Έσοδα: <b>{total_income:,.0f}€</b></li>
+            <li>Συνολικά Έξοδα: <b>{total_expenses:,.0f}€</b></li>
+            <li>Κατάσταση: {state} ύψους <b>{abs(deficit):,.0f}€</b></li>
+        </ul>
+        <br>
+        <b>ΚΥΡΙΟΤΕΡΕΣ ΔΑΠΑΝΕΣ:</b>
+        <ul>{ministries_text}</ul>
         """
     except Exception as e:
-        return f"Σφάλμα Βάσης Δεδομένων: {str(e)}"
+        return f"Σφάλμα Βάσης: {str(e)}"
 
 def analyze_specific(db_path, item_name, amount, goal):
-    # Εδώ καλούμε τη συνάρτηση get_summary για να πάρουμε τα δεδομένα
+    """
+    Δημιουργεί Prompt για ανάλυση συγκεκριμένου λογαριασμού και ζητά HTML απάντηση.
+    """
     global_context = get_summary(db_path)
     
-    print("⏳ Ο AI σύμβουλος επεξεργάζεται τα δεδομένα...", flush=True)
-    
+    # Ζητάμε HTML output από το AI
     prompt = f"""
-    Είσαι ο ψηφιακός οικονομικός σύμβουλος του κράτους.
+    Είσαι ο ψηφιακός οικονομικός σύμβουλος.
     
-    --- ΓΕΝΙΚΗ ΕΙΚΟΝΑ ΠΡΟΫΠΟΛΟΓΙΣΜΟΥ ---
+    ΔΕΔΟΜΕΝΑ:
     {global_context}
     
-    --- ΣΤΟΙΧΕΙΑ ΣΥΓΚΕΚΡΙΜΕΝΟΥ ΛΟΓΑΡΙΑΣΜΟΥ ---
-    Λογαριασμός: '{item_name}'
-    Τρέχον Ποσό: {amount} EUR
-    
-    --- ΣΤΟΧΟΣ ΧΡΗΣΤΗ ---
-    "{goal}"
+    ΛΟΓΑΡΙΑΣΜΟΣ: '{item_name}' (Ποσό: {amount}€)
+    ΣΤΟΧΟΣ: "{goal}"
     
     ΟΔΗΓΙΕΣ:
-    1. Ανάλυσε τον στόχο του χρήστη για τον συγκεκριμένο λογαριασμό.
-    2. ΛΑΒΕ ΥΠΟΨΗ τη Γενική Εικόνα. (Π.χ. αν ζητάει αύξηση δαπάνης ενώ υπάρχει τεράστιο έλλειμμα, προειδοποίησέ τον).
-    3. Πρότεινε μια συγκεκριμένη κίνηση (π.χ. "Μείωση κατά 10%") ή εξήγησε γιατί δεν είναι εφικτό.
-    4. Απάντησε σύντομα και περιεκτικά στα Ελληνικά.
+    1. Απάντησε χρησιμοποιώντας **ΜΟΝΟ HTML** tags (χωρίς <html> ή <body>).
+    2. Χρησιμοποίησε <b>για έντονα</b>, <ul><li>για λίστες</li></ul>.
+    3. ΜΗΝ χρησιμοποιείς Markdown (** ή *).
+    4. Αν προτείνεις μείωση, γράψτο με <span style='color:#ff5555'>κόκκινο</span>.
+    5. Αν προτείνεις αύξηση/κέρδος, γράψτο με <span style='color:#50fa7b'>πράσινο</span>.
+    6. Σχετικά σύντομα και περιεκτικά στα Ελληνικά.
     """
     print(generate_safe(prompt))
 
 def analyze_global(db_path, goal):
-    # Εδώ καλούμε τη συνάρτηση get_summary
+    """
+    Δημιουργεί Prompt για τη γενική στρατηγική και ζητά HTML απάντηση.
+    """
     global_context = get_summary(db_path)
     
-    print("⏳ Ο AI σύμβουλος σκέφτεται...", flush=True)
-
     prompt = f"""
-    Είσαι ο ψηφιακός οικονομικός σύμβουλος του κράτους.
+    Είσαι ο ψηφιακός οικονομικός σύμβουλος.
     
-    --- ΟΙΚΟΝΟΜΙΚΑ ΔΕΔΟΜΕΝΑ ---
+    ΔΕΔΟΜΕΝΑ:
     {global_context}
     
-    --- ΕΝΤΟΛΗ ΧΡΗΣΤΗ ---
-    "{goal}"
+    ΕΝΤΟΛΗ: "{goal}"
     
     ΟΔΗΓΙΕΣ:
-    1. Πρότεινε μέχρι 5 συγκεκριμένες στρατηγικές κινήσεις (περικοπές/αυξήσεις) για να επιτευχθεί η εντολή.
-    2. Αν ζητείται εξεύρεση χρημάτων, εντόπισε από ποιο υπουργείο θα κόψεις ώστε να είναι το λιγότερο ζημιωγόνο.
-    3. Αν ο στόχος είναι ανέφικτος (π.χ. "Μηδενισμός ελλείμματος" όταν είναι τεράστιο), εξήγησε γιατί.
-    4. Απάντησε με αριθμημένη λίστα στα Ελληνικά.
+    1. Απάντησε χρησιμοποιώντας **ΜΟΝΟ HTML** tags (χωρίς <html> ή <body>).
+    2. Χρησιμοποίησε <h3> για τίτλους, <b> για έντονα.
+    3. Χρησιμοποίησε <ol><li> για τα βήματα στρατηγικής.
+    4. ΜΗΝ χρησιμοποιείς Markdown (**).
+    5. Βάλε τα ποσά σε <b>bold</b>.
+    6. Σύντομα στα Ελληνικά.
     """
     print(generate_safe(prompt))
 
-# --- ΚΥΡΙΑ ΕΚΤΕΛΕΣΗ (MAIN) ---
 if __name__ == "__main__":
+    if len(sys.argv) < 3: sys.exit(1)
     
-    # Χρειαζόμαστε τουλάχιστον: όνομα script, mode, db_path
-    if len(sys.argv) < 3:
-        # print("Χρήση: python budget_brain.py [global/specific] [db_path] [optional_args...]")
-        sys.exit(1)
-
     mode = sys.argv[1]
-    db_path = sys.argv[2] # Το db_path είναι πάντα το 2ο όρισμα πλέον
-
-    # --- ΛΗΨΗ ΣΤΟΧΟΥ (INPUT) ---
+    db_path = sys.argv[2]
+    
     goal = ""
-    # Προσπάθεια ανάγνωσης από το pipe (αν το στέλνει η Java)
+    # Ανάγνωση του στόχου από το stdin (μέσω pipe από την Java)
     if not sys.stdin.isatty():
-        try:
-            goal = sys.stdin.read().strip()
+        try: goal = sys.stdin.read().strip()
         except: pass
+    if not goal: goal = "Γενική Ανάλυση"
 
-    # Αν δεν υπάρχει στόχος, βάζουμε έναν γενικό
-    if not goal:
-        goal = "Γενική Ανάλυση"
-
-    # --- ΕΚΤΕΛΕΣΗ ΛΕΙΤΟΥΡΓΙΩΝ ---
     if mode == "specific":
-        # Αναμένουμε: python budget_brain.py specific <db_path> <name> <amount>
         if len(sys.argv) >= 5:
-            item_name = sys.argv[3]
-            amount = sys.argv[4]
-            analyze_specific(db_path, item_name, amount, goal)
-        else:
-            print("Σφάλμα: Λείπουν ορίσματα για το specific mode (όνομα, ποσό).")
-            
+            analyze_specific(db_path, sys.argv[3], sys.argv[4], goal)
     elif mode == "global":
-        # Αναμένουμε: python budget_brain.py global <db_path>
         analyze_global(db_path, goal)

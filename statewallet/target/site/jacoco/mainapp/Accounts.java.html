@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Accounts.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">Accounts.java</span></div><h1>Accounts.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+/**
+ * Διαχειρίζεται τους λογαριασμούς χρηστών (δημιουργία, σύνδεση, ανάκτηση).
+ */
+<span class="fc" id="L14">public final class Accounts {</span>
+
+    /** Το URL σύνδεσης με τη βάση δεδομένων. */
+    private static final String DB_URL = &quot;jdbc:sqlite:accounts.db&quot;;
+    /** Ελάχιστο μήκος κωδικού πρόσβασης. */
+    private static final int MIN_PASS_LENGTH = 8;
+    /** Δείκτης παραμέτρου SQL 1. */
+    private static final int IDX_1 = 1;
+    /** Δείκτης παραμέτρου SQL 2. */
+    private static final int IDX_2 = 2;
+    /** Δείκτης παραμέτρου SQL 3. */
+    private static final int IDX_3 = 3;
+
+    /**
+     * Δημιουργεί τον πίνακα account στη βάση δεδομένων αν δεν υπάρχει.
+     */
+    public void createTable() {
+<span class="fc" id="L31">        String sql = &quot;CREATE TABLE account (&quot;</span>
+                + &quot;username TEXT NOT NULL, &quot;
+                + &quot;password TEXT NOT NULL, &quot;
+                + &quot;numID TEXT NOT NULL&quot;
+                + &quot;);&quot;;
+<span class="fc" id="L36">        try (Connection conn = DriverManager.getConnection(DB_URL);</span>
+<span class="fc" id="L37">             Statement stmt = conn.createStatement()) {</span>
+<span class="nc" id="L38">            stmt.execute(sql);</span>
+<span class="nc" id="L39">            System.out.println(&quot;Ο πίνακας δημιουργήθηκε!&quot;);</span>
+<span class="fc" id="L40">        } catch (SQLException e) {</span>
+<span class="fc" id="L41">            System.err.println(e.getMessage());</span>
+<span class="nc" id="L42">        }</span>
+<span class="fc" id="L43">    }</span>
+
+    /**
+     * Δημιουργεί έναν νέο λογαριασμό χρήστη.
+     *
+     * @param name   Το όνομα χρήστη.
+     * @param pass   Ο κωδικός πρόσβασης.
+     * @param numID  Ο αριθμός ταυτότητας.
+     */
+    public void createAccount(final String name, final String pass,
+                              final String numID) {
+<span class="fc" id="L54">        String sql = &quot;INSERT INTO account(username, password, numID) &quot;</span>
+                + &quot;VALUES(?, ?, ?)&quot;;
+<span class="fc" id="L56">        try (Connection conn = DriverManager.getConnection(DB_URL);</span>
+<span class="fc" id="L57">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L58">            pstmt.setString(IDX_1, name);</span>
+<span class="fc" id="L59">            pstmt.setString(IDX_2, pass);</span>
+<span class="fc" id="L60">            pstmt.setString(IDX_3, numID);</span>
+<span class="fc" id="L61">            pstmt.executeUpdate();</span>
+<span class="fc" id="L62">            System.out.println(&quot;Ο λογαριασμός σας δημιουργήθηκε!&quot;);</span>
+<span class="nc" id="L63">        } catch (SQLException e) {</span>
+<span class="nc" id="L64">            System.err.println(e.getMessage());</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">    }</span>
+
+    /**
+     * Ανακτά τον κωδικό πρόσβασης για ένα συγκεκριμένο όνομα χρήστη.
+     *
+     * @param username Το όνομα χρήστη.
+     * @return Ο κωδικός πρόσβασης ή null αν δεν βρεθεί.
+     */
+    public String getPassword(final String username) {
+<span class="fc" id="L75">        String sql = &quot;SELECT password FROM account WHERE username = ?&quot;;</span>
+<span class="fc" id="L76">        String password = null;</span>
+<span class="fc" id="L77">        try (Connection conn = DriverManager.getConnection(DB_URL);</span>
+<span class="fc" id="L78">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L79">            pstmt.setString(IDX_1, username);</span>
+<span class="fc" id="L80">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">                if (rs.next()) {</span>
+<span class="fc" id="L82">                    password = rs.getString(&quot;password&quot;);</span>
+                } else {
+<span class="fc" id="L84">                    System.out.println(&quot;Ο χρήστης &quot; + username</span>
+                            + &quot; δεν βρέθηκε.&quot;);
+                }
+            }
+<span class="nc" id="L88">        } catch (SQLException e) {</span>
+<span class="nc" id="L89">            System.err.println(e.getMessage());</span>
+<span class="fc" id="L90">        }</span>
+<span class="fc" id="L91">        return password;</span>
+    }
+
+    /**
+     * Ελέγχει αν τα διαπιστευτήρια σύνδεσης είναι σωστά.
+     *
+     * @param pass1 Ο αποθηκευμένος κωδικός (από τη βάση).
+     * @param pass2 Ο κωδικός που έδωσε ο χρήστης.
+     * @return true αν ταιριάζουν, false διαφορετικά.
+     */
+    public boolean logIn(final String pass1, final String pass2) {
+<span class="fc bfc" id="L102" title="All 4 branches covered.">        if (pass1 != null &amp;&amp; pass1.equals(pass2)) {</span>
+<span class="fc" id="L103">            System.out.println(&quot;Επιτυχής σύνδεση! Καλωσορίσατε!&quot;);</span>
+<span class="fc" id="L104">            return true;</span>
+        } else {
+<span class="fc" id="L106">            System.out.println(&quot;Λάθος κωδικός! Δοκιμάστε ξανά&quot;);</span>
+<span class="fc" id="L107">            return false;</span>
+        }
+    }
+
+    /**
+     * Ενημερώνει τον κωδικό πρόσβασης ενός χρήστη.
+     *
+     * @param password Ο νέος κωδικός.
+     * @param name     Το όνομα χρήστη.
+     */
+    public void newPass(final String password, final String name) {
+<span class="fc" id="L118">        String sql = &quot;UPDATE account SET password = ? WHERE username = ?&quot;;</span>
+<span class="fc" id="L119">        try (Connection conn = DriverManager.getConnection(DB_URL);</span>
+<span class="fc" id="L120">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L121">            pstmt.setString(IDX_1, password);</span>
+<span class="fc" id="L122">            pstmt.setString(IDX_2, name);</span>
+<span class="fc" id="L123">            pstmt.executeUpdate();</span>
+<span class="fc" id="L124">            System.out.println(&quot;Ο νέος κωδικός είναι &quot; + password);</span>
+<span class="nc" id="L125">        } catch (SQLException e) {</span>
+<span class="nc" id="L126">            System.err.println(&quot;Σφάλμα στη βάση δεδομένων: &quot; + e.getMessage());</span>
+<span class="fc" id="L127">        }</span>
+<span class="fc" id="L128">    }</span>
+
+    /**
+     * Ελέγχει την εγκυρότητα ενός κωδικού πρόσβασης.
+     *
+     * @param password Ο κωδικός προς έλεγχο.
+     * @return true αν ο κωδικός πληροί τα κριτήρια ασφαλείας.
+     */
+    public static boolean validatePassword(final String password) {
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (password.length() &lt; MIN_PASS_LENGTH) {</span>
+<span class="fc" id="L138">            System.out.println(&quot;Σφάλμα: Ο κωδικός πρέπει να έχει &quot;</span>
+                    + &quot;τουλάχιστον 8 χαρακτήρες.&quot;);
+<span class="fc" id="L140">            return false;</span>
+        }
+
+<span class="fc" id="L143">        boolean hasUpper = false;</span>
+<span class="fc" id="L144">        boolean hasLower = false;</span>
+<span class="fc" id="L145">        boolean hasDigit = false;</span>
+<span class="fc" id="L146">        boolean hasSpecial = false;</span>
+<span class="fc" id="L147">        String specialChars = &quot;#@$!%^&amp;*()-_=+&quot;;</span>
+
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        for (char c : password.toCharArray()) {</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">            if (Character.isUpperCase(c)) {</span>
+<span class="fc" id="L151">                hasUpper = true;</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">            } else if (Character.isLowerCase(c)) {</span>
+<span class="fc" id="L153">                hasLower = true;</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">            } else if (Character.isDigit(c)) {</span>
+<span class="fc" id="L155">                hasDigit = true;</span>
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">            } else if (specialChars.indexOf(c) &gt;= 0) {</span>
+<span class="fc" id="L157">                hasSpecial = true;</span>
+            }
+        }
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        if (!hasUpper) {</span>
+<span class="fc" id="L162">            System.out.println(&quot;Σφάλμα: Πρέπει να περιέχει κεφαλαίο γράμμα.&quot;);</span>
+<span class="fc" id="L163">            return false;</span>
+        }
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        if (!hasLower) {</span>
+<span class="fc" id="L166">            System.out.println(&quot;Σφάλμα: Πρέπει να περιέχει πεζό γράμμα.&quot;);</span>
+<span class="fc" id="L167">            return false;</span>
+        }
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (!hasDigit) {</span>
+<span class="fc" id="L170">            System.out.println(&quot;Σφάλμα: Πρέπει να περιέχει αριθμό.&quot;);</span>
+<span class="fc" id="L171">            return false;</span>
+        }
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        if (!hasSpecial) {</span>
+<span class="fc" id="L174">            System.out.println(&quot;Σφάλμα: Πρέπει να περιέχει ειδικό χαρακτήρα.&quot;);</span>
+<span class="fc" id="L175">            return false;</span>
+        }
+
+<span class="fc" id="L178">        System.out.println(&quot;Ο κωδικός είναι έγκυρος!&quot;);</span>
+<span class="fc" id="L179">        return true;</span>
+    }
+
+    /**
+     * Διαδικασία ανάκτησης κωδικού μέσω ταυτοποίησης με αριθμό ταυτότητας.
+     *
+     * @param username Το όνομα χρήστη που ξέχασε τον κωδικό.
+     */
+    public void forgotPass(final String username) {
+<span class="fc" id="L188">        Scanner scanner = new Scanner(System.in);</span>
+<span class="fc" id="L189">        System.out.println(&quot;Για την ανάκτηση του κωδικού σας απαιτείται &quot;</span>
+                + &quot;ταυτοποίηση μέσω του αριθμού ταυτότητας.&quot;
+                + &quot; Εισάγετε τον αριθμό ταυτότητάς σας!&quot;
+        );
+<span class="nc" id="L193">        String numID = scanner.nextLine();</span>
+<span class="nc" id="L194">        String realID = getId(username);</span>
+<span class="nc bnc" id="L195" title="All 4 branches missed.">        if (realID != null &amp;&amp; realID.equals(numID)) {</span>
+<span class="nc" id="L196">            String pass = getPassword(username);</span>
+<span class="nc" id="L197">            System.out.println(&quot;Επιτυχής ανάκτηση! Ο κωδικός είναι: &quot; + pass);</span>
+<span class="nc" id="L198">        } else {</span>
+<span class="nc" id="L199">            System.out.println(&quot;Αποτυχημένη προσπάθεια ανάκτησης!&quot;);</span>
+        }
+<span class="nc" id="L201">    }</span>
+
+    /**
+     * Ανακτά τον αριθμό ταυτότητας που συνδέεται με ένα όνομα χρήστη.
+     *
+     * @param username Το όνομα χρήστη.
+     * @return Ο αριθμός ταυτότητας ή null αν δεν βρεθεί.
+     */
+    public String getId(final String username) {
+<span class="fc" id="L210">        String sql = &quot;SELECT numID FROM account WHERE username = ?&quot;;</span>
+<span class="fc" id="L211">        String numID = null;</span>
+<span class="fc" id="L212">        try (Connection conn = DriverManager.getConnection(DB_URL);</span>
+<span class="fc" id="L213">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L214">            pstmt.setString(IDX_1, username);</span>
+<span class="fc" id="L215">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">                if (rs.next()) {</span>
+<span class="fc" id="L217">                    numID = rs.getString(&quot;numID&quot;);</span>
+                } else {
+<span class="fc" id="L219">                    System.out.println(&quot;Ο χρήστης &quot; + username</span>
+                            + &quot; δεν βρέθηκε.&quot;);
+                }
+            }
+<span class="nc" id="L223">        } catch (SQLException e) {</span>
+<span class="nc" id="L224">            System.err.println(e.getMessage());</span>
+<span class="fc" id="L225">        }</span>
+<span class="fc" id="L226">        return numID;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

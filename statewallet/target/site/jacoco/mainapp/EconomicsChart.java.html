@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EconomicsChart.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">EconomicsChart.java</span></div><h1>EconomicsChart.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.Random;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+/**
+ * Παρέχει μεθόδους για την απεικόνιση οικονομικών δεδομένων σε γραφήματα
+ * (Line Chart &amp; Pie Chart).
+ */
+<span class="fc" id="L25">public class EconomicsChart {</span>
+
+    // Σταθερές Line Chart
+    /** Πλάτος παραθύρου γραφήματος γραμμής. */
+    private static final int LINE_CHART_W = 800;
+    /** Ύψος παραθύρου γραφήματος γραμμής. */
+    private static final int LINE_CHART_H = 600;
+    /** Ανώτατο όριο άξονα Υ. */
+    private static final double Y_AXIS_UPPER = 10.0;
+    /** Βήμα άξονα Υ. */
+    private static final double Y_AXIS_TICK = 1.0;
+
+    // Σταθερές Pie Chart
+    /** Πλάτος παραθύρου πίτας. */
+    private static final int PIE_FRAME_W = 1100;
+    /** Ύψος παραθύρου πίτας. */
+    private static final int PIE_FRAME_H = 600;
+    /** Μέγεθος πίτας. */
+    private static final int PIE_SIZE = 380;
+    /** Θέση Χ πίτας. */
+    private static final int PIE_X = 50;
+    /** Θέση Υ πίτας. */
+    private static final int PIE_Y = 80;
+    /** Αρχική γωνία σχεδίασης. */
+    private static final double START_ANGLE = 90.0;
+    /** Πλήρης κύκλος (μοίρες). */
+    private static final double FULL_CIRCLE = 360.0;
+    /** Όριο τυχαίου χρώματος (για αποφυγή πολύ ανοιχτών χρωμάτων). */
+    private static final int COLOR_LIMIT = 200;
+    /** Σπόρος για τυχαίους αριθμούς. */
+    private static final int RANDOM_SEED = 42;
+    /** Πάχος γραμμής περιγράμματος. */
+    private static final float STROKE_WIDTH = 1.2f;
+
+    // Σταθερές Legend (Υπόμνημα)
+    /** Γραμμές ανά στήλη υπομνήματος. */
+    private static final int ROWS_PER_COL = 6;
+    /** Offset στήλης υπομνήματος. */
+    private static final int COL_OFFSET = 320;
+    /** Offset γραμμής υπομνήματος. */
+    private static final int ROW_OFFSET = 40;
+    /** Βασική θέση Χ υπομνήματος. */
+    private static final int LEGEND_X_BASE = 70;
+    /** Πλάτος κουτιού χρώματος. */
+    private static final int BOX_W = 25;
+    /** Ύψος κουτιού χρώματος. */
+    private static final int BOX_H = 18;
+    /** Γωνία καμπυλότητας κουτιού (W). */
+    private static final int ARC_W = 5;
+    /** Γωνία καμπυλότητας κουτιού (H). */
+    private static final int ARC_H = 5;
+    /** Offset κειμένου Χ. */
+    private static final int TEXT_X_OFFSET = 35;
+    /** Offset κειμένου Υ. */
+    private static final int TEXT_Y_OFFSET = 14;
+    /** Μέγεθος γραμματοσειράς. */
+    private static final int FONT_SIZE = 12;
+    /** Πολλαπλασιαστής ποσοστού. */
+    private static final int PERCENT_MULT = 100;
+
+    /**
+     * Εμφανίζει ένα γραμμικό διάγραμμα (Line Chart) χρησιμοποιώντας JavaFX.
+     *
+     * @param titlos  Ο τίτλος του γραφήματος.
+     * @param xronies Πίνακας με τα έτη (άξονας Χ).
+     * @param vathmoi Πίνακας με τους βαθμούς (άξονας Υ).
+     */
+    public void displayGraph(final String titlos, final String[] xronies,
+                             final double[] vathmoi) {
+        // Απαραίτητο για να αρχικοποιηθεί το JavaFX αν καλείται από main
+<span class="fc" id="L95">        new JFXPanel();</span>
+
+<span class="fc" id="L97">        Platform.runLater(() -&gt; {</span>
+<span class="fc" id="L98">            Stage stage = new Stage();</span>
+<span class="fc" id="L99">            stage.setTitle(titlos);</span>
+
+<span class="fc" id="L101">            final CategoryAxis xAxis = new CategoryAxis();</span>
+<span class="fc" id="L102">            xAxis.setLabel(&quot;Έτος&quot;);</span>
+
+<span class="fc" id="L104">            final NumberAxis yAxis = new NumberAxis(0, Y_AXIS_UPPER,</span>
+                    Y_AXIS_TICK);
+<span class="fc" id="L106">            yAxis.setLabel(&quot;Βαθμός (0-10)&quot;);</span>
+
+<span class="fc" id="L108">            final LineChart&lt;String, Number&gt; lineChart</span>
+                    = new LineChart&lt;&gt;(xAxis, yAxis);
+<span class="fc" id="L110">            lineChart.setTitle(titlos);</span>
+
+<span class="fc" id="L112">            XYChart.Series&lt;String, Number&gt; series = new XYChart.Series&lt;&gt;();</span>
+<span class="fc" id="L113">            series.setName(&quot;Διακύμανση Αποδοτικότητας&quot;);</span>
+
+            // Γέμισμα δεδομένων από τους πίνακες
+<span class="fc bfc" id="L116" title="All 2 branches covered.">            for (int i = 0; i &lt; vathmoi.length; i++) {</span>
+<span class="fc" id="L117">                series.getData().add(new XYChart.Data&lt;&gt;(xronies[i],</span>
+<span class="fc" id="L118">                        vathmoi[i]));</span>
+            }
+
+<span class="fc" id="L121">            Scene scene = new Scene(lineChart, LINE_CHART_W, LINE_CHART_H);</span>
+<span class="fc" id="L122">            lineChart.getData().add(series);</span>
+
+<span class="fc" id="L124">            stage.setScene(scene);</span>
+<span class="fc" id="L125">            stage.show();</span>
+<span class="fc" id="L126">        });</span>
+<span class="fc" id="L127">    }</span>
+
+    /**
+     * Εμφανίζει ένα διάγραμμα πίτας (Pie Chart) χρησιμοποιώντας Java Swing.
+     *
+     * @param names       Οι ονομασίες των κατηγοριών.
+     * @param percentages Τα ποσοστά συμμετοχής (0.0 - 1.0).
+     */
+    public void showPieChart(final String[] names,
+                             final double[] percentages) {
+<span class="fc" id="L137">        JFrame frame = new JFrame(&quot;Ανάλυση Οικονομικών Μεγεθών&quot;);</span>
+<span class="fc" id="L138">        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+
+<span class="fc" id="L140">        JPanel panel = new JPanel() {</span>
+            @Override
+            protected void paintComponent(final Graphics g) {
+<span class="nc" id="L143">                super.paintComponent(g);</span>
+<span class="nc" id="L144">                drawPie(g, names, percentages);</span>
+<span class="nc" id="L145">            }</span>
+        };
+
+<span class="fc" id="L148">        frame.add(panel);</span>
+        // Πλάτος για να χωρέσουν οι 2 στήλες ονομάτων
+<span class="fc" id="L150">        frame.setSize(PIE_FRAME_W, PIE_FRAME_H);</span>
+<span class="fc" id="L151">        frame.setLocationRelativeTo(null);</span>
+<span class="fc" id="L152">        frame.setVisible(true);</span>
+<span class="fc" id="L153">    }</span>
+
+    private void drawPie(final Graphics g, final String[] labels,
+                         final double[] values) {
+<span class="nc" id="L157">        Graphics2D g2d = (Graphics2D) g;</span>
+<span class="nc" id="L158">        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,</span>
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+<span class="nc" id="L161">        double startAngle = START_ANGLE;</span>
+<span class="nc" id="L162">        Random rand = new Random(RANDOM_SEED);</span>
+
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        for (int i = 0; i &lt; values.length; i++) {</span>
+            // Υπολογισμός μοιρών
+<span class="nc" id="L166">            double arcAngle = values[i] * FULL_CIRCLE;</span>
+
+            // Επιλογή χρώματος
+<span class="nc" id="L169">            Color c = new Color(rand.nextInt(COLOR_LIMIT),</span>
+<span class="nc" id="L170">                    rand.nextInt(COLOR_LIMIT), rand.nextInt(COLOR_LIMIT));</span>
+<span class="nc" id="L171">            g2d.setColor(c);</span>
+
+            // Σχεδίαση κομματιού (αρνητικό arcAngle για δεξιόστροφη φορά)
+<span class="nc" id="L174">            g2d.fillArc(PIE_X, PIE_Y, PIE_SIZE, PIE_SIZE,</span>
+<span class="nc" id="L175">                    (int) Math.round(startAngle),</span>
+<span class="nc" id="L176">                    (int) Math.round(-arcAngle));</span>
+
+            // ΛΕΥΚΟ ΠΕΡΙΓΡΑΜΜΑ
+<span class="nc" id="L179">            g2d.setColor(Color.WHITE);</span>
+<span class="nc" id="L180">            g2d.setStroke(new BasicStroke(STROKE_WIDTH));</span>
+<span class="nc" id="L181">            g2d.drawArc(PIE_X, PIE_Y, PIE_SIZE, PIE_SIZE,</span>
+<span class="nc" id="L182">                    (int) Math.round(startAngle),</span>
+<span class="nc" id="L183">                    (int) Math.round(-arcAngle));</span>
+
+            // --- ΥΠΟΜΝΗΜΑ ΣΕ 2 ΣΤΗΛΕΣ ---
+<span class="nc" id="L186">            int column = i / ROWS_PER_COL;</span>
+<span class="nc" id="L187">            int row = i % ROWS_PER_COL;</span>
+<span class="nc" id="L188">            int lx = PIE_X + PIE_SIZE + LEGEND_X_BASE</span>
+                    + (column * COL_OFFSET);
+<span class="nc" id="L190">            int ly = PIE_Y + (row * ROW_OFFSET);</span>
+
+<span class="nc" id="L192">            g2d.setColor(c);</span>
+<span class="nc" id="L193">            g2d.fillRoundRect(lx, ly, BOX_W, BOX_H, ARC_W, ARC_H);</span>
+
+<span class="nc" id="L195">            g2d.setColor(Color.DARK_GRAY);</span>
+<span class="nc" id="L196">            g2d.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE));</span>
+
+<span class="nc" id="L198">            String text = labels[i] + &quot; (&quot;</span>
+<span class="nc" id="L199">                    + String.format(&quot;%.2f&quot;, values[i] * PERCENT_MULT)</span>
+                    + &quot;%)&quot;;
+<span class="nc" id="L201">            g2d.drawString(text, lx + TEXT_X_OFFSET, ly + TEXT_Y_OFFSET);</span>
+
+<span class="nc" id="L203">            startAngle -= arcAngle; // Ενημέρωση γωνίας</span>
+        }
+<span class="nc" id="L205">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Weights.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">Weights.java</span></div><h1>Weights.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.util.Scanner;
+
+/**
+ * Διαχειρίζεται την εισαγωγή και τον υπολογισμό των βαρών για την εξαγωγή
+ * των τελικών βαθμών αξιολόγησης.
+ */
+public final class Weights {
+
+    /** Μέγεθος πίνακα βαρών. */
+    private static final int ARRAY_SIZE = 10;
+    /** Όριο δεικτών για οικονομικά στοιχεία. */
+    private static final int ECON_LIMIT = 3;
+    /** Όριο δεικτών για περιβαλλοντικά στοιχεία. */
+    private static final int ENV_LIMIT = 6;
+    /** Όριο δεικτών για κοινωνικά στοιχεία. */
+    private static final int SOC_LIMIT = 10;
+    /** Ελάχιστο επιτρεπτό βάρος. */
+    private static final double MIN_WEIGHT = 0.0;
+    /** Μέγιστο επιτρεπτό βάρος. */
+    private static final double MAX_WEIGHT = 1.0;
+    /** Ανοχή για συγκρίσεις double. */
+    private static final double TOLERANCE = 0.001;
+    /** Μέγεθος πίνακα διαφορών. */
+    private static final int DIFF_ARRAY_SIZE = 7;
+    /** Μέγεθος πίνακα βαθμών (έτη). */
+    private static final int GRADES_ARRAY_SIZE = 8;
+    /** Έτος έναρξης ανάλυσης. */
+    private static final int START_YEAR = 2018;
+
+    // Δείκτες πίνακα δεδομένων (Data Indices)
+    /** Δείκτης ΑΕΠ. */
+    private static final int IDX_GDP = 0;
+    /** Δείκτης Χρέους. */
+    private static final int IDX_DEBT = 1;
+    /** Δείκτης Πλεονάσματος. */
+    private static final int IDX_SURP = 2;
+    /** Δείκτης ΑΠΕ. */
+    private static final int IDX_RES = 3;
+    /** Δείκτης Ανακύκλωσης. */
+    private static final int IDX_REC = 4;
+    /** Δείκτης Ρύπων. */
+    private static final int IDX_EMM = 5;
+    /** Δείκτης GINI. */
+    private static final int IDX_GINI = 6;
+    /** Δείκτης Υγείας. */
+    private static final int IDX_HEALTH = 7;
+    /** Δείκτης Ψυχικής Υγείας. */
+    private static final int IDX_MENTAL = 8;
+    /** Δείκτης Εγκληματικότητας. */
+    private static final int IDX_CRIME = 9;
+
+    /** Το αντικείμενο Scanner για είσοδο. */
+    private final Scanner scanner;
+
+    /**
+     * Κατασκευαστής.
+     *
+     * @param inputScanner Ο Scanner για την ανάγνωση εισόδου.
+     */
+<span class="fc" id="L62">    public Weights(final Scanner inputScanner) {</span>
+<span class="fc" id="L63">        this.scanner = inputScanner;</span>
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * Ζητάει από τον χρήστη να εισάγει ένα βάρος (0-1).
+     *
+     * @return Το βάρος που εισήχθη.
+     */
+    public double getWeight() {
+<span class="fc" id="L72">        boolean flag = false;</span>
+        double weight;
+        do {
+            try {
+<span class="fc" id="L76">                weight = scanner.nextDouble();</span>
+<span class="pc bpc" id="L77" title="2 of 4 branches missed.">                if (weight &lt; MIN_WEIGHT || weight &gt; MAX_WEIGHT) {</span>
+<span class="nc" id="L78">                    System.out.println(&quot;Παρακαλώ εισάγετε αριθμό&quot;</span>
+                            + &quot; μεταξύ του 0 και του 1&quot;);
+                } else {
+<span class="fc" id="L81">                    flag = true;</span>
+                }
+<span class="nc" id="L83">            } catch (Exception e) {</span>
+<span class="nc" id="L84">                System.out.println(&quot;Μη έγκυρη είσοδος. &quot;</span>
+                        + &quot;Δώστε αριθμό (π.χ 0,5):&quot;);
+<span class="nc" id="L86">                scanner.nextLine(); // Καθαρισμός buffer</span>
+<span class="nc" id="L87">                weight = -1; // Συνεχίζει το loop</span>
+<span class="fc" id="L88">            }</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        } while (!flag);</span>
+<span class="fc" id="L90">        return weight;</span>
+    }
+
+    /**
+     * Υπολογίζει και εμφανίζει τα ποσοστά επίδρασης των στοιχείων στον τελικό
+     * βαθμό.
+     *
+     * @param a  Ο πίνακας των βαθμών των επιμέρους στοιχείων.
+     * @param w1 Το βάρος για τα οικονομικά στοιχεία.
+     * @param w2 Το βάρος για τα περιβαλλοντικά στοιχεία.
+     * @param w3 Το βάρος για τα κοινωνικά στοιχεία.
+     * @return Πίνακας με τα τελικά ποσοστά επίδρασης.
+     */
+    public double[] showTotalWeights(final double[] a, final double w1,
+                                     final double w2, final double w3) {
+<span class="fc" id="L105">        double[] totalPercentage = new double[ARRAY_SIZE];</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        for (int i = 0; i &lt; ARRAY_SIZE; i++) {</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">            if (i &lt; ECON_LIMIT) {</span>
+<span class="fc" id="L108">                totalPercentage[i] = w1 * a[i];</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            } else if (i &lt; ENV_LIMIT) {</span>
+<span class="fc" id="L110">                totalPercentage[i] = w2 * a[i];</span>
+            } else {
+<span class="fc" id="L112">                totalPercentage[i] = w3 * a[i];</span>
+            }
+        }
+<span class="fc" id="L115">        String[] names = {</span>
+            &quot;MΕΤΑΒΟΛΗ ΑΕΠ&quot;,
+            &quot;ΔΗΜΟΣΙΟ ΧΡΕΟΣ ΩΣ ΠΟΣΟΣΤΟ ΑΕΠ&quot;,
+            &quot;ΠΡΩΤΟΓΕΝΕΣ ΠΛΕΟΝΑΣΜΑ&quot;,
+            &quot;ΑΝΑΝΕΩΣΙΜΕΣ ΠΗΓΕΣ ΕΝΕΡΓΕΙΑΣ&quot;,
+            &quot;ΠΟΣΟΣΤΟ ΑΝΑΚΥΚΛΩΣΗΣ&quot;,
+            &quot;ΜΕΤΑΒΟΛΗ ΡΥΠΩΝ&quot;,
+            &quot;ΔΕΙΚΤΗΣ GINI&quot;,
+            &quot;ΕΞΟΔΑ ΓΙΑ ΥΓΕΙΑ ΚΑΙ ΠΑΙΔΕΙΑ&quot;,
+            &quot;ΠΟΣΟΣΤΟ ΑΝΘΡΩΠΩΝ ΜΕ ΠΡΟΒΛΗΜΑΤΑ ΨΥΧΙΚΗΣ ΥΓΕΙΑΣ&quot;,
+            &quot;ΜΕΤΑΒΟΛΗ ΕΓΚΛΗΜΑΤΙΚΟΤΗΤΑΣ&quot;
+        };
+<span class="fc" id="L127">        System.out.println(&quot;Τα επιμέρους στοιχεία που χρησιμοποιήθηκαν &quot;</span>
+                + &quot;για τον υπολογισμό του τελικού βαθμού και οι τελικές &quot;
+                + &quot;ποσοστιαίες επιδράσεις τους στον τελικό βαθμό είναι: &quot;
+        );
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        for (int i = 0; i &lt; ARRAY_SIZE; i++) {</span>
+<span class="fc" id="L132">            System.out.println(&quot;Στοιχείο: &quot; + names[i]</span>
+                    + &quot; Ποσοστό: &quot;
+<span class="fc" id="L134">                    + String.format(&quot;%.2f&quot;, totalPercentage[i]));</span>
+        }
+<span class="fc" id="L136">        return totalPercentage;</span>
+    }
+
+    /**
+     * Υπολογίζει τους βαθμούς για όλα τα έτη και εμφανίζει συγκριτικά
+     * αποτελέσματα.
+     *
+     * @param a Τα βάρη των επιμέρους στοιχείων.
+     */
+    public void getAllGrades(final double[] a) {
+<span class="fc" id="L146">        int[] years = new int[GRADES_ARRAY_SIZE];</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        for (int i = 0; i &lt; GRADES_ARRAY_SIZE; i++) {</span>
+<span class="fc" id="L148">            years[i] = START_YEAR + i;</span>
+        }
+
+<span class="fc" id="L151">        double[] grades = new double[GRADES_ARRAY_SIZE];</span>
+<span class="fc" id="L152">        int index = 0;</span>
+
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        for (int year : years) {</span>
+<span class="fc" id="L155">            DataforGrade d = new DataforGrade();</span>
+<span class="fc" id="L156">            double[] data = d.getData(year);</span>
+<span class="fc" id="L157">            int[] elemGrade = new int[ARRAY_SIZE];</span>
+<span class="fc" id="L158">            EnvElemGrades e = new EnvElemGrades();</span>
+<span class="fc" id="L159">            EconElemGrades ec = new EconElemGrades();</span>
+<span class="fc" id="L160">            SocElemGrades s = new SocElemGrades();</span>
+
+<span class="fc" id="L162">            elemGrade[IDX_GDP] = ec.getGDPGrowthGrade(data[IDX_GDP]);</span>
+<span class="fc" id="L163">            elemGrade[IDX_DEBT] = ec.getPublicDebtGrade(data[IDX_DEBT]);</span>
+<span class="fc" id="L164">            elemGrade[IDX_SURP] = ec.getSurplusGrade(data[IDX_SURP]);</span>
+<span class="fc" id="L165">            elemGrade[IDX_RES] = e.getResGrade(data[IDX_RES]);</span>
+<span class="fc" id="L166">            elemGrade[IDX_REC] = e.getRecycleGrade(data[IDX_REC]);</span>
+<span class="fc" id="L167">            elemGrade[IDX_EMM] = e.getEmissionGrade(data[IDX_EMM]);</span>
+<span class="fc" id="L168">            elemGrade[IDX_GINI] = s.getGINIGrade(data[IDX_GINI]);</span>
+<span class="fc" id="L169">            elemGrade[IDX_HEALTH] = s.getHealthEduGrade(data[IDX_HEALTH]);</span>
+<span class="fc" id="L170">            elemGrade[IDX_MENTAL] = s.getMentalHealthGrade(data[IDX_MENTAL]);</span>
+<span class="fc" id="L171">            elemGrade[IDX_CRIME] = s.getCrimeGrade(data[IDX_CRIME]);</span>
+
+<span class="fc" id="L173">            double totalGrade = 0;</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">            for (int i = 0; i &lt; ARRAY_SIZE; i++) {</span>
+<span class="fc" id="L175">                totalGrade += (elemGrade[i] * a[i]);</span>
+            }
+<span class="fc" id="L177">            grades[index] = totalGrade;</span>
+<span class="fc" id="L178">            index++;</span>
+        }
+
+<span class="fc" id="L181">        double[] differences = new double[DIFF_ARRAY_SIZE];</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        for (int i = 0; i &lt; DIFF_ARRAY_SIZE; i++) {</span>
+<span class="fc" id="L183">            differences[i] = grades[i + 1] - grades[i];</span>
+        }
+
+<span class="fc" id="L186">        String[] diffYears = {</span>
+            &quot;2019-2018&quot;, &quot;2020-2019&quot;, &quot;2021-2020&quot;,
+            &quot;2022-2021&quot;, &quot;2023-2022&quot;, &quot;2024-2023&quot;, &quot;2025-2024&quot;
+        };
+
+<span class="fc" id="L191">        double maxDiff = differences[0];</span>
+<span class="fc" id="L192">        double minDiff = differences[0];</span>
+<span class="fc" id="L193">        int maxIndex = 0;</span>
+<span class="fc" id="L194">        int minIndex = 0;</span>
+
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        for (int i = 1; i &lt; differences.length; i++) {</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">            if (differences[i] &gt; maxDiff) {</span>
+<span class="fc" id="L198">                maxDiff = Math.max(maxDiff, differences[i]);</span>
+<span class="fc" id="L199">                maxIndex = i;</span>
+            }
+<span class="fc bfc" id="L201" title="All 2 branches covered.">            if (differences[i] &lt; minDiff) {</span>
+<span class="fc" id="L202">                minDiff = Math.min(minDiff, differences[i]);</span>
+<span class="fc" id="L203">                minIndex = i;</span>
+            }
+        }
+
+<span class="fc" id="L207">        double totaldiff = 0;</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        for (double diff : differences) {</span>
+<span class="fc" id="L209">            totaldiff += diff;</span>
+        }
+<span class="fc" id="L211">        double avg = totaldiff / DIFF_ARRAY_SIZE;</span>
+
+<span class="fc" id="L213">        System.out.println(&quot;Οι βαθμοί για το κράτος ανά έτος είναι:&quot;);</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">        for (int i = 0; i &lt; grades.length; i++) {</span>
+<span class="fc" id="L215">            System.out.println(&quot;ΧΡΟΝΙΑ: &quot; + years[i] + &quot; ΒΑΘΜΟΣ: &quot;</span>
+<span class="fc" id="L216">                    + String.format(&quot;%.2f&quot;, grades[i]));</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">            if (i &gt; 0) {</span>
+<span class="fc" id="L218">                System.out.print(&quot; ΜΕΤΑΒΟΛΗ ΒΑΘΜΟΥ ΑΠΟ ΤΟ ΠΡΟΗΓΟΥΜΕΝΟ ΕΤΟΣ &quot;</span>
+<span class="fc" id="L219">                        + String.format(&quot;%.2f&quot;, differences[i - 1])</span>
+                );
+            }
+<span class="fc" id="L222">            System.out.println();</span>
+        }
+
+<span class="fc" id="L225">        System.out.println(&quot;--ΑΠΟΤΕΛΕΣΜΑΤΑ ΣΥΓΚΡΙΣΕΙΣ ΒΑΘΜΩΝ--&quot;);</span>
+<span class="fc" id="L226">        System.out.println(&quot;Ο βαθμός του κράτους την τελευταία χρονιά πριν&quot;</span>
+                + &quot; αναλάβει η κυβέρνηση ήταν &quot; + grades[0]);
+<span class="fc" id="L228">        System.out.println(&quot;O πιο πρόσφατος βαθμός για το κράτος (2025) &quot;</span>
+                + &quot;με βάσει τις προβλέψεις είναι &quot;
+                + grades[GRADES_ARRAY_SIZE - 1]);
+
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">        if (avg &gt; 0) {</span>
+<span class="fc" id="L233">            System.out.println(&quot;Κατά μέσο όρο, ο βαθμός του κράτους με βάση&quot;</span>
+                    + &quot; τα βάρη που δώθηκαν αυξανόταν κατά &quot;
+<span class="fc" id="L235">                    + String.format(&quot;%.3f&quot;, avg)</span>
+                    + &quot;την περίοδο 2018-2025. Οι βαθμοί απόδοσης παρουσίασαν&quot;
+                    + &quot; ανοδική πορεία!&quot;
+            );
+        } else {
+<span class="nc" id="L240">            System.out.println(&quot;Κατά μέσο όρο, ο βαθμός του κράτους με βάση&quot;</span>
+                    + &quot;τα βάρη που δώθηκαν μειωνόταν κατά &quot;
+<span class="nc" id="L242">                    + String.format(&quot;%.3f&quot;, avg)</span>
+                    + &quot;την περίοδο 2018-2025. Οι βαθμοί απόδοσης παρουσίασαν&quot;
+                    + &quot; πτωτική πορεία&quot;
+            );
+        }
+<span class="fc" id="L247">        System.out.println(&quot;Η μεγαλύτερη αύξηση βαθμού παρατηρήθηκε τις &quot;</span>
+                + &quot;χρονιές &quot; + diffYears[maxIndex]
+                + &quot; ενώ η μεγαλύτερη μείωση τις χρονιές &quot;
+                + diffYears[minIndex]
+        );
+
+<span class="fc" id="L253">        EconomicsChart e = new EconomicsChart();</span>
+<span class="fc" id="L254">        String[] xronies = {</span>
+            &quot;2018&quot;, &quot;2019&quot;, &quot;2020&quot;, &quot;2021&quot;,
+            &quot;2022&quot;, &quot;2023&quot;, &quot;2024&quot;, &quot;2025&quot;
+        };
+<span class="fc" id="L258">        e.displayGraph(&quot;ΠΟΡΕΙΑ ΒΑΘΜΩΝ ΚΡΑΤΟΥΣ 2018 - 2025&quot;, xronies, grades);</span>
+<span class="fc" id="L259">    }</span>
+
+    /**
+     * Διαχειρίζεται τη διαδικασία εισαγωγής βαρών για όλες τις κατηγορίες.
+     *
+     * @return Πίνακας με τα εισαγόμενα βάρη.
+     */
+    public double[] addWeights() {
+<span class="fc" id="L267">        double[] weights = new double[ARRAY_SIZE];</span>
+<span class="fc" id="L268">        int i = 0;</span>
+
+<span class="fc" id="L270">        System.out.println(&quot;ΣΤΟΙΧΕΙΑ ΟΙΚΟΝΟΜΙΚΟΥ ΤΟΜΕΑ&quot;);</span>
+<span class="fc" id="L271">        double t1 = 0;</span>
+        do {
+<span class="fc" id="L273">            System.out.println(&quot;Εισάγετε τo βάρος για τη μεταβολή του ΑΕΠ&quot;);</span>
+<span class="fc" id="L274">            double wGDP = getWeight();</span>
+<span class="fc" id="L275">            t1 += wGDP;</span>
+<span class="fc" id="L276">            weights[i] = wGDP;</span>
+<span class="fc" id="L277">            i++;</span>
+
+<span class="fc" id="L279">            System.out.println(&quot;Το βάρος καταχωρήθηκε! Εισάγετε το&quot;</span>
+                    + &quot; βάρος για το δημόσιο χρέος ως ποσοστό του ΑΕΠ.&quot;
+            );
+<span class="fc" id="L282">            double wPubDebt = getWeight();</span>
+<span class="fc" id="L283">            t1 += wPubDebt;</span>
+<span class="fc" id="L284">            weights[i] = wPubDebt;</span>
+<span class="fc" id="L285">            i++;</span>
+
+<span class="fc" id="L287">            System.out.println(&quot;Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για &quot;</span>
+                    + &quot;το πρωτογενές πλεόνασμα ως ποσοστό του ΑΕΠ.&quot;
+            );
+<span class="fc" id="L290">            double wSurp = getWeight();</span>
+<span class="fc" id="L291">            t1 += wSurp;</span>
+<span class="fc" id="L292">            weights[i] = wSurp;</span>
+<span class="fc" id="L293">            i++;</span>
+
+<span class="pc bpc" id="L295" title="1 of 2 branches missed.">            if (Math.abs(t1 - 1.0) &gt; TOLERANCE) {</span>
+<span class="nc" id="L296">                i = 0;</span>
+<span class="nc" id="L297">                t1 = 0;</span>
+<span class="nc" id="L298">                System.out.println(&quot;Το άθροισμα των βαρών πρέπει να &quot;</span>
+                        + &quot;ισούται με 1! Εισάγετε ξανά τα βάρη&quot;);
+            }
+<span class="pc bpc" id="L301" title="1 of 2 branches missed.">        } while (Math.abs(t1 - 1.0) &gt; TOLERANCE);</span>
+
+<span class="fc" id="L303">        System.out.println(&quot;Το βάρος καταχωρήθηκε!\n ΠΕΡΙΒΑΛΛΟΝΤΙΚΑ ΣΤΟΙΧΕΙΑ\n &quot;</span>
+                + &quot;Eισάγετε το βάρος για το&quot;
+                + &quot; ποσοστό αξιοποίησης ανανεώσιμων πηγών ενέργειας.&quot;
+        );
+<span class="fc" id="L307">        double t2 = 0;</span>
+        do {
+<span class="fc" id="L309">            double wRES = getWeight();</span>
+<span class="fc" id="L310">            weights[i] = wRES;</span>
+<span class="fc" id="L311">            i++;</span>
+<span class="fc" id="L312">            t2 += wRES;</span>
+<span class="fc" id="L313">            System.out.println(&quot;Το βάρος καταχωρήθηκε! Eισάγετε το βάρος για&quot;</span>
+                    + &quot; το ποσοστό ανακύκλωσης αστικών αποβλήτων.&quot;
+            );
+<span class="fc" id="L316">            double wRecRate = getWeight();</span>
+<span class="fc" id="L317">            weights[i] = wRecRate;</span>
+<span class="fc" id="L318">            i++;</span>
+<span class="fc" id="L319">            t2 += wRecRate;</span>
+<span class="fc" id="L320">            System.out.println(&quot;Το βάρος καταχωρήθηκε! Eισάγετε το βάρος &quot;</span>
+                    + &quot;για την ποσοστιαία μεταβολή της εκπομπής ρύπων.&quot;
+            );
+<span class="fc" id="L323">            double wEmm = getWeight();</span>
+<span class="fc" id="L324">            weights[i] = wEmm;</span>
+<span class="fc" id="L325">            i++;</span>
+<span class="fc" id="L326">            t2 += wEmm;</span>
+<span class="pc bpc" id="L327" title="1 of 2 branches missed.">            if (Math.abs(t2 - 1.0) &gt; TOLERANCE) {</span>
+<span class="nc" id="L328">                i = ECON_LIMIT;</span>
+<span class="nc" id="L329">                t2 = 0;</span>
+<span class="nc" id="L330">                System.out.println(&quot;Το άθροισμα των βαρών πρέπει να &quot;</span>
+                        + &quot;ισούται με 1! Εισάγετε ξανά τα βάρη&quot;);
+            }
+<span class="pc bpc" id="L333" title="1 of 2 branches missed.">        } while (Math.abs(t2 - 1.0) &gt; TOLERANCE);</span>
+
+<span class="fc" id="L335">        System.out.println(&quot;Το βάρος καταχωρήθηκε!\n KΟΙΝΩΝΙΚΑ ΣΤΟΙΧΕΙΑ\n&quot;</span>
+                + &quot;Eισάγετε το βάρος για τον&quot;
+                + &quot; κοινωνικό δείκτη GINI&quot;
+        );
+<span class="fc" id="L339">        double t3 = 0;</span>
+        do {
+<span class="fc" id="L341">            double wGini = getWeight();</span>
+<span class="fc" id="L342">            weights[i] = wGini;</span>
+<span class="fc" id="L343">            i++;</span>
+<span class="fc" id="L344">            t3 += wGini;</span>
+<span class="fc" id="L345">            System.out.println(&quot;Το βάρος καταχωρήθηκε! Eισάγετε το βάρος&quot;</span>
+                    + &quot; για τις δαπάνες υγείας και παιδείας ως ποσοστό του ΑΕΠ&quot;
+            );
+<span class="fc" id="L348">            double wEdHealExp = getWeight();</span>
+<span class="fc" id="L349">            weights[i] = wEdHealExp;</span>
+<span class="fc" id="L350">            i++;</span>
+<span class="fc" id="L351">            t3 += wEdHealExp;</span>
+<span class="fc" id="L352">            System.out.println(&quot;Το βάρος καταχωρήθηκε! Eισάγετε βάρος για &quot;</span>
+                    + &quot; την εκτίμηση του ποσοστού ανθρώπων &quot;
+                    + &quot;με προβλήματα ψυχικής υγείας&quot;
+            );
+<span class="fc" id="L356">            double wMentHealPer = getWeight();</span>
+<span class="fc" id="L357">            weights[i] = wMentHealPer;</span>
+<span class="fc" id="L358">            i++;</span>
+<span class="fc" id="L359">            t3 += wMentHealPer;</span>
+<span class="fc" id="L360">            System.out.println(&quot;Το βάρος καταχωρήθηκε! Eισάγετε το βάρος&quot;</span>
+                    + &quot; για την ποσοστιαία μεταβολή της εγκληματικότητας.&quot;
+            );
+<span class="fc" id="L363">            double wCrimeRate = getWeight();</span>
+<span class="fc" id="L364">            weights[i] = wCrimeRate;</span>
+<span class="fc" id="L365">            t3 += wCrimeRate;</span>
+<span class="pc bpc" id="L366" title="1 of 2 branches missed.">            if (Math.abs(t3 - 1.0) &gt; TOLERANCE) {</span>
+<span class="nc" id="L367">                i = ENV_LIMIT;</span>
+<span class="nc" id="L368">                t3 = 0;</span>
+<span class="nc" id="L369">                System.out.println(&quot;Το άθροισμα των βαρών πρέπει να &quot;</span>
+                        + &quot;ισούται με 1! Εισάγετε ξανά τα βάρη&quot;);
+            }
+<span class="pc bpc" id="L372" title="1 of 2 branches missed.">        } while (Math.abs(t3 - 1.0) &gt; TOLERANCE);</span>
+
+<span class="fc" id="L374">        System.out.println(</span>
+                &quot;Το βάρος καταχωρήθηκε! Όλα τα βάρη έχουν εισαχθεί&quot;);
+<span class="fc" id="L376">        return weights;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

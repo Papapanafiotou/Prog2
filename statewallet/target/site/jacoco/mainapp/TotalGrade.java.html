@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TotalGrade.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">TotalGrade.java</span></div><h1>TotalGrade.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.util.Scanner;
+
+/**
+ * Υπολογίζει τον συνολικό βαθμό του κράτους συνδυάζοντας οικονομικά,
+ * περιβαλλοντικά και κοινωνικά στοιχεία.
+ */
+<span class="fc" id="L9">public final class TotalGrade {</span>
+
+    /** Ανοχή για συγκρίσεις αριθμών κινητής υποδιαστολής. */
+    private static final double TOLERANCE = 0.001;
+
+    // Επιλογές Χρήστη
+    /** Επιλογή για υπολογισμό μεμονωμένου έτους. */
+    private static final int OPTION_SINGLE_YEAR = 0;
+    /** Επιλογή για υπολογισμό όλων των ετών. */
+    private static final int OPTION_ALL_YEARS = 1;
+
+    // Δείκτες πίνακα δεδομένων (Data Indices)
+    /** Δείκτης ΑΕΠ. */
+    private static final int IDX_GDP = 0;
+    /** Δείκτης Χρέους. */
+    private static final int IDX_DEBT = 1;
+    /** Δείκτης Πλεονάσματος. */
+    private static final int IDX_SURP = 2;
+    /** Δείκτης ΑΠΕ. */
+    private static final int IDX_RES = 3;
+    /** Δείκτης Ανακύκλωσης. */
+    private static final int IDX_REC = 4;
+    /** Δείκτης Ρύπων. */
+    private static final int IDX_EMM = 5;
+    /** Δείκτης GINI. */
+    private static final int IDX_GINI = 6;
+    /** Δείκτης Υγείας. */
+    private static final int IDX_HEALTH = 7;
+    /** Δείκτης Ψυχικής Υγείας. */
+    private static final int IDX_MENTAL = 8;
+    /** Δείκτης Εγκληματικότητας. */
+    private static final int IDX_CRIME = 9;
+
+    /**
+     * Υπολογίζει τον συνολικό βαθμό.
+     */
+    public void getTotalGrade() {
+<span class="fc" id="L46">        System.out.println(&quot;Για τον υπολογισμό του βαθμού ενός μεμονωμένου&quot;</span>
+                + &quot; έτους πατήστε 0, για τον υπολογισμό βαθμών για όλα τα έτη &quot;
+                + &quot;και για συγκρίσεις πατήστε 1!&quot;);
+
+<span class="fc" id="L50">        Scanner scan = new Scanner(System.in, &quot;CP737&quot;);</span>
+<span class="fc" id="L51">        EconElemGrades ec = new EconElemGrades();</span>
+<span class="fc" id="L52">        SocElemGrades soc = new SocElemGrades();</span>
+<span class="fc" id="L53">        EnvElemGrades env = new EnvElemGrades();</span>
+        // Περνάμε τον scanner για να μην κολλήσει η είσοδος
+<span class="fc" id="L55">        Weights w = new Weights(scan);</span>
+<span class="fc" id="L56">        DataforGrade d = new DataforGrade();</span>
+<span class="fc" id="L57">        EconomicsChart e = new EconomicsChart();</span>
+
+<span class="fc" id="L59">        int answer = scan.nextInt();</span>
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (answer == OPTION_SINGLE_YEAR) {</span>
+            // Εύρεση δεδομένων για το έτος που ζητάει ο χρήστης
+<span class="nc" id="L63">            int year = d.chooseYear();</span>
+            // Εισαγωγή των δεδομένων στις μεταβλητές
+<span class="nc" id="L65">            double[] yearsData = d.getData(year);</span>
+<span class="nc" id="L66">            double gdpGrowth = yearsData[IDX_GDP];</span>
+<span class="nc" id="L67">            double publicDebt = yearsData[IDX_DEBT];</span>
+<span class="nc" id="L68">            double surplus = yearsData[IDX_SURP];</span>
+<span class="nc" id="L69">            double res = yearsData[IDX_RES];</span>
+<span class="nc" id="L70">            double recycleRate = yearsData[IDX_REC];</span>
+<span class="nc" id="L71">            double emmisionsDiff = yearsData[IDX_EMM];</span>
+<span class="nc" id="L72">            double gini = yearsData[IDX_GINI];</span>
+<span class="nc" id="L73">            double eduHealthExp = yearsData[IDX_HEALTH];</span>
+<span class="nc" id="L74">            double mentalHealthPer = yearsData[IDX_MENTAL];</span>
+<span class="nc" id="L75">            double crimeRateDiff = yearsData[IDX_CRIME];</span>
+
+            // ΕΙΣΑΓΩΓΗ ΤΩΝ ΒΑΡΩΝ ΓΙΑ ΤΟΥΣ ΥΠΟΛΟΓΙΣΜΟΎΣ ΑΠΟ ΤΟΝ ΧΡΗΣΤΗ
+<span class="nc" id="L78">            double[] weights = w.addWeights();</span>
+<span class="nc" id="L79">            double wGdp = weights[IDX_GDP];</span>
+<span class="nc" id="L80">            double wPubDebt = weights[IDX_DEBT];</span>
+<span class="nc" id="L81">            double wSurp = weights[IDX_SURP];</span>
+<span class="nc" id="L82">            double wRes = weights[IDX_RES];</span>
+<span class="nc" id="L83">            double wRecRate = weights[IDX_REC];</span>
+<span class="nc" id="L84">            double wEmm = weights[IDX_EMM];</span>
+<span class="nc" id="L85">            double wGini = weights[IDX_GINI];</span>
+<span class="nc" id="L86">            double wEdHealExp = weights[IDX_HEALTH];</span>
+<span class="nc" id="L87">            double wMentHealPer = weights[IDX_MENTAL];</span>
+<span class="nc" id="L88">            double wCrimeRate = weights[IDX_CRIME];</span>
+
+            // Υπολογισμός των βαθμών για τις 3 κατηγορίες
+<span class="nc" id="L91">            double econGrade = ec.getEconomicGrade(wGdp, wPubDebt, wSurp,</span>
+                    surplus, publicDebt, gdpGrowth);
+
+<span class="nc" id="L94">            double envGrade = env.getEnvironmentalGrade(wRes, wEmm, wRecRate,</span>
+                    res, emmisionsDiff, recycleRate);
+
+            // Ομαδοποίηση βαρών κοινωνικού τομέα σε πίνακα
+            // για να αποφύγουμε το σφάλμα &quot;More than 7 parameters&quot;
+<span class="nc" id="L99">            double[] socWeights = {</span>
+                wGini, wCrimeRate, wMentHealPer, wEdHealExp
+            };
+
+<span class="nc" id="L103">            double socGrade = soc.getSocialGrade(socWeights,</span>
+                    gini, crimeRateDiff, mentalHealthPer, eduHealthExp);
+
+            // Εισαγωγή των βαρών για τις 3 κατηγορίες
+<span class="nc" id="L107">            double t = 0;</span>
+            double wEcon;
+            double wEnv;
+            double wSoc;
+            do {
+<span class="nc" id="L112">                System.out.println(&quot;Εισάγετε τα βάρη του τελικού βαθμού για &quot;</span>
+                        + &quot;τους τρεις τομείς&quot;);
+<span class="nc" id="L114">                System.out.println(&quot;Οικονομικός τομέας&quot;);</span>
+<span class="nc" id="L115">                wEcon = w.getWeight();</span>
+<span class="nc" id="L116">                t += wEcon;</span>
+<span class="nc" id="L117">                System.out.println(&quot;Περιβαλλοντικός τομέας&quot;);</span>
+<span class="nc" id="L118">                wEnv = w.getWeight();</span>
+<span class="nc" id="L119">                t += wEnv;</span>
+<span class="nc" id="L120">                System.out.println(&quot;Κοινωνικός τομέας&quot;);</span>
+<span class="nc" id="L121">                wSoc = w.getWeight();</span>
+<span class="nc" id="L122">                t += wSoc;</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">                if (Math.abs(t - 1.0) &gt; TOLERANCE) {</span>
+<span class="nc" id="L124">                    t = 0;</span>
+<span class="nc" id="L125">                    System.out.println(&quot;Τα βάρη πρέπει να αθροίζουν σε 1! &quot;</span>
+                            + &quot;Εισάγετε ξανά τα βάρη.&quot;);
+                }
+<span class="nc bnc" id="L128" title="All 2 branches missed.">            } while (Math.abs(t - 1.0) &gt; TOLERANCE);</span>
+
+<span class="nc" id="L130">            double finalGrade = (wEcon * econGrade) + (wEnv * envGrade)</span>
+                    + (wSoc * socGrade);
+<span class="nc" id="L132">            System.out.println(&quot;O τελικός βαθμός για το κράτος για το έτος &quot;</span>
+                    + year + &quot; με βάση τα στοιχεία είναι &quot;
+<span class="nc" id="L134">                    + String.format(&quot;%.2f&quot;, finalGrade));</span>
+
+<span class="nc" id="L136">            double[] totalWeights = w.showTotalWeights(weights, wEcon,</span>
+                    wEnv, wSoc);
+<span class="nc" id="L138">            String[] names = {</span>
+                &quot;MΕΤΑΒΟΛΗ ΑΕΠ&quot;,
+                &quot;ΔΗΜΟΣΙΟ ΧΡΕΟΣ ΩΣ ΠΟΣΟΣΤΟ ΑΕΠ&quot;,
+                &quot;ΠΡΩΤΟΓΕΝΕΣ ΠΛΕΟΝΑΣΜΑ&quot;,
+                &quot;ΑΝΑΝΕΩΣΙΜΕΣ ΠΗΓΕΣ ΕΝΕΡΓΕΙΑΣ&quot;,
+                &quot;ΠΟΣΟΣΤΟ ΑΝΑΚΥΚΛΩΣΗΣ&quot;,
+                &quot;ΜΕΤΑΒΟΛΗ ΡΥΠΩΝ&quot;,
+                &quot;ΔΕΙΚΤΗΣ GINI&quot;,
+                &quot;ΕΞΟΔΑ ΓΙΑ ΥΓΕΙΑ ΚΑΙ ΠΑΙΔΕΙΑ&quot;,
+                &quot;ΠΟΣΟΣΤΟ ΑΝΘΡΩΠΩΝ ΜΕ ΠΡΟΒΛΗΜΑΤΑ ΨΥΧΙΚΗΣ ΥΓΕΙΑΣ&quot;,
+                &quot;ΜΕΤΑΒΟΛΗ ΕΓΚΛΗΜΑΤΙΚΟΤΗΤΑΣ&quot;
+            };
+<span class="nc" id="L150">            e.showPieChart(names, totalWeights);</span>
+
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">        } else if (answer == OPTION_ALL_YEARS) {</span>
+<span class="fc" id="L153">            double[] weights = w.addWeights();</span>
+<span class="fc" id="L154">            double t = 0;</span>
+            double wEcon;
+            double wEnv;
+            double wSoc;
+            do {
+<span class="fc" id="L159">                System.out.println(&quot;Εισάγετε τα βάρη του τελικού βαθμού για &quot;</span>
+                        + &quot;τους τρεις τομείς&quot;);
+<span class="fc" id="L161">                System.out.println(&quot;Οικονομικός τομέας&quot;);</span>
+<span class="fc" id="L162">                wEcon = w.getWeight();</span>
+<span class="fc" id="L163">                t += wEcon;</span>
+<span class="fc" id="L164">                System.out.println(&quot;Περιβαλλοντικός τομέας&quot;);</span>
+<span class="fc" id="L165">                wEnv = w.getWeight();</span>
+<span class="fc" id="L166">                t += wEnv;</span>
+<span class="fc" id="L167">                System.out.println(&quot;Κοινωνικός τομέας&quot;);</span>
+<span class="fc" id="L168">                wSoc = w.getWeight();</span>
+<span class="fc" id="L169">                t += wSoc;</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">                if (Math.abs(t - 1.0) &gt; TOLERANCE) {</span>
+<span class="nc" id="L171">                    t = 0;</span>
+<span class="nc" id="L172">                    System.out.println(&quot;Τα βάρη πρέπει να αθροίζουν σε 1! &quot;</span>
+                            + &quot;Εισάγετε ξανά τα βάρη.&quot;);
+                }
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">            } while (Math.abs(t - 1.0) &gt; TOLERANCE);</span>
+
+<span class="fc" id="L177">            double[] finalWeights = w.showTotalWeights(weights, wEcon,</span>
+                    wEnv, wSoc);
+<span class="fc" id="L179">            w.getAllGrades(finalWeights);</span>
+        }
+<span class="fc" id="L181">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

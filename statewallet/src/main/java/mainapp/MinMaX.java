@@ -7,129 +7,145 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class MinMaX {
-    private String database_url;
-    /* H μέθοδοσ αυτή ρωτά τον χρήστη άν θέλει να βρεί ελάχιστο ή 
-     * μέγιστο και στην συνέχεια τον ρωτά για ποιά κατηγορία λογα-
-     * ριαμών. Επιστρέφει την τιμή του μεγίστου/ ελάχιστου ποσού
-     * που υπολογίζεται μέσω των μεθόδων παρακάτω
+/**
+ * Υπολογίζει και εμφανίζει τις ελάχιστες και μέγιστες τιμές από τους
+ * πίνακες της βάσης δεδομένων.
+ */
+public final class MinMaX {
+
+    // Σταθερές Επιλογών
+    /** Επιλογή για εύρεση ελαχίστου. */
+    private static final int OPTION_MIN = 1;
+    /** Επιλογή για εύρεση μεγίστου. */
+    private static final int OPTION_MAX = 2;
+
+    // Σταθερές Κατηγοριών
+    /** Κατηγορία Εσόδων. */
+    private static final int CAT_INCOME = 1;
+    /** Κατηγορία Εξόδων. */
+    private static final int CAT_EXPENSE = 2;
+    /** Κατηγορία Υπουργείων. */
+    private static final int CAT_MINISTRY = 3;
+
+    /** Το URL της βάσης δεδομένων. */
+    private final String databaseUrl;
+
+    /**
+     * Κατασκευαστής.
+     *
+     * @param url Το URL της βάσης δεδομένων.
      */
-    public MinMaX(String url) {
-        this.database_url = url;
+    public MinMaX(final String url) {
+        this.databaseUrl = url;
     }
 
+    /**
+     * Ρωτά τον χρήστη αν θέλει να βρει ελάχιστο ή μέγιστο και για ποια
+     * κατηγορία, και εμφανίζει το αποτέλεσμα.
+     */
     public void showMinMax() {
-        long value = 0;
         Scanner scan = new Scanner(System.in, "CP737");
-        String name;
-        Search s = new Search(database_url);
-        System.out.println("Θα θέλατε να υπολογίσετε μέγιστο ή ελάχιστο; (1 για ελάχιστο - 2 για μέγιστο )");
-        int answer = scan.nextInt();
-        scan.nextLine();
-        boolean flag3 = false;
-        do {
-        if (answer == 1) {
-            System.out.println("Θέλετε το ελάχιστο έσοδο, έξοδο ή την ελάχιστη δαπάνη υπουργείου;");
-            System.out.println("( 1 για έσοδο, 2 για έξοδο, 3 για δαπάνη υπουργείου )");
-            int answer2 = scan.nextInt();
-            scan.nextLine();
-            boolean flag = false;
-            do {
-            if (answer2 == 1) {
-                value = (long) getMinMax(1, 1);
-                name = s.searchString(value);
-                flag = true;
-                System.out.println("Το ελάχιστο έσοδο είναι το "
-                + name + " με ποσό " + value);
-            } else if (answer2 == 2) {
-                value = (long) getMinMax(1, 2);
-                name = s.searchString(value);
-                flag = true;
-                 System.out.println("Το ελάχιστο έξοδο είναι το "
-                + name +" με ποσό " + value);
-            }else if (answer2 == 3) { 
-                value = (long) getMinMax(1, 3);
-                name = s.searchString(value);
-                flag = true;
-                System.out.println("Η ελάχιστη δαπάνη σε υπουργείο "  
-                 + "είναι στο "+ name + " με ποσο "+ value);
+        Search s = new Search(databaseUrl);
+
+        int operation = 0;
+        boolean validOp = false;
+
+        // 1. Επιλογή Λειτουργίας (Min/Max)
+        while (!validOp) {
+            System.out.println("Θα θέλατε να υπολογίσετε μέγιστο ή ελάχιστο; "
+                    + "(1 για ελάχιστο - 2 για μέγιστο)");
+            if (scan.hasNextInt()) {
+                operation = scan.nextInt();
+                scan.nextLine(); // Clear buffer
+                if (operation == OPTION_MIN || operation == OPTION_MAX) {
+                    validOp = true;
+                } else {
+                    System.out.println("Μη έγκυρη επιλογή. Δώστε 1 ή 2.");
+                }
             } else {
-                System.out.println("Ο τύπος δέν αναγνωρίζεται");
+                System.out.println("Παρακαλώ εισάγετε αριθμό.");
+                scan.next(); // Clear invalid input
             }
-        } while (flag = false); 
-        flag3 = true; 
-        } else if (answer == 2) {
-            System.out.println("Θέλετε το μέγιστο έσοδο, έξοδο ή την μέγιστη δαπάνη υπουργείου;");
-            System.out.println("( 1 για έσοδο, 2 για έξοδο, 3 για δαπάνη υπουργείου )");
-            int answer3 = scan.nextInt();
-            scan.nextLine();
-            boolean flag2 = false;
-            do {
-            if (answer3 == 1) {
-                value = (long) getMinMax(2, 1);
-                name = s.searchString(value);
-                flag2 = true;
-                System.out.println("Tο μέγιστο έσοδο είναι το "
-                + name +" με ποσό " + value);
-            } else if (answer3 == 2) {
-                value = (long) getMinMax(2, 2);
-                name = s.searchString(value);
-                flag2 = true;
-                 System.out.println("Το μέγιστο έξοδο είναι το "
-                 + name + " με ποσό " + value);
-            } else if (answer3 == 3) { 
-                value = (long) getMinMax(2, 3);
-                name = s.searchString(value);
-                flag2 = true;
-                System.out.println("Η μέγιστη δαπάνη σε υπουργείο" + 
-                " είναι στο "+ name +" με ποσό " + value);
-            } else {
-                System.out.println("Ο τύπος δέν αναγνωρίζεται");
-            }
-        } while (flag2 = false);
-        flag3 = true;  
-        } else {
-            System.out.println( "Ο τύπος δεν αναγνωρίζεται, δοκιμάστε ξανα!");
         }
-    } while (flag3 = false);
+
+        int category = 0;
+        boolean validCat = false;
+
+        // 2. Επιλογή Κατηγορίας
+        while (!validCat) {
+            System.out.println("Επιλέξτε κατηγορία:");
+            System.out.println("1. Έσοδα");
+            System.out.println("2. Έξοδα");
+            System.out.println("3. Δαπάνη Υπουργείου");
+            System.out.print("Επιλογή: ");
+
+            if (scan.hasNextInt()) {
+                category = scan.nextInt();
+                scan.nextLine();
+                if (category >= CAT_INCOME && category <= CAT_MINISTRY) {
+                    validCat = true;
+                } else {
+                    System.out.println("Μη έγκυρη επιλογή. Δώστε 1, 2 ή 3.");
+                }
+            } else {
+                System.out.println("Παρακαλώ εισάγετε αριθμό.");
+                scan.next();
+            }
+        }
+
+        // 3. Εκτέλεση και Εμφάνιση
+        double rawValue = getMinMax(operation, category);
+        long value = (long) rawValue;
+        String name = s.searchString(rawValue);
+
+        String opText = (operation == OPTION_MIN) ? "ελάχιστο" : "μέγιστο";
+        String catText = "";
+
+        if (category == CAT_INCOME) {
+            catText = "έσοδο";
+        } else if (category == CAT_EXPENSE) {
+            catText = "έξοδο";
+        } else {
+            catText = "ποσό σε υπουργείο";
+        }
+
+        System.out.println("Το " + opText + " " + catText + " είναι το "
+                + name + " με ποσό " + value);
     }
 
-public double getMinMax (int x, int y) {
-    String sql = null;
-        if (x==1) {
-            if (y == 1) {
-              sql = "SELECT MIN(amount) AS value FROM esoda";
-            } else if (y == 2) {
-              sql = "SELECT MIN(amount) AS value FROM eksoda";
-            } else if (y == 3) {
-              sql = "SELECT MIN(amount) AS value FROM ypourgeia";
-            }
-        } else if (x == 2) {
-            if (y == 1) {
-              sql = "SELECT MAX(amount) AS value FROM esoda";
-            } else if (y == 2) {
-               sql = "SELECT MAX(amount) AS value FROM eksoda";  
-            } else if (y == 3) {
-               sql = "SELECT MAX(amount) AS value FROM ypourgeia"; 
-            }
+    /**
+     * Εκτελεί το SQL query για την εύρεση min/max.
+     *
+     * @param opType  Ο τύπος πράξης (1=MIN, 2=MAX).
+     * @param catType Η κατηγορία (1=Έσοδα, 2=Έξοδα, 3=Υπουργεία).
+     * @return Η τιμή που βρέθηκε.
+     */
+    public double getMinMax(final int opType, final int catType) {
+        String table = "";
+        String function = (opType == OPTION_MIN) ? "MIN" : "MAX";
+
+        if (catType == CAT_INCOME) {
+            table = "esoda";
+        } else if (catType == CAT_EXPENSE) {
+            table = "eksoda";
+        } else if (catType == CAT_MINISTRY) {
+            table = "ypourgeia";
         }
+
+        String sql = "SELECT " + function + "(amount) AS value FROM " + table;
         double value = 0;
-      try (Connection conn = DriverManager.getConnection(database_url);
+
+        try (Connection conn = DriverManager.getConnection(databaseUrl);
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    value = rs.getDouble("value");
-                }
-             } catch (SQLException e) {
-                e.printStackTrace();;
-             }
-    return value;
+
+            if (rs.next()) {
+                value = rs.getDouble("value");
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-              
-
-
-
-
-
-
+        return value;
+    }
+}

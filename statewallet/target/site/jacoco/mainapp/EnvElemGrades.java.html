@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EnvElemGrades.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">EnvElemGrades.java</span></div><h1>EnvElemGrades.java</h1><pre class="source lang-java linenums">package mainapp;
+
+/**
+ * Υπολογίζει τους βαθμούς για τα περιβαλλοντικά στοιχεία του κράτους.
+ */
+<span class="fc" id="L6">public final class EnvElemGrades {</span>
+
+    // Σταθερές Βαθμών
+    /** Βαθμός 10 (Άριστα). */
+    private static final int GRADE_10 = 10;
+    /** Βαθμός 9 (Πολύ καλά). */
+    private static final int GRADE_9 = 9;
+    /** Βαθμός 8 (Καλά). */
+    private static final int GRADE_8 = 8;
+    /** Βαθμός 7 (Μέτρια). */
+    private static final int GRADE_7 = 7;
+    /** Βαθμός 6 (Χαμηλά). */
+    private static final int GRADE_6 = 6;
+    /** Βαθμός 5 (Πολύ χαμηλά/Αποτυχία). */
+    private static final int GRADE_5 = 5;
+
+    // Σταθερές Ανανεώσιμων Πηγών (RES)
+    /** Όριο ΑΠΕ για βαθμό 10. */
+    private static final double RES_LIMIT_10 = 0.30;
+    /** Όριο ΑΠΕ για βαθμό 9. */
+    private static final double RES_LIMIT_9 = 0.28;
+    /** Όριο ΑΠΕ για βαθμό 8. */
+    private static final double RES_LIMIT_8 = 0.26;
+    /** Όριο ΑΠΕ για βαθμό 7. */
+    private static final double RES_LIMIT_7 = 0.24;
+    /** Όριο ΑΠΕ για βαθμό 6. */
+    private static final double RES_LIMIT_6 = 0.22;
+
+    // Σταθερές Ρύπων (Emission)
+    /** Όριο ρύπων για βαθμό 10. */
+    private static final double EMM_LIMIT_10 = -0.04;
+    /** Όριο ρύπων για βαθμό 9. */
+    private static final double EMM_LIMIT_9 = -0.02;
+    /** Όριο ρύπων για βαθμό 8. */
+    private static final double EMM_LIMIT_8 = 0.0;
+    /** Όριο ρύπων για βαθμό 7. */
+    private static final double EMM_LIMIT_7 = 1.9;
+    /** Όριο ρύπων για βαθμό 6. */
+    private static final double EMM_LIMIT_6 = 3.9;
+
+    // Σταθερές Ανακύκλωσης (Recycle)
+    /** Όριο ανακύκλωσης για βαθμό 10. */
+    private static final double REC_LIMIT_10 = 0.32;
+    /** Όριο ανακύκλωσης για βαθμό 9. */
+    private static final double REC_LIMIT_9 = 0.28;
+    /** Όριο ανακύκλωσης για βαθμό 8. */
+    private static final double REC_LIMIT_8 = 0.24;
+    /** Όριο ανακύκλωσης για βαθμό 7. */
+    private static final double REC_LIMIT_7 = 0.20;
+    /** Όριο ανακύκλωσης για βαθμό 6. */
+    private static final double REC_LIMIT_6 = 0.16;
+
+    /**
+     * Υπολογίζει τον βαθμό για το ποσοστό χρήσης ανανεώσιμων πηγών ενέργειας.
+     *
+     * @param percent Το ποσοστό χρήσης (0.0 - 1.0).
+     * @return Ο βαθμός (5-10).
+     */
+    public int getResGrade(final double percent) {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (percent &gt;= RES_LIMIT_10) {</span>
+<span class="fc" id="L66">            return GRADE_10;</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        } else if (percent &gt;= RES_LIMIT_9) {</span>
+<span class="fc" id="L68">            return GRADE_9;</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        } else if (percent &gt;= RES_LIMIT_8) {</span>
+<span class="fc" id="L70">            return GRADE_8;</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        } else if (percent &gt;= RES_LIMIT_7) {</span>
+<span class="fc" id="L72">            return GRADE_7;</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        } else if (percent &gt;= RES_LIMIT_6) {</span>
+<span class="fc" id="L74">            return GRADE_6;</span>
+        } else {
+<span class="fc" id="L76">            return GRADE_5;</span>
+        }
+    }
+
+    /**
+     * Υπολογίζει τον βαθμό για την ετήσια ποσοστιαία μεταβολή ρύπων.
+     *
+     * @param percent Το ποσοστό μεταβολής.
+     * @return Ο βαθμός (5-10).
+     */
+    public int getEmissionGrade(final double percent) {
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (percent &lt;= EMM_LIMIT_10) {</span>
+<span class="fc" id="L88">            return GRADE_10;</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        } else if (percent &lt;= EMM_LIMIT_9) {</span>
+<span class="fc" id="L90">            return GRADE_9;</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        } else if (percent &lt;= EMM_LIMIT_8) {</span>
+<span class="fc" id="L92">            return GRADE_8;</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        } else if (percent &lt;= EMM_LIMIT_7) {</span>
+<span class="fc" id="L94">            return GRADE_7;</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        } else if (percent &lt;= EMM_LIMIT_6) {</span>
+<span class="fc" id="L96">            return GRADE_6;</span>
+        } else {
+<span class="fc" id="L98">            return GRADE_5;</span>
+        }
+    }
+
+    /**
+     * Υπολογίζει τον βαθμό για το ποσοστό ανακύκλωσης αστικών αποβλήτων.
+     *
+     * @param percent Το ποσοστό ανακύκλωσης.
+     * @return Ο βαθμός (5-10).
+     */
+    public int getRecycleGrade(final double percent) {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (percent &gt;= REC_LIMIT_10) {</span>
+<span class="fc" id="L110">            return GRADE_10;</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        } else if (percent &gt;= REC_LIMIT_9) {</span>
+<span class="fc" id="L112">            return GRADE_9;</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        } else if (percent &gt;= REC_LIMIT_8) {</span>
+<span class="fc" id="L114">            return GRADE_8;</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        } else if (percent &gt;= REC_LIMIT_7) {</span>
+<span class="fc" id="L116">            return GRADE_7;</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        } else if (percent &gt;= REC_LIMIT_6) {</span>
+<span class="fc" id="L118">            return GRADE_6;</span>
+        } else {
+<span class="fc" id="L120">            return GRADE_5;</span>
+        }
+    }
+
+    /**
+     * Υπολογίζει τον τελικό βαθμό για τον περιβαλλοντικό τομέα.
+     *
+     * @param w1              Βαρύτητα ΑΠΕ.
+     * @param w2              Βαρύτητα Ρύπων.
+     * @param w3              Βαρύτητα Ανακύκλωσης.
+     * @param resPercent      Ποσοστό ΑΠΕ.
+     * @param emissionPercent Ποσοστό Ρύπων.
+     * @param recyclePercent  Ποσοστό Ανακύκλωσης.
+     * @return Ο τελικός περιβαλλοντικός βαθμός.
+     */
+    public double getEnvironmentalGrade(final double w1, final double w2,
+                                        final double w3,
+                                        final double resPercent,
+                                        final double emissionPercent,
+                                        final double recyclePercent) {
+<span class="fc" id="L140">        GradeChar gradeChar = new GradeChar();</span>
+
+<span class="fc" id="L142">        int g1 = getResGrade(resPercent);</span>
+<span class="fc" id="L143">        System.out.println(&quot;O βαθμός για τo ποσοστό αξιοποίησης &quot;</span>
+                + &quot;ανανεώσιμων πηγών ενέργειας είναι : &quot; + g1);
+<span class="fc" id="L145">        gradeChar.resChar(g1);</span>
+
+<span class="fc" id="L147">        int g2 = getEmissionGrade(emissionPercent);</span>
+<span class="fc" id="L148">        System.out.println(&quot;O βαθμός για την μεταβολή των ρύπων είναι: &quot;</span>
+                + g2);
+<span class="fc" id="L150">        gradeChar.emissionChar(g2);</span>
+
+<span class="fc" id="L152">        int g3 = getRecycleGrade(recyclePercent);</span>
+<span class="fc" id="L153">        System.out.println(&quot;O βαθμός για τo ποσοστό ανακύκλωσης&quot;</span>
+                + &quot; των αστικών αποβλήτων είναι: &quot; + g3);
+
+<span class="fc" id="L156">        double grade = w1 * g1 + w2 * g2 + w3 * g3;</span>
+<span class="fc" id="L157">        System.out.println(&quot;O βαθμός για το κράτος στον περιβαλλοντικό&quot;</span>
+                + &quot; τομέα με βάση τα στοιχεία είναι &quot;
+<span class="fc" id="L159">                + String.format(&quot;%.2f&quot;, grade));</span>
+<span class="fc" id="L160">        return grade;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
