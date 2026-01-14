@@ -72,3 +72,229 @@
    Κάλυψη απο JavaDoc<br />
    Java Checkstyle errors: 0<br />
    Κάλυψη από JaCoCo<br />
+
+## 10. Διάγραμμα UML
+      ## UML Class Diagram
+
+```mermaid
+classDiagram
+    class Accounts {
+        -String DB_URL
+        -int MIN_PASS_LENGTH
+        +createTable()
+        +createAccount(name, pass, numID)
+        +getPassword(username)
+        +logIn(pass1, pass2)
+        +newPass(password, name)
+        +validatePassword(password)
+        +forgotPass(username)
+        +getId(username)
+    }
+
+    class AiAdvisorDialog {
+        -AiBridge aiBridge
+        -String dbPath
+        -JEditorPane responseArea
+        -JTabbedPane tabbedPane
+        +AiAdvisorDialog(parent, databasePath, recId, recName, recAmount)
+        -initComponents(id, name, amount)
+        -runAiTask(mode)
+    }
+
+    class AiBridge {
+        -String SCRIPT_NAME
+        -findScript()
+        -runPythonScript(goal, args)
+        +getSpecificAdvice(dbPath, name, amount, goal)
+        +getGlobalStrategy(dbUrl, goal)
+    }
+
+    class BudgetGUI {
+        -BudgetManager manager
+        -String dbPath
+        -JTable dataTable
+        -DefaultTableModel tableModel
+        +BudgetGUI(path)
+        -loadSelectedTable()
+        -updateAmount()
+        -loadChangesFromDb()
+        -updateBudgetUI()
+    }
+
+    class TableInfo {
+        -String displayName
+        -String tableName
+        -String idColumnName
+        +toString()
+    }
+
+    class BudgetManager {
+        -String url
+        +setUrl(dbUrl)
+        +printTable(tableName, idColumnName)
+        +updateAmount(tableName, idColName, id, newAmount)
+        +showChanges()
+        +getTotal(tablename)
+        +getBudgetCharacterism(revenue, expenses)
+        +getCurrentAmount(tableName, idColName, id)
+        +getNameById(tableName, idColName, id)
+    }
+
+    class BudgetMenu {
+        -DatabaseChooser chooser
+        -String url
+        -BudgetManager manager
+        +start()
+        -printMenuOptions()
+        -processChoice(choice)
+        -handleCharacterism()
+        -handleAiSpecific()
+        -handleAiGlobal()
+        -predictValue()
+    }
+
+    class Constrains {
+        +negativeAmount(scanner, amount)
+        +isReasonableChange(originalAmount, newAmount)
+        +deficitLimit(esoda, eksoda)
+    }
+
+    class DatabaseChooser {
+        +getUrl()
+    }
+
+    class DatabaseFinder {
+        +findYearbase(year)
+    }
+
+    class DataforGrade {
+        +getData(year)
+        +chooseYear()
+    }
+
+    class EconElemGrades {
+        +getGDPGrowthGrade(percent)
+        +getPublicDebtGrade(percent)
+        +getSurplusGrade(percent)
+        +getEconomicGrade(w1, w2, w3, surplus, debt, gdp)
+    }
+
+    class EconomicsChart {
+        +displayGraph(titlos, xronies, vathmoi)
+        +showPieChart(names, percentages)
+    }
+
+    class EnvElemGrades {
+        +getResGrade(percent)
+        +getEmissionGrade(percent)
+        +getRecycleGrade(percent)
+        +getEnvironmentalGrade(w1, w2, w3, res, emission, recycle)
+    }
+
+    class GradeChar {
+        +gdpGrowthChar(grade)
+        +surplusChar(grade)
+        +giniChar(grade)
+        +crimeRateChar(grade)
+        +edHealthChar(grade)
+    }
+
+    class Log {
+        +logMenu()
+        -handleCreate(scan, acc)
+        -handleLogin(scan, acc)
+        -handleChange(scan, acc)
+    }
+
+    class LogUi {
+        -Accounts acc
+        +LogUi()
+        -createAccount()
+        -login()
+        -changePassword()
+        -forgotPassword()
+    }
+
+    class MinMaX {
+        -String databaseUrl
+        +showMinMax()
+        +getMinMax(opType, catType)
+    }
+
+    class Pdftocsv {
+        +run(year)
+    }
+
+    class PercentageUI {
+        +PercentageUI(manager, dbPath)
+    }
+
+    class PinakesImporter {
+        -String dbUrl
+        +importAll()
+        -createTables(conn)
+        -importEsoda(conn, csvPath)
+    }
+
+    class PredictionUI {
+        -String tableName
+        -int idValue
+        +PredictionUI(dbPath, table, idCol, idVal, name)
+        -collectDataFromYears()
+    }
+
+    class Search {
+        -String url
+        +searchAmount(name)
+        +searchString(amount1)
+        +searchTable(name2)
+        +searchAmountInTable(name, tableName)
+    }
+
+    class SocElemGrades {
+        +getGINIGrade(gini)
+        +getCrimeGrade(percent)
+        +getMentalHealthGrade(percent)
+        +getSocialGrade(weights, gini, crime, mental, edu)
+    }
+
+    class StateWallet {
+        +main(args)
+    }
+
+    class StateWalletLauncher {
+        -JComboBox yearSelector
+        -JButton startButton
+        -startProcess()
+    }
+
+    class StateWalletUi {
+        +main(args)
+    }
+
+    class TotalGrade {
+        +getTotalGrade()
+    }
+
+    class TotalsPanel {
+        -BudgetManager manager
+        +updateTotals(tableName)
+    }
+
+    class Weights {
+        -Scanner scanner
+        +getWeight()
+        +showTotalWeights(a, w1, w2, w3)
+        +getAllGrades(a)
+    }
+
+    %% Relationships
+    AiAdvisorDialog *-- AiBridge
+    BudgetGUI *-- BudgetManager
+    BudgetGUI o-- TableInfo
+    BudgetMenu *-- DatabaseChooser
+    BudgetMenu *-- BudgetManager
+    Log ..> Accounts
+    LogUi *-- Accounts
+    PercentageUI ..> BudgetManager
+    TotalsPanel *-- BudgetManager
