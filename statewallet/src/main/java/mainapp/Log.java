@@ -36,11 +36,6 @@ public final class Log {
         acc.createTable();
         Scanner scan = new Scanner(System.in);
         while (true) {
-            System.out.println("=============================================");
-            System.out.println("ENTER THESE FOR TESTING");
-            System.out.println("USERNAME: test1");
-            System.out.println("PASSWORD: Test12345!");
-            System.out.println("=============================================");
             System.out.println("\n--- Μενού ---");
             System.out.println("1. Δημιουργία λογαριασμού");
             System.out.println("2. Σύνδεση");
