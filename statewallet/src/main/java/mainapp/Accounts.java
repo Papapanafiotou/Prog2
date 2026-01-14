@@ -80,9 +80,6 @@ public final class Accounts {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     password = rs.getString("password");
-                } else {
-                    System.out.println("Ο χρήστης " + username
-                            + " δεν βρέθηκε.");
                 }
             }
         } catch (SQLException e) {
@@ -103,7 +100,7 @@ public final class Accounts {
             System.out.println("Επιτυχής σύνδεση! Καλωσορίσατε!");
             return true;
         } else {
-            System.out.println("Λάθος κωδικός! Δοκιμάστε ξανά");
+            System.out.println("Λάθος κωδικός ή username! Δοκιμάστε ξανά");
             return false;
         }
     }
