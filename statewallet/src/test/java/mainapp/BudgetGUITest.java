@@ -18,20 +18,6 @@ class BudgetGUITest {
 
     @BeforeEach
     void setUp() throws Exception {
-
-        try {
-        // --- ΠΡΟΣΘΕΣΕ ΑΥΤΗ ΤΗ ΓΡΑΜΜΗ ---
-        Class.forName("org.h2.Driver"); 
-        // --------------------------------
-        
-        // Ο υπόλοιπος κώδικας σου, π.χ. δημιουργία connection
-        // connection = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
-        
-    } catch (ClassNotFoundException e) {
-        throw new RuntimeException("Δεν βρέθηκε ο H2 Driver!", e);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
         // Επιτρέπουμε τη δημιουργία GUI components
         System.setProperty("java.awt.headless", "false");
 
