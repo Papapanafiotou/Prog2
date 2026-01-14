@@ -133,9 +133,10 @@ import java.util.Scanner;
                     + year + &quot; με βάση τα στοιχεία είναι &quot;
 <span class="nc" id="L134">                    + String.format(&quot;%.2f&quot;, finalGrade));</span>
 
-<span class="nc" id="L136">            double[] totalWeights = w.showTotalWeights(weights, wEcon,</span>
+            //υπολογισμός συνολικών βαρών για κάθε στοιχείο
+<span class="nc" id="L137">            double[] totalWeights = w.showTotalWeights(weights, wEcon,</span>
                     wEnv, wSoc);
-<span class="nc" id="L138">            String[] names = {</span>
+<span class="nc" id="L139">            String[] names = {</span>
                 &quot;MΕΤΑΒΟΛΗ ΑΕΠ&quot;,
                 &quot;ΔΗΜΟΣΙΟ ΧΡΕΟΣ ΩΣ ΠΟΣΟΣΤΟ ΑΕΠ&quot;,
                 &quot;ΠΡΩΤΟΓΕΝΕΣ ΠΛΕΟΝΑΣΜΑ&quot;,
@@ -147,37 +148,43 @@ import java.util.Scanner;
                 &quot;ΠΟΣΟΣΤΟ ΑΝΘΡΩΠΩΝ ΜΕ ΠΡΟΒΛΗΜΑΤΑ ΨΥΧΙΚΗΣ ΥΓΕΙΑΣ&quot;,
                 &quot;ΜΕΤΑΒΟΛΗ ΕΓΚΛΗΜΑΤΙΚΟΤΗΤΑΣ&quot;
             };
-<span class="nc" id="L150">            e.showPieChart(names, totalWeights);</span>
+            //εμφάνιση πίτας με τα βάρη
+<span class="nc" id="L152">            e.showPieChart(names, totalWeights);</span>
 
-<span class="pc bpc" id="L152" title="1 of 2 branches missed.">        } else if (answer == OPTION_ALL_YEARS) {</span>
-<span class="fc" id="L153">            double[] weights = w.addWeights();</span>
-<span class="fc" id="L154">            double t = 0;</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">        } else if (answer == OPTION_ALL_YEARS) {</span>
+            // εισαγωγή βαρών για τα στοιχεία
+<span class="fc" id="L156">            double[] weights = w.addWeights();</span>
+<span class="fc" id="L157">            double t = 0;</span>
             double wEcon;
             double wEnv;
             double wSoc;
+            //εισαγωγή βαρών για τις 3 βασικές κατηγορίες
             do {
-<span class="fc" id="L159">                System.out.println(&quot;Εισάγετε τα βάρη του τελικού βαθμού για &quot;</span>
+<span class="fc" id="L163">                System.out.println(&quot;Εισάγετε τα βάρη του τελικού βαθμού για &quot;</span>
                         + &quot;τους τρεις τομείς&quot;);
-<span class="fc" id="L161">                System.out.println(&quot;Οικονομικός τομέας&quot;);</span>
-<span class="fc" id="L162">                wEcon = w.getWeight();</span>
-<span class="fc" id="L163">                t += wEcon;</span>
-<span class="fc" id="L164">                System.out.println(&quot;Περιβαλλοντικός τομέας&quot;);</span>
-<span class="fc" id="L165">                wEnv = w.getWeight();</span>
-<span class="fc" id="L166">                t += wEnv;</span>
-<span class="fc" id="L167">                System.out.println(&quot;Κοινωνικός τομέας&quot;);</span>
-<span class="fc" id="L168">                wSoc = w.getWeight();</span>
-<span class="fc" id="L169">                t += wSoc;</span>
-<span class="pc bpc" id="L170" title="1 of 2 branches missed.">                if (Math.abs(t - 1.0) &gt; TOLERANCE) {</span>
-<span class="nc" id="L171">                    t = 0;</span>
-<span class="nc" id="L172">                    System.out.println(&quot;Τα βάρη πρέπει να αθροίζουν σε 1! &quot;</span>
+<span class="fc" id="L165">                System.out.println(&quot;Οικονομικός τομέας&quot;);</span>
+<span class="fc" id="L166">                wEcon = w.getWeight();</span>
+<span class="fc" id="L167">                t += wEcon;</span>
+<span class="fc" id="L168">                System.out.println(&quot;Περιβαλλοντικός τομέας&quot;);</span>
+<span class="fc" id="L169">                wEnv = w.getWeight();</span>
+<span class="fc" id="L170">                t += wEnv;</span>
+<span class="fc" id="L171">                System.out.println(&quot;Κοινωνικός τομέας&quot;);</span>
+<span class="fc" id="L172">                wSoc = w.getWeight();</span>
+<span class="fc" id="L173">                t += wSoc;</span>
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">                if (Math.abs(t - 1.0) &gt; TOLERANCE) {</span>
+<span class="nc" id="L175">                    t = 0;</span>
+<span class="nc" id="L176">                    System.out.println(&quot;Τα βάρη πρέπει να αθροίζουν σε 1! &quot;</span>
                             + &quot;Εισάγετε ξανά τα βάρη.&quot;);
                 }
-<span class="pc bpc" id="L175" title="1 of 2 branches missed.">            } while (Math.abs(t - 1.0) &gt; TOLERANCE);</span>
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">            } while (Math.abs(t - 1.0) &gt; TOLERANCE);</span>
 
-<span class="fc" id="L177">            double[] finalWeights = w.showTotalWeights(weights, wEcon,</span>
+            // υπολογισμός τελικών βαρών για κάθε στοιχείο
+<span class="fc" id="L182">            double[] finalWeights = w.showTotalWeights(weights, wEcon,</span>
                     wEnv, wSoc);
-<span class="fc" id="L179">            w.getAllGrades(finalWeights);</span>
+            // υπολογισμός όλων των βαθμών με βάση τα βάρη και
+            // συγκρίσεις
+<span class="fc" id="L186">            w.getAllGrades(finalWeights);</span>
         }
-<span class="fc" id="L181">    }</span>
+<span class="fc" id="L188">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

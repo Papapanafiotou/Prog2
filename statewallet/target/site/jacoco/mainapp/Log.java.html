@@ -72,74 +72,82 @@ import java.util.Scanner;
 <span class="fc" id="L72">        System.out.println(&quot;1 για τυχαίο κωδικό, άλλο για χειροκίνητο.&quot;);</span>
         String pass;
 <span class="fc" id="L74">        int an = scan.nextInt();</span>
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (an == RANDOM_OPTION) {</span>
-<span class="nc" id="L76">            Random random = new Random();</span>
-<span class="nc" id="L77">            String chars = &quot;abcdefghijklmnopqrstuvwxyz0123456789@#!$_+&quot;;</span>
-<span class="nc" id="L78">            StringBuilder randomString = new StringBuilder();</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">            for (int i = 0; i &lt; RANDOM_PASS_LENGTH; i++) {</span>
-<span class="nc" id="L80">                int index = random.nextInt(chars.length());</span>
-<span class="nc" id="L81">                randomString.append(chars.charAt(index));</span>
+        // Εισαγωγή τυχαίου κωδικού
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (an == RANDOM_OPTION) {</span>
+<span class="nc" id="L77">            Random random = new Random();</span>
+<span class="nc" id="L78">            String chars = &quot;abcdefghijklmnopqrstuvwxyz0123456789@#!$_+&quot;;</span>
+<span class="nc" id="L79">            StringBuilder randomString = new StringBuilder();</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">            for (int i = 0; i &lt; RANDOM_PASS_LENGTH; i++) {</span>
+<span class="nc" id="L81">                int index = random.nextInt(chars.length());</span>
+<span class="nc" id="L82">                randomString.append(chars.charAt(index));</span>
             }
-<span class="nc" id="L83">            pass = randomString.toString();</span>
-<span class="nc" id="L84">            System.out.println(&quot;Ο κωδικός ειναι: &quot; + pass);</span>
-<span class="nc" id="L85">        } else {</span>
-<span class="fc" id="L86">            System.out.println(&quot;Εισάγετε τον κωδικό! (8+ chars)&quot;);</span>
-<span class="fc" id="L87">            scan.nextLine();</span>
+<span class="nc" id="L84">            pass = randomString.toString();</span>
+<span class="nc" id="L85">            System.out.println(&quot;Ο κωδικός ειναι: &quot; + pass);</span>
+<span class="nc" id="L86">        } else {</span>
+<span class="fc" id="L87">            System.out.println(&quot;Εισάγετε τον κωδικό! (8+ chars)&quot;);</span>
+<span class="fc" id="L88">            scan.nextLine();</span>
             boolean valid;
             do {
-<span class="fc" id="L90">                pass = scan.nextLine();</span>
-<span class="fc" id="L91">                valid = Accounts.validatePassword(pass);</span>
-<span class="pc bpc" id="L92" title="1 of 2 branches missed.">            } while (!valid);</span>
+<span class="fc" id="L91">                pass = scan.nextLine();</span>
+                // έλεγχος εγκυρότητας κωδικού
+<span class="fc" id="L93">                valid = Accounts.validatePassword(pass);</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">            } while (!valid);</span>
         }
-<span class="fc" id="L94">        acc.createAccount(name, pass, numID);</span>
-<span class="fc" id="L95">    }</span>
+        //καταχώρηση του λογαριασμού στην βάση
+<span class="fc" id="L97">        acc.createAccount(name, pass, numID);</span>
+<span class="fc" id="L98">    }</span>
 
     private boolean handleLogin(final Scanner scan, final Accounts acc) {
-<span class="fc" id="L98">        scan.nextLine();</span>
-<span class="fc" id="L99">        System.out.println(&quot;Εισάγετε το username σας&quot;);</span>
-<span class="fc" id="L100">        String name = scan.nextLine();</span>
-<span class="fc" id="L101">        String realpass = acc.getPassword(name);</span>
-<span class="fc" id="L102">        int count = 0;</span>
+<span class="fc" id="L101">        scan.nextLine();</span>
+<span class="fc" id="L102">        System.out.println(&quot;Εισάγετε το username σας&quot;);</span>
+<span class="fc" id="L103">        String name = scan.nextLine();</span>
+        //εύρεση πραγματικού κωδικού
+<span class="fc" id="L105">        String realpass = acc.getPassword(name);</span>
+<span class="fc" id="L106">        int count = 0;</span>
         boolean connect;
         do {
-<span class="fc" id="L105">            System.out.println(&quot;Πληκτρολογήστε τον κωδικό πρόσβασης&quot;);</span>
-<span class="fc" id="L106">            String userPass = scan.nextLine();</span>
-<span class="fc" id="L107">            connect = acc.logIn(realpass, userPass);</span>
-<span class="fc" id="L108">            count++;</span>
-<span class="fc bfc" id="L109" title="All 2 branches covered.">            if (connect) {</span>
-<span class="fc" id="L110">                return true;</span>
+<span class="fc" id="L109">            System.out.println(&quot;Πληκτρολογήστε τον κωδικό πρόσβασης&quot;);</span>
+<span class="fc" id="L110">            String userPass = scan.nextLine();</span>
+            // έλεγχος συμβατότητας του κωδικού
+<span class="fc" id="L112">            connect = acc.logIn(realpass, userPass);</span>
+            // όριο προσπαθειών σύνδεσης
+<span class="fc" id="L114">            count++;</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">            if (connect) {</span>
+<span class="fc" id="L116">                return true;</span>
             }
-<span class="fc bfc" id="L112" title="All 2 branches covered.">        } while (count &lt; MAX_ATTEMPTS);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        } while (count &lt; MAX_ATTEMPTS);</span>
 
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        if (count == MAX_ATTEMPTS) {</span>
-<span class="fc" id="L115">            System.out.println(&quot;Ξεχάσατε τον κωδικό; (1 για ανάκτηση)&quot;);</span>
-<span class="fc" id="L116">            int an = scan.nextInt();</span>
-<span class="pc bpc" id="L117" title="1 of 2 branches missed.">            if (an == 1) {</span>
-<span class="nc" id="L118">                acc.forgotPass(name);</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if (count == MAX_ATTEMPTS) {</span>
+<span class="fc" id="L121">            System.out.println(&quot;Ξεχάσατε τον κωδικό; (1 για ανάκτηση)&quot;);</span>
+<span class="fc" id="L122">            int an = scan.nextInt();</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">            if (an == 1) {</span>
+<span class="nc" id="L124">                acc.forgotPass(name);</span>
             }
         }
-<span class="fc" id="L121">        return false;</span>
+<span class="fc" id="L127">        return false;</span>
     }
 
     private void handleChange(final Scanner scan, final Accounts acc) {
-<span class="fc" id="L125">        scan.nextLine();</span>
-<span class="fc" id="L126">        System.out.println(&quot;Εισάγετε το username σας&quot;);</span>
-<span class="fc" id="L127">        String name = scan.nextLine();</span>
-<span class="fc" id="L128">        String realpass = acc.getPassword(name);</span>
-<span class="fc" id="L129">        System.out.println(&quot;Πληκτρολογήστε τον τρέχον κωδικό&quot;);</span>
-<span class="fc" id="L130">        String userPass = scan.nextLine();</span>
-<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if (acc.logIn(realpass, userPass)) {</span>
+<span class="fc" id="L131">        scan.nextLine();</span>
+<span class="fc" id="L132">        System.out.println(&quot;Εισάγετε το username σας&quot;);</span>
+<span class="fc" id="L133">        String name = scan.nextLine();</span>
+<span class="fc" id="L134">        String realpass = acc.getPassword(name);</span>
+<span class="fc" id="L135">        System.out.println(&quot;Πληκτρολογήστε τον τρέχον κωδικό&quot;);</span>
+<span class="fc" id="L136">        String userPass = scan.nextLine();</span>
+        // εισαγωγή νέου κωδικού αν είναι έγκυρος ο έλεγχος
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        if (acc.logIn(realpass, userPass)) {</span>
             boolean valid;
             String newP;
-<span class="fc" id="L134">            System.out.println(&quot;Εισάγετε τον νέο κωδικό!&quot;);</span>
+<span class="fc" id="L141">            System.out.println(&quot;Εισάγετε τον νέο κωδικό!&quot;);</span>
             do {
-<span class="fc" id="L136">                newP = scan.nextLine();</span>
-<span class="fc" id="L137">                valid = Accounts.validatePassword(newP);</span>
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">            } while (!valid);</span>
-<span class="fc" id="L139">            acc.newPass(newP, name);</span>
-<span class="fc" id="L140">        } else {</span>
-<span class="nc" id="L141">            System.out.println(&quot;Λάθος κωδικός!&quot;);</span>
+<span class="fc" id="L143">                newP = scan.nextLine();</span>
+                // έλεγχος εγκυρότητας νέου κωδικού
+<span class="fc" id="L145">                valid = Accounts.validatePassword(newP);</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">            } while (!valid);</span>
+<span class="fc" id="L147">            acc.newPass(newP, name);</span>
+<span class="fc" id="L148">        } else {</span>
+<span class="nc" id="L149">            System.out.println(&quot;Λάθος κωδικός!&quot;);</span>
         }
-<span class="fc" id="L143">    }</span>
+<span class="fc" id="L151">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

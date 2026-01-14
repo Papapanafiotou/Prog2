@@ -404,46 +404,50 @@ public final class BudgetMenu {
      * Υπολογίζει και εμφανίζει τα ποσοστά των εγγραφών.
      */
     public void getPercentage() {
-<span class="nc" id="L407">        System.out.println(&quot;Για έσοδα πατήστε 1, έξοδα 2, υπουργεία 3.&quot;);</span>
-<span class="nc" id="L408">        String tablename = null;</span>
+        // επιλογή κατηγορίας
+<span class="nc" id="L408">        System.out.println(&quot;Για έσοδα πατήστε 1, έξοδα 2, υπουργεία 3.&quot;);</span>
+<span class="nc" id="L409">        String tablename = null;</span>
         do {
-<span class="nc" id="L410">            int answer = scanner.nextInt();</span>
-<span class="nc bnc" id="L411" title="All 4 branches missed.">            switch (answer) {</span>
+<span class="nc" id="L411">            int answer = scanner.nextInt();</span>
+<span class="nc bnc" id="L412" title="All 4 branches missed.">            switch (answer) {</span>
                 case TABLE_ESODA -&gt; {
-<span class="nc" id="L413">                    tablename = &quot;esoda&quot;;</span>
-<span class="nc" id="L414">                }</span>
+<span class="nc" id="L414">                    tablename = &quot;esoda&quot;;</span>
+<span class="nc" id="L415">                }</span>
                 case TABLE_EKSODA -&gt; {
-<span class="nc" id="L416">                    tablename = &quot;eksoda&quot;;</span>
-<span class="nc" id="L417">                }</span>
+<span class="nc" id="L417">                    tablename = &quot;eksoda&quot;;</span>
+<span class="nc" id="L418">                }</span>
                 case TABLE_KRATOS -&gt; {
-<span class="nc" id="L419">                    tablename = &quot;ypourgeia&quot;;</span>
-<span class="nc" id="L420">                }</span>
-<span class="nc" id="L421">                default -&gt; System.out.println(&quot;Η τιμή δεν είναι 1, 2 ή 3.&quot;);</span>
+<span class="nc" id="L420">                    tablename = &quot;ypourgeia&quot;;</span>
+<span class="nc" id="L421">                }</span>
+<span class="nc" id="L422">                default -&gt; System.out.println(&quot;Η τιμή δεν είναι 1, 2 ή 3.&quot;);</span>
             }
-<span class="nc bnc" id="L423" title="All 2 branches missed.">        } while (tablename == null);</span>
+<span class="nc bnc" id="L424" title="All 2 branches missed.">        } while (tablename == null);</span>
 
-<span class="nc" id="L425">        double[] total = manager.getTotal(tablename);</span>
-<span class="nc" id="L426">        System.out.println(&quot;1: Μεμονωμένο ποσοστό, 2: Όλα τα ποσοστά&quot;);</span>
-<span class="nc" id="L427">        int answer2 = scanner.nextInt();</span>
+        // υπολογισμός συνολικού ποσού της κατηγορίας
+<span class="nc" id="L427">        double[] total = manager.getTotal(tablename);</span>
+<span class="nc" id="L428">        System.out.println(&quot;1: Μεμονωμένο ποσοστό, 2: Όλα τα ποσοστά&quot;);</span>
+<span class="nc" id="L429">        int answer2 = scanner.nextInt();</span>
 
-<span class="nc bnc" id="L429" title="All 2 branches missed.">        if (answer2 == 1) {</span>
+<span class="nc bnc" id="L431" title="All 2 branches missed.">        if (answer2 == 1) {</span>
             double percent;
-<span class="nc" id="L431">            System.out.println(&quot;Για ποιον λογαριασμό;&quot;);</span>
-<span class="nc" id="L432">            scanner.nextLine();</span>
-<span class="nc" id="L433">            String name = scanner.nextLine();</span>
-<span class="nc" id="L434">            Search search = new Search(url);</span>
-<span class="nc" id="L435">            double amount = search.searchAmountInTable(name, tablename);</span>
+<span class="nc" id="L433">            System.out.println(&quot;Για ποιον λογαριασμό;&quot;);</span>
+<span class="nc" id="L434">            scanner.nextLine();</span>
+<span class="nc" id="L435">            String name = scanner.nextLine();</span>
+<span class="nc" id="L436">            Search search = new Search(url);</span>
+            // εύρεση ποσού του λογαριασμού
+<span class="nc" id="L438">            double amount = search.searchAmountInTable(name, tablename);</span>
             try {
-<span class="nc" id="L437">                percent = (amount / total[1]) * PERCENT_MULTIPLIER;</span>
-<span class="nc" id="L438">                System.out.printf(&quot;%.4f %% %n&quot;, percent);</span>
-<span class="nc" id="L439">            } catch (ArithmeticException e) {</span>
-<span class="nc" id="L440">                System.out.println(&quot;Δεν μπορεί να γίνει διαίρεση με 0!&quot;);</span>
-<span class="nc" id="L441">            }</span>
+<span class="nc" id="L440">                percent = (amount / total[1]) * PERCENT_MULTIPLIER;</span>
+<span class="nc" id="L441">                System.out.printf(&quot;%.4f %% %n&quot;, percent);</span>
+<span class="nc" id="L442">            } catch (ArithmeticException e) {</span>
+<span class="nc" id="L443">                System.out.println(&quot;Δεν μπορεί να γίνει διαίρεση με 0!&quot;);</span>
+<span class="nc" id="L444">            }</span>
 
-<span class="nc bnc" id="L443" title="All 2 branches missed.">        } else if (answer2 == 2) {</span>
-<span class="nc" id="L444">            processAllPercentages(tablename, total[1]);</span>
+<span class="nc bnc" id="L446" title="All 2 branches missed.">        } else if (answer2 == 2) {</span>
+            // υπολογισμός όλων των ποσοστών για μια κατηγορία
+<span class="nc" id="L448">            processAllPercentages(tablename, total[1]);</span>
         }
-<span class="nc" id="L446">    }</span>
+<span class="nc" id="L450">    }</span>
     /**
      * Ανακτά δεδομένα από τον καθορισμένο πίνακα της βάσης δεδομένων,
      * υπολογίζει
@@ -469,48 +473,48 @@ public final class BudgetMenu {
      */
     private void processAllPercentages(final String tablename,
                                        final double totalAmount) {
-<span class="nc" id="L472">        int rowCount = 0;</span>
-<span class="nc" id="L473">        try (Connection conn = DriverManager.getConnection(url);</span>
-<span class="nc" id="L474">             Statement stmtCount = conn.createStatement();</span>
-<span class="nc" id="L475">             ResultSet rsCount = stmtCount.executeQuery(</span>
+<span class="nc" id="L476">        int rowCount = 0;</span>
+<span class="nc" id="L477">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="nc" id="L478">             Statement stmtCount = conn.createStatement();</span>
+<span class="nc" id="L479">             ResultSet rsCount = stmtCount.executeQuery(</span>
                      &quot;SELECT COUNT(*) FROM &quot; + tablename)) {
-<span class="nc bnc" id="L477" title="All 2 branches missed.">            if (rsCount.next()) {</span>
-<span class="nc" id="L478">                rowCount = rsCount.getInt(1);</span>
+<span class="nc bnc" id="L481" title="All 2 branches missed.">            if (rsCount.next()) {</span>
+<span class="nc" id="L482">                rowCount = rsCount.getInt(1);</span>
             }
-<span class="nc" id="L480">        } catch (SQLException e) {</span>
-<span class="nc" id="L481">            System.err.println(&quot;Σφάλμα καταμέτρησης: &quot; + e.getMessage());</span>
-<span class="nc" id="L482">            return;</span>
-<span class="nc" id="L483">        }</span>
+<span class="nc" id="L484">        } catch (SQLException e) {</span>
+<span class="nc" id="L485">            System.err.println(&quot;Σφάλμα καταμέτρησης: &quot; + e.getMessage());</span>
+<span class="nc" id="L486">            return;</span>
+<span class="nc" id="L487">        }</span>
 
-<span class="nc" id="L485">        String[] namesArray = new String[rowCount];</span>
-<span class="nc" id="L486">        double[] amountsArray = new double[rowCount];</span>
+<span class="nc" id="L489">        String[] namesArray = new String[rowCount];</span>
+<span class="nc" id="L490">        double[] amountsArray = new double[rowCount];</span>
 
-<span class="nc" id="L488">        try (Connection conn = DriverManager.getConnection(url);</span>
-<span class="nc" id="L489">             Statement stmt = conn.createStatement();</span>
-<span class="nc" id="L490">             ResultSet rs = stmt.executeQuery(</span>
+<span class="nc" id="L492">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="nc" id="L493">             Statement stmt = conn.createStatement();</span>
+<span class="nc" id="L494">             ResultSet rs = stmt.executeQuery(</span>
                      &quot;SELECT name, amount FROM &quot; + tablename)) {
-<span class="nc" id="L492">            int index = 0;</span>
-<span class="nc bnc" id="L493" title="All 2 branches missed.">            while (rs.next()) {</span>
-<span class="nc" id="L494">                namesArray[index] = rs.getString(&quot;name&quot;);</span>
-<span class="nc" id="L495">                amountsArray[index] = rs.getDouble(&quot;amount&quot;);</span>
-<span class="nc" id="L496">                index++;</span>
+<span class="nc" id="L496">            int index = 0;</span>
+<span class="nc bnc" id="L497" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L498">                namesArray[index] = rs.getString(&quot;name&quot;);</span>
+<span class="nc" id="L499">                amountsArray[index] = rs.getDouble(&quot;amount&quot;);</span>
+<span class="nc" id="L500">                index++;</span>
             }
-<span class="nc" id="L498">            System.out.println(&quot;Ανάγνωση &quot; + rowCount + &quot; γραμμών.&quot;);</span>
-<span class="nc" id="L499">        } catch (SQLException e) {</span>
-<span class="nc" id="L500">            System.err.println(&quot;Σφάλμα ανάγνωσης: &quot; + e.getMessage());</span>
-<span class="nc" id="L501">        }</span>
+<span class="nc" id="L502">            System.out.println(&quot;Ανάγνωση &quot; + rowCount + &quot; γραμμών.&quot;);</span>
+<span class="nc" id="L503">        } catch (SQLException e) {</span>
+<span class="nc" id="L504">            System.err.println(&quot;Σφάλμα ανάγνωσης: &quot; + e.getMessage());</span>
+<span class="nc" id="L505">        }</span>
 
-<span class="nc" id="L503">        double[] percentages = new double[amountsArray.length];</span>
-<span class="nc" id="L504">        System.out.println(&quot;----ΠΟΣΟΣΤΑ ΣΤΟΙΧΕΙΩΝ---&quot;);</span>
-<span class="nc bnc" id="L505" title="All 2 branches missed.">        for (int i = 0; i &lt; namesArray.length; i++) {</span>
-<span class="nc" id="L506">            percentages[i] = (amountsArray[i] / totalAmount);</span>
-<span class="nc" id="L507">            double p = percentages[i] * PERCENT_MULTIPLIER;</span>
-<span class="nc" id="L508">            System.out.println(&quot;ΣΤΟΙΧΕΙΟ: &quot; + namesArray[i]</span>
-<span class="nc" id="L509">                    + &quot; ΠΟΣΟΣΤΟ: &quot; + String.format(&quot;%.4f&quot;, p) + &quot; %&quot;);</span>
+<span class="nc" id="L507">        double[] percentages = new double[amountsArray.length];</span>
+<span class="nc" id="L508">        System.out.println(&quot;----ΠΟΣΟΣΤΑ ΣΤΟΙΧΕΙΩΝ---&quot;);</span>
+<span class="nc bnc" id="L509" title="All 2 branches missed.">        for (int i = 0; i &lt; namesArray.length; i++) {</span>
+<span class="nc" id="L510">            percentages[i] = (amountsArray[i] / totalAmount);</span>
+<span class="nc" id="L511">            double p = percentages[i] * PERCENT_MULTIPLIER;</span>
+<span class="nc" id="L512">            System.out.println(&quot;ΣΤΟΙΧΕΙΟ: &quot; + namesArray[i]</span>
+<span class="nc" id="L513">                    + &quot; ΠΟΣΟΣΤΟ: &quot; + String.format(&quot;%.4f&quot;, p) + &quot; %&quot;);</span>
         }
-<span class="nc" id="L511">        EconomicsChart e = new EconomicsChart();</span>
-<span class="nc" id="L512">        e.showPieChart(namesArray, percentages);</span>
-<span class="nc" id="L513">    }</span>
+<span class="nc" id="L515">        EconomicsChart e = new EconomicsChart();</span>
+<span class="nc" id="L516">        e.showPieChart(namesArray, percentages);</span>
+<span class="nc" id="L517">    }</span>
 
     /**
      * Διαχειρίζεται την αλληλεπίδραση για τη λήψη εξειδικευμένης συμβουλής AI
@@ -529,64 +533,64 @@ public final class BudgetMenu {
      */
 
     private void handleAiSpecific() {
-<span class="fc" id="L532">        System.out.println(&quot;\n--- AI Σύμβουλος (Specific) ---&quot;);</span>
-<span class="fc" id="L533">        System.out.println(&quot;Επιλέξτε πίνακα (1-4):&quot;);</span>
-<span class="fc" id="L534">        int tableChoice = scanner.nextInt();</span>
-<span class="fc" id="L535">        scanner.nextLine();</span>
+<span class="fc" id="L536">        System.out.println(&quot;\n--- AI Σύμβουλος (Specific) ---&quot;);</span>
+<span class="fc" id="L537">        System.out.println(&quot;Επιλέξτε πίνακα (1-4):&quot;);</span>
+<span class="fc" id="L538">        int tableChoice = scanner.nextInt();</span>
+<span class="fc" id="L539">        scanner.nextLine();</span>
 
         String tableName;
         String idColName;
 
-<span class="pc bpc" id="L540" title="4 of 5 branches missed.">        switch (tableChoice) {</span>
+<span class="pc bpc" id="L544" title="4 of 5 branches missed.">        switch (tableChoice) {</span>
             case TABLE_ESODA -&gt; {
-<span class="fc" id="L542">                tableName = &quot;esoda&quot;;</span>
-<span class="fc" id="L543">                idColName = &quot;code&quot;;</span>
-<span class="fc" id="L544">            }</span>
+<span class="fc" id="L546">                tableName = &quot;esoda&quot;;</span>
+<span class="fc" id="L547">                idColName = &quot;code&quot;;</span>
+<span class="fc" id="L548">            }</span>
             case TABLE_EKSODA -&gt; {
-<span class="nc" id="L546">                tableName = &quot;eksoda&quot;;</span>
-<span class="nc" id="L547">                idColName = &quot;code&quot;;</span>
-<span class="nc" id="L548">            }</span>
-            case TABLE_KRATOS -&gt; {
-<span class="nc" id="L550">                tableName = &quot;kratos&quot;;</span>
-<span class="nc" id="L551">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L550">                tableName = &quot;eksoda&quot;;</span>
+<span class="nc" id="L551">                idColName = &quot;code&quot;;</span>
 <span class="nc" id="L552">            }</span>
-            case TABLE_YPOURGEIA -&gt; {
-<span class="nc" id="L554">                tableName = &quot;ypourgeia&quot;;</span>
+            case TABLE_KRATOS -&gt; {
+<span class="nc" id="L554">                tableName = &quot;kratos&quot;;</span>
 <span class="nc" id="L555">                idColName = &quot;number&quot;;</span>
 <span class="nc" id="L556">            }</span>
+            case TABLE_YPOURGEIA -&gt; {
+<span class="nc" id="L558">                tableName = &quot;ypourgeia&quot;;</span>
+<span class="nc" id="L559">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L560">            }</span>
             default -&gt; {
-<span class="nc" id="L558">                System.out.println(&quot;Άκυρη επιλογή πίνακα.&quot;);</span>
-<span class="nc" id="L559">                return;</span>
+<span class="nc" id="L562">                System.out.println(&quot;Άκυρη επιλογή πίνακα.&quot;);</span>
+<span class="nc" id="L563">                return;</span>
             }
         }
 
-<span class="fc" id="L563">        System.out.print(&quot;Δώσε το ID (&quot; + idColName + &quot;): &quot;);</span>
-<span class="pc bpc" id="L564" title="1 of 2 branches missed.">        if (!scanner.hasNextInt()) {</span>
-<span class="nc" id="L565">            System.out.println(&quot;Πρέπει να δώσετε αριθμό!&quot;);</span>
-<span class="nc" id="L566">            scanner.nextLine();</span>
-<span class="nc" id="L567">            return;</span>
+<span class="fc" id="L567">        System.out.print(&quot;Δώσε το ID (&quot; + idColName + &quot;): &quot;);</span>
+<span class="pc bpc" id="L568" title="1 of 2 branches missed.">        if (!scanner.hasNextInt()) {</span>
+<span class="nc" id="L569">            System.out.println(&quot;Πρέπει να δώσετε αριθμό!&quot;);</span>
+<span class="nc" id="L570">            scanner.nextLine();</span>
+<span class="nc" id="L571">            return;</span>
         }
-<span class="fc" id="L569">        int id = scanner.nextInt();</span>
-<span class="fc" id="L570">        scanner.nextLine();</span>
+<span class="fc" id="L573">        int id = scanner.nextInt();</span>
+<span class="fc" id="L574">        scanner.nextLine();</span>
 
-<span class="fc" id="L572">        String name = manager.getNameById(tableName, idColName, id);</span>
-<span class="fc" id="L573">        double amount = manager.getCurrentAmount(tableName, idColName, id);</span>
+<span class="fc" id="L576">        String name = manager.getNameById(tableName, idColName, id);</span>
+<span class="fc" id="L577">        double amount = manager.getCurrentAmount(tableName, idColName, id);</span>
 
-<span class="pc bpc" id="L575" title="3 of 4 branches missed.">        if (name == null || amount == -1) {</span>
-<span class="fc" id="L576">            System.out.println(&quot;Δεν βρέθηκε εγγραφή με αυτό το ID.&quot;);</span>
-<span class="fc" id="L577">            return;</span>
+<span class="pc bpc" id="L579" title="3 of 4 branches missed.">        if (name == null || amount == -1) {</span>
+<span class="fc" id="L580">            System.out.println(&quot;Δεν βρέθηκε εγγραφή με αυτό το ID.&quot;);</span>
+<span class="fc" id="L581">            return;</span>
         }
 
-<span class="nc" id="L580">        System.out.println(&quot;Επιλέξατε: &quot; + name);</span>
-<span class="nc" id="L581">        System.out.printf(&quot;Τρέχον Ποσό: %,.2f €\n&quot;, amount);</span>
-<span class="nc" id="L582">        System.out.print(&quot;Στόχος: &quot;);</span>
-<span class="nc" id="L583">        String goal = scanner.nextLine();</span>
+<span class="nc" id="L584">        System.out.println(&quot;Επιλέξατε: &quot; + name);</span>
+<span class="nc" id="L585">        System.out.printf(&quot;Τρέχον Ποσό: %,.2f €\n&quot;, amount);</span>
+<span class="nc" id="L586">        System.out.print(&quot;Στόχος: &quot;);</span>
+<span class="nc" id="L587">        String goal = scanner.nextLine();</span>
 
-<span class="nc" id="L585">        System.out.println(&quot;Ο ψηφιακός βοηθός σκέφτεται...&quot;);</span>
-<span class="nc" id="L586">        AiBridge ai = new AiBridge();</span>
-<span class="nc" id="L587">        System.out.println(ai.getSpecificAdvice(</span>
+<span class="nc" id="L589">        System.out.println(&quot;Ο ψηφιακός βοηθός σκέφτεται...&quot;);</span>
+<span class="nc" id="L590">        AiBridge ai = new AiBridge();</span>
+<span class="nc" id="L591">        System.out.println(ai.getSpecificAdvice(</span>
                 this.url, name, amount, goal));
-<span class="nc" id="L589">    }</span>
+<span class="nc" id="L593">    }</span>
 
     /**
      * Διαχειρίζεται την αλληλεπίδραση για τον καθολικό στρατηγικό σχεδιασμό
@@ -600,14 +604,14 @@ public final class BudgetMenu {
      */
 
     private void handleAiGlobal() {
-<span class="nc" id="L603">        System.out.println(&quot;\n--- AI Στρατηγικός Σχεδιασμός ---&quot;);</span>
-<span class="nc" id="L604">        System.out.print(&quot;Στόχος: &quot;);</span>
-<span class="nc" id="L605">        String goal = scanner.nextLine();</span>
+<span class="nc" id="L607">        System.out.println(&quot;\n--- AI Στρατηγικός Σχεδιασμός ---&quot;);</span>
+<span class="nc" id="L608">        System.out.print(&quot;Στόχος: &quot;);</span>
+<span class="nc" id="L609">        String goal = scanner.nextLine();</span>
 
-<span class="nc" id="L607">        System.out.println(&quot;Ανάλυση βάσης δεδομένων...&quot;);</span>
-<span class="nc" id="L608">        AiBridge ai = new AiBridge();</span>
-<span class="nc" id="L609">        System.out.println(ai.getGlobalStrategy(this.url, goal));</span>
-<span class="nc" id="L610">    }</span>
+<span class="nc" id="L611">        System.out.println(&quot;Ανάλυση βάσης δεδομένων...&quot;);</span>
+<span class="nc" id="L612">        AiBridge ai = new AiBridge();</span>
+<span class="nc" id="L613">        System.out.println(ai.getGlobalStrategy(this.url, goal));</span>
+<span class="nc" id="L614">    }</span>
     /**
     * Μέθοδος διαχείρισης της διαδικασίας προβλέψεων.
     *
@@ -618,66 +622,66 @@ public final class BudgetMenu {
     * απλής γραμμικής παλινδρόμισης για την πρόβλεψη.
     */
     private void predictValue() {
-<span class="nc" id="L621">        System.out.println(&quot;\n--- Πρόβλεψη για το έτος 2027 ---&quot;);</span>
-<span class="nc" id="L622">        System.out.println(&quot;Επιλέξτε πίνακα (1-5):&quot;);</span>
+<span class="nc" id="L625">        System.out.println(&quot;\n--- Πρόβλεψη για το έτος 2027 ---&quot;);</span>
+<span class="nc" id="L626">        System.out.println(&quot;Επιλέξτε πίνακα (1-5):&quot;);</span>
         int tableChoice;
         try {
-<span class="nc" id="L625">            tableChoice = scanner.nextInt();</span>
-<span class="nc" id="L626">            scanner.nextLine();</span>
-<span class="nc" id="L627">        } catch (Exception e) {</span>
-<span class="nc" id="L628">            System.out.println(&quot;Μη έγκυρη είσοδος.&quot;);</span>
-<span class="nc" id="L629">            scanner.nextLine();</span>
-<span class="nc" id="L630">            return;</span>
-<span class="nc" id="L631">        }</span>
+<span class="nc" id="L629">            tableChoice = scanner.nextInt();</span>
+<span class="nc" id="L630">            scanner.nextLine();</span>
+<span class="nc" id="L631">        } catch (Exception e) {</span>
+<span class="nc" id="L632">            System.out.println(&quot;Μη έγκυρη είσοδος.&quot;);</span>
+<span class="nc" id="L633">            scanner.nextLine();</span>
+<span class="nc" id="L634">            return;</span>
+<span class="nc" id="L635">        }</span>
 
         String tableName;
         String idColName;
 
-<span class="nc bnc" id="L636" title="All 6 branches missed.">        switch (tableChoice) {</span>
+<span class="nc bnc" id="L640" title="All 6 branches missed.">        switch (tableChoice) {</span>
             case TABLE_ESODA -&gt; {
-<span class="nc" id="L638">                tableName = &quot;esoda&quot;;</span>
-<span class="nc" id="L639">                idColName = &quot;code&quot;;</span>
-<span class="nc" id="L640">            }</span>
-            case TABLE_EKSODA -&gt; {
-<span class="nc" id="L642">                tableName = &quot;eksoda&quot;;</span>
+<span class="nc" id="L642">                tableName = &quot;esoda&quot;;</span>
 <span class="nc" id="L643">                idColName = &quot;code&quot;;</span>
 <span class="nc" id="L644">            }</span>
-            case TABLE_KRATOS -&gt; {
-<span class="nc" id="L646">                tableName = &quot;kratos&quot;;</span>
-<span class="nc" id="L647">                idColName = &quot;number&quot;;</span>
+            case TABLE_EKSODA -&gt; {
+<span class="nc" id="L646">                tableName = &quot;eksoda&quot;;</span>
+<span class="nc" id="L647">                idColName = &quot;code&quot;;</span>
 <span class="nc" id="L648">            }</span>
-            case TABLE_YPOURGEIA -&gt; {
-<span class="nc" id="L650">                tableName = &quot;ypourgeia&quot;;</span>
+            case TABLE_KRATOS -&gt; {
+<span class="nc" id="L650">                tableName = &quot;kratos&quot;;</span>
 <span class="nc" id="L651">                idColName = &quot;number&quot;;</span>
 <span class="nc" id="L652">            }</span>
-            case TABLE_APOK -&gt; {
-<span class="nc" id="L654">                tableName = &quot;apokentromenes&quot;;</span>
+            case TABLE_YPOURGEIA -&gt; {
+<span class="nc" id="L654">                tableName = &quot;ypourgeia&quot;;</span>
 <span class="nc" id="L655">                idColName = &quot;number&quot;;</span>
 <span class="nc" id="L656">            }</span>
+            case TABLE_APOK -&gt; {
+<span class="nc" id="L658">                tableName = &quot;apokentromenes&quot;;</span>
+<span class="nc" id="L659">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L660">            }</span>
             default -&gt; {
-<span class="nc" id="L658">                System.out.println(&quot;Άκυρη επιλογή.&quot;);</span>
-<span class="nc" id="L659">                return;</span>
+<span class="nc" id="L662">                System.out.println(&quot;Άκυρη επιλογή.&quot;);</span>
+<span class="nc" id="L663">                return;</span>
             }
         }
 
-<span class="nc" id="L663">        System.out.print(&quot;Δώσε το ID (&quot; + idColName + &quot;) για πρόβλεψη: &quot;);</span>
+<span class="nc" id="L667">        System.out.print(&quot;Δώσε το ID (&quot; + idColName + &quot;) για πρόβλεψη: &quot;);</span>
         int id;
         try {
-<span class="nc" id="L666">            id = Integer.parseInt(scanner.nextLine());</span>
-<span class="nc" id="L667">        } catch (NumberFormatException e) {</span>
-<span class="nc" id="L668">            System.out.println(&quot;Λάθος είσοδος ID.&quot;);</span>
-<span class="nc" id="L669">            return;</span>
-<span class="nc" id="L670">        }</span>
+<span class="nc" id="L670">            id = Integer.parseInt(scanner.nextLine());</span>
+<span class="nc" id="L671">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L672">            System.out.println(&quot;Λάθος είσοδος ID.&quot;);</span>
+<span class="nc" id="L673">            return;</span>
+<span class="nc" id="L674">        }</span>
         /*Κλήση του collectHistory, ανάλογα με τα στοιχεία που δόθηκαν. */
-<span class="nc" id="L672">        Map&lt;Integer, Double&gt; history = collectHistory(tableName, idColName, id);</span>
+<span class="nc" id="L676">        Map&lt;Integer, Double&gt; history = collectHistory(tableName, idColName, id);</span>
 
-<span class="nc bnc" id="L674" title="All 2 branches missed.">        if (history.size() &lt; 2) {</span>
-<span class="nc" id="L675">            System.out.println(&quot;Δεν υπάρχουν αρκετά δεδομένα για πρόβλεψη.&quot;);</span>
-<span class="nc" id="L676">            return;</span>
+<span class="nc bnc" id="L678" title="All 2 branches missed.">        if (history.size() &lt; 2) {</span>
+<span class="nc" id="L679">            System.out.println(&quot;Δεν υπάρχουν αρκετά δεδομένα για πρόβλεψη.&quot;);</span>
+<span class="nc" id="L680">            return;</span>
         }
 
-<span class="nc" id="L679">        performPrediction(history);</span>
-<span class="nc" id="L680">    }</span>
+<span class="nc" id="L683">        performPrediction(history);</span>
+<span class="nc" id="L684">    }</span>
     /**
      * Συλλέγει ιστορικά οικονομικά δεδομένα για μια συγκεκριμένη εγγραφή
      * σε ένα εύρος ετών (από {@code START_YEAR} έως {@code END_YEAR}).
@@ -707,48 +711,48 @@ public final class BudgetMenu {
     private Map&lt;Integer, Double&gt; collectHistory(final String tableName,
                                                 final String idColName,
                                                 final int id) {
-<span class="nc" id="L710">        System.out.println(&quot;Συλλογή ιστορικών δεδομένων (2023-2026)...&quot;);</span>
-<span class="nc" id="L711">        Map&lt;Integer, Double&gt; history = new LinkedHashMap&lt;&gt;();</span>
-<span class="nc" id="L712">        DatabaseFinder finder = new DatabaseFinder();</span>
-
-<span class="nc bnc" id="L714" title="All 2 branches missed.">        for (int year = START_YEAR; year &lt;= END_YEAR; year++) {</span>
-<span class="nc" id="L715">            String dbName = &quot;budget_&quot; + year + &quot;.db&quot;;</span>
-<span class="nc" id="L716">            String currentDbUrl = &quot;jdbc:sqlite:&quot; + dbName;</span>
-<span class="nc" id="L717">            boolean tempCreated = false;</span>
-
-<span class="nc bnc" id="L719" title="All 2 branches missed.">            if (!finder.findYearbase(year)) {</span>
+<span class="nc" id="L714">        System.out.println(&quot;Συλλογή ιστορικών δεδομένων (2023-2026)...&quot;);</span>
+<span class="nc" id="L715">        Map&lt;Integer, Double&gt; history = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc" id="L716">        DatabaseFinder finder = new DatabaseFinder();</span>
+<span class="nc bnc" id="L717" title="All 2 branches missed.">        for (int year = START_YEAR; year &lt;= END_YEAR; year++) {</span>
+<span class="nc" id="L718">            String dbName = &quot;budget_&quot; + year + &quot;.db&quot;;</span>
+<span class="nc" id="L719">            String currentDbUrl = &quot;jdbc:sqlite:&quot; + dbName;</span>
+<span class="nc" id="L720">            boolean tempCreated = false;</span>
+<span class="nc" id="L721">            boolean databaseExists = finder.findYearbase(year);</span>
+<span class="nc bnc" id="L722" title="All 2 branches missed.">            if (!databaseExists) {</span>
                 try {
-<span class="nc" id="L721">                    Pdftocsv.run(year);</span>
-<span class="nc" id="L722">                    PinakesImporter importer = new PinakesImporter(</span>
+<span class="nc" id="L724">                    System.out.println(&quot;a&quot;);</span>
+<span class="nc" id="L725">                    Pdftocsv.run(year);</span>
+<span class="nc" id="L726">                    PinakesImporter importer = new PinakesImporter(</span>
                             currentDbUrl);
-<span class="nc" id="L724">                    importer.importAll();</span>
-<span class="nc" id="L725">                    tempCreated = true;</span>
-<span class="nc" id="L726">                } catch (Exception e) {</span>
-<span class="nc" id="L727">                    System.out.println(&quot;Αδυναμία ανάγνωσης έτους &quot; + year);</span>
-<span class="nc" id="L728">                    continue;</span>
-<span class="nc" id="L729">                }</span>
+<span class="nc" id="L728">                    importer.importAll();</span>
+<span class="nc" id="L729">                    tempCreated = true;</span>
+<span class="nc" id="L730">                } catch (Exception e) {</span>
+<span class="nc" id="L731">                    System.out.println(&quot;Αδυναμία ανάγνωσης έτους &quot; + year);</span>
+<span class="nc" id="L732">                    continue;</span>
+<span class="nc" id="L733">                }</span>
             }
 
-<span class="nc" id="L732">            BudgetManager tempManager = new BudgetManager(currentDbUrl);</span>
-<span class="nc" id="L733">            double amount = tempManager.getCurrentAmount(</span>
+<span class="nc" id="L736">            BudgetManager tempManager = new BudgetManager(currentDbUrl);</span>
+<span class="nc" id="L737">            double amount = tempManager.getCurrentAmount(</span>
                     tableName, idColName, id);
 
-<span class="nc bnc" id="L736" title="All 2 branches missed.">            if (amount != -1) {</span>
-<span class="nc" id="L737">                history.put(year, amount);</span>
-<span class="nc" id="L738">                System.out.printf(&quot;Έτος %d: %,.2f EUR%n&quot;, year, amount);</span>
+<span class="nc bnc" id="L740" title="All 2 branches missed.">            if (amount != -1) {</span>
+<span class="nc" id="L741">                history.put(year, amount);</span>
+<span class="nc" id="L742">                System.out.printf(&quot;Έτος %d: %,.2f EUR%n&quot;, year, amount);</span>
             } else {
-<span class="nc" id="L740">                System.out.printf(&quot;Έτος %d: Δεν βρέθηκε εγγραφή.%n&quot;, year);</span>
+<span class="nc" id="L744">                System.out.printf(&quot;Έτος %d: Δεν βρέθηκε εγγραφή.%n&quot;, year);</span>
             }
 
-<span class="nc bnc" id="L743" title="All 2 branches missed.">            if (tempCreated) {</span>
+<span class="nc bnc" id="L747" title="All 2 branches missed.">            if (tempCreated) {</span>
                 try {
-<span class="nc" id="L745">                    new File(dbName).delete();</span>
-<span class="nc" id="L746">                } catch (Exception e) {</span>
+<span class="nc" id="L749">                    new File(dbName).delete();</span>
+<span class="nc" id="L750">                } catch (Exception e) {</span>
                     // Ignore deletion errors
-<span class="nc" id="L748">                }</span>
+<span class="nc" id="L752">                }</span>
             }
         }
-<span class="nc" id="L751">        return history;</span>
+<span class="nc" id="L755">        return history;</span>
     }
     /**
      * Εκτελεί οικονομική πρόβλεψη για το έτος {@code PREDICT_YEAR} βασισμένη
@@ -771,36 +775,36 @@ public final class BudgetMenu {
      * και η τιμή είναι το Ποσό (εξαρτημένη μεταβλητή y).
      */
     private void performPrediction(final Map&lt;Integer, Double&gt; history) {
-<span class="nc" id="L774">        double n = history.size();</span>
-<span class="nc" id="L775">        double sumX = 0;</span>
-<span class="nc" id="L776">        double sumY = 0;</span>
-<span class="nc" id="L777">        double sumXY = 0;</span>
-<span class="nc" id="L778">        double sumX2 = 0;</span>
+<span class="nc" id="L778">        double n = history.size();</span>
+<span class="nc" id="L779">        double sumX = 0;</span>
+<span class="nc" id="L780">        double sumY = 0;</span>
+<span class="nc" id="L781">        double sumXY = 0;</span>
+<span class="nc" id="L782">        double sumX2 = 0;</span>
 
-<span class="nc bnc" id="L780" title="All 2 branches missed.">        for (Map.Entry&lt;Integer, Double&gt; entry : history.entrySet()) {</span>
-<span class="nc" id="L781">            double x = entry.getKey();</span>
-<span class="nc" id="L782">            double y = entry.getValue();</span>
-<span class="nc" id="L783">            sumX += x;</span>
-<span class="nc" id="L784">            sumY += y;</span>
-<span class="nc" id="L785">            sumXY += (x * y);</span>
-<span class="nc" id="L786">            sumX2 += (x * x);</span>
-<span class="nc" id="L787">        }</span>
+<span class="nc bnc" id="L784" title="All 2 branches missed.">        for (Map.Entry&lt;Integer, Double&gt; entry : history.entrySet()) {</span>
+<span class="nc" id="L785">            double x = entry.getKey();</span>
+<span class="nc" id="L786">            double y = entry.getValue();</span>
+<span class="nc" id="L787">            sumX += x;</span>
+<span class="nc" id="L788">            sumY += y;</span>
+<span class="nc" id="L789">            sumXY += (x * y);</span>
+<span class="nc" id="L790">            sumX2 += (x * x);</span>
+<span class="nc" id="L791">        }</span>
 
-<span class="nc" id="L789">        double slope = (n * sumXY - sumX * sumY)</span>
+<span class="nc" id="L793">        double slope = (n * sumXY - sumX * sumY)</span>
                 / (n * sumX2 - sumX * sumX);
-<span class="nc" id="L791">        double intercept = (sumY - slope * sumX) / n;</span>
-<span class="nc" id="L792">        double predicted = slope * PREDICT_YEAR + intercept;</span>
+<span class="nc" id="L795">        double intercept = (sumY - slope * sumX) / n;</span>
+<span class="nc" id="L796">        double predicted = slope * PREDICT_YEAR + intercept;</span>
 
-<span class="nc" id="L794">        System.out.println(&quot;----------------------------------------&quot;);</span>
-<span class="nc" id="L795">        System.out.printf(&quot;Εκτίμηση για το 2027: %,.2f EUR%n&quot;, predicted);</span>
+<span class="nc" id="L798">        System.out.println(&quot;----------------------------------------&quot;);</span>
+<span class="nc" id="L799">        System.out.printf(&quot;Εκτίμηση για το 2027: %,.2f EUR%n&quot;, predicted);</span>
 
-<span class="nc" id="L797">        double growth = predicted - history.get(END_YEAR);</span>
-<span class="nc bnc" id="L798" title="All 2 branches missed.">        if (growth &gt; 0) {</span>
-<span class="nc" id="L799">            System.out.printf(&quot;Τάση: Αύξηση (+%,.2f EUR)%n&quot;, growth);</span>
+<span class="nc" id="L801">        double growth = predicted - history.get(END_YEAR);</span>
+<span class="nc bnc" id="L802" title="All 2 branches missed.">        if (growth &gt; 0) {</span>
+<span class="nc" id="L803">            System.out.printf(&quot;Τάση: Αύξηση (+%,.2f EUR)%n&quot;, growth);</span>
         } else {
-<span class="nc" id="L801">            System.out.printf(&quot;Τάση: Μείωση (%,.2f EUR)%n&quot;, growth);</span>
+<span class="nc" id="L805">            System.out.printf(&quot;Τάση: Μείωση (%,.2f EUR)%n&quot;, growth);</span>
         }
-<span class="nc" id="L803">        System.out.println(&quot;----------------------------------------&quot;);</span>
-<span class="nc" id="L804">    }</span>
+<span class="nc" id="L807">        System.out.println(&quot;----------------------------------------&quot;);</span>
+<span class="nc" id="L808">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

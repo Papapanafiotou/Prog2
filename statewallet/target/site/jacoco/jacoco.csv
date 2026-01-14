@@ -9,14 +9,14 @@ statewallet,mainapp,EconomicsChart,153,123,2,2,30,30,2,5,1,4
 statewallet,mainapp,Search,0,321,10,34,0,76,10,18,0,6
 statewallet,mainapp,StateWalletLauncher,154,282,6,6,44,45,11,6,8,3
 statewallet,mainapp,DatabaseFinder,0,14,0,0,0,4,0,2,0,2
-statewallet,mainapp,DatabaseChooser,22,50,3,5,8,15,3,3,0,2
-statewallet,mainapp,PinakesImporter,124,390,12,24,38,107,10,15,1,6
+statewallet,mainapp,DatabaseChooser,12,60,2,6,4,19,2,4,0,2
+statewallet,mainapp,PinakesImporter,11,503,7,29,4,141,7,18,0,7
 statewallet,mainapp,AiAdvisorDialog.new SwingWorker() {...},119,0,12,0,26,0,9,0,3,0
 statewallet,mainapp,BudgetGUI.TableInfo,0,15,0,0,0,6,0,2,0,2
 statewallet,mainapp,DataforGrade,0,468,1,9,0,16,1,8,0,4
 statewallet,mainapp,AiBridge,239,3,16,0,43,1,12,1,4,1
 statewallet,mainapp,BudgetGUI,623,464,42,0,142,83,33,5,12,5
-statewallet,mainapp,BudgetMenu,1048,286,87,11,298,90,71,11,8,7
+statewallet,mainapp,BudgetMenu,1053,286,87,11,300,90,71,11,8,7
 statewallet,mainapp,EconElemGrades,6,156,3,27,3,44,3,17,0,5
 statewallet,mainapp,TotalsPanel,4,148,1,3,1,31,1,4,0,3
 statewallet,mainapp,TotalGrade,274,108,7,5,50,29,5,3,0,2
@@ -26,7 +26,7 @@ statewallet,mainapp,LogUi,601,0,44,0,142,0,35,0,13,0
 statewallet,mainapp,BudgetGUI.new MouseAdapter() {...},40,6,4,0,8,1,3,1,1,1
 statewallet,mainapp,AiAdvisorDialog,26,544,2,8,5,108,6,6,4,3
 statewallet,mainapp,SocElemGrades,0,218,0,40,0,61,0,26,0,6
-statewallet,mainapp,PredictionUI,218,96,10,0,41,21,8,1,3,1
+statewallet,mainapp,PredictionUI,317,96,16,0,72,21,11,1,3,1
 statewallet,mainapp,StateWalletUi,15,0,0,0,7,0,2,0,2,0
 statewallet,mainapp,GradeChar,39,111,11,23,11,38,11,14,0,8
 statewallet,mainapp,MinMaX,14,191,5,27,5,59,5,14,0,3

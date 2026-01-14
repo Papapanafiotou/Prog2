@@ -2,6 +2,7 @@ package mainapp;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.io.File;
 import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -139,18 +140,76 @@ public final class PredictionUI extends JFrame {
         add(runAnalysisBtn, BorderLayout.SOUTH);
     }
 
-    private Map<Integer, Double> collectDataFromYears() {
-        Map<Integer, Double> history = new LinkedHashMap<>();
-        for (int year = START_YEAR; year <= END_YEAR; year++) {
-            String yearDbUrl = "jdbc:sqlite:budget_" + year + ".db";
-            BudgetManager tempManager = new BudgetManager(yearDbUrl);
-            // Χρήση της μεθόδου ανάκτησης ποσού
-            double amount = tempManager.getCurrentAmount(
-                    tableName, idColName, idValue);
-            if (amount != -1) {
-                history.put(year, amount);
+
+private Map<Integer, Double> collectDataFromYears() {
+    System.out.println("Συλλογή δεδομένων από όλα τα έτη...");
+    Map<Integer, Double> history = new LinkedHashMap<>();
+    DatabaseFinder finder = new DatabaseFinder(); // 1. Χρειαζόμαστε τον finder
+
+    for (int year = START_YEAR; year <= END_YEAR; year++) {
+        String dbName = "budget_" + year + ".db";
+        String currentDbUrl = "jdbc:sqlite:" + dbName;
+        boolean tempCreated = false; // Σημαία για το αν φτιάξαμε εμείς τη βάση
+
+        // 2. Έλεγχος αν υπάρχει η βάση, αλλιώς δημιουργία
+        if (!finder.findYearbase(year)) {
+            try {
+                System.out.println("Δημιουργία προσωρινής βάσης για το έτος: "
+                + year);
+                Pdftocsv.run(year); // Μετατροπή PDF -> CSV
+                PinakesImporter importer = new PinakesImporter(currentDbUrl);
+                importer.importAll(); // Εισαγωγή στη βάση
+                tempCreated = true;   // Σημειώνουμε ότι πρέπει να διαγραφεί
+                // μετά
+            } catch (Exception e) {
+                System.err.println("Αδυναμία δημιουργίας βάσης για το έτος "
+                + year);
+                e.printStackTrace();
+                continue; // Προχωράμε στο επόμενο έτος
             }
         }
-        return history;
+
+        // 3. Ανάκτηση Δεδομένων
+        BudgetManager tempManager = null;
+        try {
+            tempManager = new BudgetManager(currentDbUrl);
+
+            // Χρήση των πεδίων της κλάσης (tableName, idColName, idValue)
+            double amount = tempManager.getCurrentAmount(tableName, idColName,
+                idValue);
+
+            if (amount != -1) {
+                history.put(year, amount);
+                System.out.printf("Έτος %d: %,.2f EUR%n", year, amount);
+            } else {
+                System.out.printf("Έτος %d: Δεν βρέθηκε εγγραφή.%n", year);
+            }
+
+        } catch (Exception e) {
+            System.err.println("Σφάλμα ανάγνωσης για το έτος " + year);
+            e.printStackTrace();
+        }
+
+        // 4. Διαγραφή προσωρινού αρχείου (αν δημιουργήθηκε τώρα)
+        if (tempCreated) {
+            // Προσωρινό hack αν δεν υπάρχει close(): Force Garbage
+            // Collection
+            tempManager = null;
+            System.gc();
+
+            try {
+                File dbFile = new File(dbName);
+                if (!dbFile.delete()) {
+                    dbFile.deleteOnExit(); // Αν δεν σβηστεί τώρα, να
+                    // σβηστεί όταν
+                    // κλείσει το πρόγραμμα
+                }
+            } catch (Exception e) {
+                System.err.println("Αδυναμία διαγραφής προσωρινού αρχείου: "
+                + dbName);
+            }
+        }
     }
+    return history;
+}
 }

@@ -133,7 +133,7 @@ public final class TotalGrade {
                     + year + " με βάση τα στοιχεία είναι "
                     + String.format("%.2f", finalGrade));
 
-            //υπολογισμός συνολικών βαρών για κάθε στοιχείο        
+            //υπολογισμός συνολικών βαρών για κάθε στοιχείο
             double[] totalWeights = w.showTotalWeights(weights, wEcon,
                     wEnv, wSoc);
             String[] names = {
@@ -152,7 +152,7 @@ public final class TotalGrade {
             e.showPieChart(names, totalWeights);
 
         } else if (answer == OPTION_ALL_YEARS) {
-            // εισαγωγή βαρών για τα στοιχεία    
+            // εισαγωγή βαρών για τα στοιχεία
             double[] weights = w.addWeights();
             double t = 0;
             double wEcon;
@@ -181,7 +181,8 @@ public final class TotalGrade {
             // υπολογισμός τελικών βαρών για κάθε στοιχείο
             double[] finalWeights = w.showTotalWeights(weights, wEcon,
                     wEnv, wSoc);
-            // υπολογισμός όλων των βαθμών με βάση τα βάρη και συγκρίσεις        
+            // υπολογισμός όλων των βαθμών με βάση τα βάρη και
+            // συγκρίσεις
             w.getAllGrades(finalWeights);
         }
     }

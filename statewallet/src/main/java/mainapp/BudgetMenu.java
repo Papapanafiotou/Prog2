@@ -714,14 +714,14 @@ public final class BudgetMenu {
         System.out.println("Συλλογή ιστορικών δεδομένων (2023-2026)...");
         Map<Integer, Double> history = new LinkedHashMap<>();
         DatabaseFinder finder = new DatabaseFinder();
-
         for (int year = START_YEAR; year <= END_YEAR; year++) {
             String dbName = "budget_" + year + ".db";
             String currentDbUrl = "jdbc:sqlite:" + dbName;
             boolean tempCreated = false;
-
-            if (!finder.findYearbase(year)) {
+            boolean databaseExists = finder.findYearbase(year);
+            if (!databaseExists) {
                 try {
+                    System.out.println("a");
                     Pdftocsv.run(year);
                     PinakesImporter importer = new PinakesImporter(
                             currentDbUrl);

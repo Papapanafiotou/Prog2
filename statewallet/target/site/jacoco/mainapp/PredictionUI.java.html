@@ -2,6 +2,7 @@
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.io.File;
 import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -66,92 +67,150 @@ public final class PredictionUI extends JFrame {
      */
     public PredictionUI(final String dbPath, final String table,
                         final String idCol, final int idVal,
-<span class="fc" id="L69">                        final String name) {</span>
-<span class="fc" id="L70">        this.tableName = table;</span>
-<span class="fc" id="L71">        this.idColName = idCol;</span>
-<span class="fc" id="L72">        this.idValue = idVal;</span>
-<span class="fc" id="L73">        this.itemName = name;</span>
+<span class="fc" id="L70">                        final String name) {</span>
+<span class="fc" id="L71">        this.tableName = table;</span>
+<span class="fc" id="L72">        this.idColName = idCol;</span>
+<span class="fc" id="L73">        this.idValue = idVal;</span>
+<span class="fc" id="L74">        this.itemName = name;</span>
 
-<span class="fc" id="L75">        setTitle(&quot;Πρόβλεψη 2027 - &quot; + itemName);</span>
-<span class="fc" id="L76">        setSize(WIN_WIDTH, WIN_HEIGHT);</span>
-<span class="fc" id="L77">        setLocationRelativeTo(null);</span>
-<span class="fc" id="L78">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
-<span class="fc" id="L79">        setLayout(new BorderLayout(LAYOUT_GAP, LAYOUT_GAP));</span>
+<span class="fc" id="L76">        setTitle(&quot;Πρόβλεψη 2027 - &quot; + itemName);</span>
+<span class="fc" id="L77">        setSize(WIN_WIDTH, WIN_HEIGHT);</span>
+<span class="fc" id="L78">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L79">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="fc" id="L80">        setLayout(new BorderLayout(LAYOUT_GAP, LAYOUT_GAP));</span>
 
-<span class="fc" id="L81">        JTextArea reportArea = new JTextArea();</span>
-<span class="fc" id="L82">        reportArea.setEditable(false);</span>
-<span class="fc" id="L83">        reportArea.setFont(new Font(&quot;Monospaced&quot;, Font.PLAIN, FONT_SIZE_AREA));</span>
-<span class="fc" id="L84">        reportArea.setText(&quot;Στοιχείο: &quot; + itemName + &quot;\nID: &quot; + idValue</span>
+<span class="fc" id="L82">        JTextArea reportArea = new JTextArea();</span>
+<span class="fc" id="L83">        reportArea.setEditable(false);</span>
+<span class="fc" id="L84">        reportArea.setFont(new Font(&quot;Monospaced&quot;, Font.PLAIN, FONT_SIZE_AREA));</span>
+<span class="fc" id="L85">        reportArea.setText(&quot;Στοιχείο: &quot; + itemName + &quot;\nID: &quot; + idValue</span>
                 + &quot;\n&quot; + &quot;Αναζήτηση ιστορικών δεδομένων (2023-2026)...&quot;);
 
-<span class="fc" id="L87">        JButton runAnalysisBtn = new JButton(&quot;📊 Έναρξη Στατιστικής Ανάλυσης&quot;);</span>
-<span class="fc" id="L88">        runAnalysisBtn.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE_BTN));</span>
+<span class="fc" id="L88">        JButton runAnalysisBtn = new JButton(&quot;📊 Έναρξη Στατιστικής Ανάλυσης&quot;);</span>
+<span class="fc" id="L89">        runAnalysisBtn.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE_BTN));</span>
 
-<span class="fc" id="L90">        runAnalysisBtn.addActionListener(e -&gt; {</span>
-<span class="nc" id="L91">            Map&lt;Integer, Double&gt; history = collectDataFromYears();</span>
+<span class="fc" id="L91">        runAnalysisBtn.addActionListener(e -&gt; {</span>
+<span class="nc" id="L92">            Map&lt;Integer, Double&gt; history = collectDataFromYears();</span>
 
-<span class="nc bnc" id="L93" title="All 2 branches missed.">            if (history.size() &lt; 2) {</span>
-<span class="nc" id="L94">                reportArea.setText(&quot;Σφάλμα: Δεν βρέθηκαν επαρκή δεδομένα για &quot;</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            if (history.size() &lt; 2) {</span>
+<span class="nc" id="L95">                reportArea.setText(&quot;Σφάλμα: Δεν βρέθηκαν επαρκή δεδομένα για &quot;</span>
                         + &quot;'&quot; + itemName + &quot;'\n&quot;
                         + &quot;στα αρχεία budget_2023.db έως budget_2026.db.&quot;);
-<span class="nc" id="L97">                return;</span>
+<span class="nc" id="L98">                return;</span>
             }
 
             // Υπολογισμός Γραμμικής Παλινδρόμησης (y = mx + b)
-<span class="nc" id="L101">            double n = history.size();</span>
-<span class="nc" id="L102">            double sumX = 0;</span>
-<span class="nc" id="L103">            double sumY = 0;</span>
-<span class="nc" id="L104">            double sumXY = 0;</span>
-<span class="nc" id="L105">            double sumX2 = 0;</span>
+<span class="nc" id="L102">            double n = history.size();</span>
+<span class="nc" id="L103">            double sumX = 0;</span>
+<span class="nc" id="L104">            double sumY = 0;</span>
+<span class="nc" id="L105">            double sumXY = 0;</span>
+<span class="nc" id="L106">            double sumX2 = 0;</span>
 
-<span class="nc bnc" id="L107" title="All 2 branches missed.">            for (Map.Entry&lt;Integer, Double&gt; entry : history.entrySet()) {</span>
-<span class="nc" id="L108">                double x = entry.getKey();</span>
-<span class="nc" id="L109">                double y = entry.getValue();</span>
-<span class="nc" id="L110">                sumX += x;</span>
-<span class="nc" id="L111">                sumY += y;</span>
-<span class="nc" id="L112">                sumXY += (x * y);</span>
-<span class="nc" id="L113">                sumX2 += (x * x);</span>
-<span class="nc" id="L114">            }</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            for (Map.Entry&lt;Integer, Double&gt; entry : history.entrySet()) {</span>
+<span class="nc" id="L109">                double x = entry.getKey();</span>
+<span class="nc" id="L110">                double y = entry.getValue();</span>
+<span class="nc" id="L111">                sumX += x;</span>
+<span class="nc" id="L112">                sumY += y;</span>
+<span class="nc" id="L113">                sumXY += (x * y);</span>
+<span class="nc" id="L114">                sumX2 += (x * x);</span>
+<span class="nc" id="L115">            }</span>
 
-<span class="nc" id="L116">            double slope = (n * sumXY - sumX * sumY)</span>
+<span class="nc" id="L117">            double slope = (n * sumXY - sumX * sumY)</span>
                     / (n * sumX2 - sumX * sumX);
-<span class="nc" id="L118">            double intercept = (sumY - slope * sumX) / n;</span>
-<span class="nc" id="L119">            double predicted = slope * TARGET_YEAR + intercept;</span>
+<span class="nc" id="L119">            double intercept = (sumY - slope * sumX) / n;</span>
+<span class="nc" id="L120">            double predicted = slope * TARGET_YEAR + intercept;</span>
 
-<span class="nc" id="L121">            StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L122">            sb.append(&quot;--- ΣΤΑΤΙΣΤΙΚΗ ΑΝΑΦΟΡΑ ---\n&quot;);</span>
-<span class="nc" id="L123">            sb.append(&quot;Στοιχείο: &quot;).append(itemName).append(&quot;\n\n&quot;);</span>
-<span class="nc" id="L124">            history.forEach((year, val) -&gt; sb.append(</span>
-<span class="nc" id="L125">                    String.format(&quot;Έτος %d: %,.2f €\n&quot;, year, val)));</span>
-<span class="nc" id="L126">            sb.append(&quot;-----------------------------\n&quot;);</span>
-<span class="nc" id="L127">            sb.append(String.format(&quot;ΠΡΟΒΛΕΨΗ ΓΙΑ ΤΟ 2027: %,.2f €\n&quot;,</span>
-<span class="nc" id="L128">                    predicted));</span>
-<span class="nc" id="L129">            sb.append(&quot;-----------------------------\n&quot;);</span>
-<span class="nc" id="L130">            sb.append(String.format(&quot;Τάση: %s\n&quot;,</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">                    (slope &gt; 0 ? &quot;Ανοδική ▲&quot; : &quot;Καθοδική ▼&quot;)));</span>
+<span class="nc" id="L122">            StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L123">            sb.append(&quot;--- ΣΤΑΤΙΣΤΙΚΗ ΑΝΑΦΟΡΑ ---\n&quot;);</span>
+<span class="nc" id="L124">            sb.append(&quot;Στοιχείο: &quot;).append(itemName).append(&quot;\n\n&quot;);</span>
+<span class="nc" id="L125">            history.forEach((year, val) -&gt; sb.append(</span>
+<span class="nc" id="L126">                    String.format(&quot;Έτος %d: %,.2f €\n&quot;, year, val)));</span>
+<span class="nc" id="L127">            sb.append(&quot;-----------------------------\n&quot;);</span>
+<span class="nc" id="L128">            sb.append(String.format(&quot;ΠΡΟΒΛΕΨΗ ΓΙΑ ΤΟ 2027: %,.2f €\n&quot;,</span>
+<span class="nc" id="L129">                    predicted));</span>
+<span class="nc" id="L130">            sb.append(&quot;-----------------------------\n&quot;);</span>
+<span class="nc" id="L131">            sb.append(String.format(&quot;Τάση: %s\n&quot;,</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">                    (slope &gt; 0 ? &quot;Ανοδική ▲&quot; : &quot;Καθοδική ▼&quot;)));</span>
 
-<span class="nc" id="L133">            reportArea.setText(sb.toString());</span>
-<span class="nc" id="L134">        });</span>
+<span class="nc" id="L134">            reportArea.setText(sb.toString());</span>
+<span class="nc" id="L135">        });</span>
 
-<span class="fc" id="L136">        add(new JLabel(&quot;Πρόβλεψη βάσει Ιστορικών Στοιχείων&quot;,</span>
+<span class="fc" id="L137">        add(new JLabel(&quot;Πρόβλεψη βάσει Ιστορικών Στοιχείων&quot;,</span>
                 SwingConstants.CENTER), BorderLayout.NORTH);
-<span class="fc" id="L138">        add(new JScrollPane(reportArea), BorderLayout.CENTER);</span>
-<span class="fc" id="L139">        add(runAnalysisBtn, BorderLayout.SOUTH);</span>
-<span class="fc" id="L140">    }</span>
+<span class="fc" id="L139">        add(new JScrollPane(reportArea), BorderLayout.CENTER);</span>
+<span class="fc" id="L140">        add(runAnalysisBtn, BorderLayout.SOUTH);</span>
+<span class="fc" id="L141">    }</span>
 
-    private Map&lt;Integer, Double&gt; collectDataFromYears() {
-<span class="nc" id="L143">        Map&lt;Integer, Double&gt; history = new LinkedHashMap&lt;&gt;();</span>
-<span class="nc bnc" id="L144" title="All 2 branches missed.">        for (int year = START_YEAR; year &lt;= END_YEAR; year++) {</span>
-<span class="nc" id="L145">            String yearDbUrl = &quot;jdbc:sqlite:budget_&quot; + year + &quot;.db&quot;;</span>
-<span class="nc" id="L146">            BudgetManager tempManager = new BudgetManager(yearDbUrl);</span>
-            // Χρήση της μεθόδου ανάκτησης ποσού
-<span class="nc" id="L148">            double amount = tempManager.getCurrentAmount(</span>
-                    tableName, idColName, idValue);
-<span class="nc bnc" id="L150" title="All 2 branches missed.">            if (amount != -1) {</span>
-<span class="nc" id="L151">                history.put(year, amount);</span>
-            }
+
+private Map&lt;Integer, Double&gt; collectDataFromYears() {
+<span class="nc" id="L145">    System.out.println(&quot;Συλλογή δεδομένων από όλα τα έτη...&quot;);</span>
+<span class="nc" id="L146">    Map&lt;Integer, Double&gt; history = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc" id="L147">    DatabaseFinder finder = new DatabaseFinder(); // 1. Χρειαζόμαστε τον finder</span>
+
+<span class="nc bnc" id="L149" title="All 2 branches missed.">    for (int year = START_YEAR; year &lt;= END_YEAR; year++) {</span>
+<span class="nc" id="L150">        String dbName = &quot;budget_&quot; + year + &quot;.db&quot;;</span>
+<span class="nc" id="L151">        String currentDbUrl = &quot;jdbc:sqlite:&quot; + dbName;</span>
+<span class="nc" id="L152">        boolean tempCreated = false; // Σημαία για το αν φτιάξαμε εμείς τη βάση</span>
+
+        // 2. Έλεγχος αν υπάρχει η βάση, αλλιώς δημιουργία
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (!finder.findYearbase(year)) {</span>
+            try {
+<span class="nc" id="L157">                System.out.println(&quot;Δημιουργία προσωρινής βάσης για το έτος: &quot;</span>
+                + year);
+<span class="nc" id="L159">                Pdftocsv.run(year); // Μετατροπή PDF -&gt; CSV</span>
+<span class="nc" id="L160">                PinakesImporter importer = new PinakesImporter(currentDbUrl);</span>
+<span class="nc" id="L161">                importer.importAll(); // Εισαγωγή στη βάση</span>
+<span class="nc" id="L162">                tempCreated = true;   // Σημειώνουμε ότι πρέπει να διαγραφεί</span>
+                // μετά
+<span class="nc" id="L164">            } catch (Exception e) {</span>
+<span class="nc" id="L165">                System.err.println(&quot;Αδυναμία δημιουργίας βάσης για το έτος &quot;</span>
+                + year);
+<span class="nc" id="L167">                e.printStackTrace();</span>
+<span class="nc" id="L168">                continue; // Προχωράμε στο επόμενο έτος</span>
+<span class="nc" id="L169">            }</span>
         }
-<span class="nc" id="L154">        return history;</span>
+
+        // 3. Ανάκτηση Δεδομένων
+<span class="nc" id="L173">        BudgetManager tempManager = null;</span>
+        try {
+<span class="nc" id="L175">            tempManager = new BudgetManager(currentDbUrl);</span>
+
+            // Χρήση των πεδίων της κλάσης (tableName, idColName, idValue)
+<span class="nc" id="L178">            double amount = tempManager.getCurrentAmount(tableName, idColName,</span>
+                idValue);
+
+<span class="nc bnc" id="L181" title="All 2 branches missed.">            if (amount != -1) {</span>
+<span class="nc" id="L182">                history.put(year, amount);</span>
+<span class="nc" id="L183">                System.out.printf(&quot;Έτος %d: %,.2f EUR%n&quot;, year, amount);</span>
+            } else {
+<span class="nc" id="L185">                System.out.printf(&quot;Έτος %d: Δεν βρέθηκε εγγραφή.%n&quot;, year);</span>
+            }
+
+<span class="nc" id="L188">        } catch (Exception e) {</span>
+<span class="nc" id="L189">            System.err.println(&quot;Σφάλμα ανάγνωσης για το έτος &quot; + year);</span>
+<span class="nc" id="L190">            e.printStackTrace();</span>
+<span class="nc" id="L191">        }</span>
+
+        // 4. Διαγραφή προσωρινού αρχείου (αν δημιουργήθηκε τώρα)
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (tempCreated) {</span>
+            // Προσωρινό hack αν δεν υπάρχει close(): Force Garbage
+            // Collection
+<span class="nc" id="L197">            tempManager = null;</span>
+<span class="nc" id="L198">            System.gc();</span>
+
+            try {
+<span class="nc" id="L201">                File dbFile = new File(dbName);</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">                if (!dbFile.delete()) {</span>
+<span class="nc" id="L203">                    dbFile.deleteOnExit(); // Αν δεν σβηστεί τώρα, να</span>
+                    // σβηστεί όταν
+                    // κλείσει το πρόγραμμα
+                }
+<span class="nc" id="L207">            } catch (Exception e) {</span>
+<span class="nc" id="L208">                System.err.println(&quot;Αδυναμία διαγραφής προσωρινού αρχείου: &quot;</span>
+                + dbName);
+<span class="nc" id="L210">            }</span>
+        }
     }
+<span class="nc" id="L213">    return history;</span>
+}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
