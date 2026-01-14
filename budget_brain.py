@@ -87,8 +87,7 @@ def generate_safe(prompt):
     """
     for model_name in MODEL_LIST:
         try:
-            # print(f"  👉 Δοκιμή με: {model_name}...", file=sys.stderr) Αυτό το χρειάζομαι μόνο αν θεωρώ ότι 
-            # κάτι δε πάει καλά με τα μοντελα και θελω να τα δω
+            # print(f"  👉 Δοκιμή με: {model_name}...", file=sys.stderr)
             response = client.models.generate_content(
                 model=model_name,
                 contents=prompt
