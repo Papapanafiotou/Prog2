@@ -39,24 +39,31 @@ class LogUiTest {
         assertEquals("Σύστημα Χρηστών", logUi.getTitle());
     }
 
-    @Test
-    void testCreateAccountFlow() {
-       if (logUi == null) return;
+   @Test
+void testCreateAccountFlow() {
+    if (logUi == null) return;
 
-        try (MockedStatic<JOptionPane> mockedPane = mockStatic(JOptionPane.class)) {
-            mockedPane.when(() -> JOptionPane.showInputDialog(anyString()))
-                      .thenReturn("testUser", "AB123");
-            
-            mockedPane.when(() -> JOptionPane.showOptionDialog(any(), any(), anyString(), anyInt(), 
-                                anyInt(), any(), any(), any()))
-                      .thenReturn(0);
+    try (MockedStatic<JOptionPane> mockedPane = mockStatic(JOptionPane.class)) {
+        // Προσομοιώνουμε τις εισόδους του χρήστη
+        mockedPane.when(() -> JOptionPane.showInputDialog(anyString()))
+                  .thenReturn("testUser", "AB123");
+        
+        mockedPane.when(() -> JOptionPane.showOptionDialog(any(), any(), anyString(), anyInt(), 
+                            anyInt(), any(), any(), any()))
+                  .thenReturn(0);
 
-            invokeButtonAction("Δημιουργία Λογαριασμού");
+        // Πατάμε το κουμπί
+        invokeButtonAction("Δημιουργία Λογαριασμού");
 
-            // Επαλήθευση για το μήνυμα "Επιτυχής δημιουργία!" (2 παράμετροι)
-            mockedPane.verify(() -> JOptionPane.showMessageDialog(nullable(java.awt.Component.class), any()), atLeastOnce());
-        }
+        // ΣΩΣΤΗ ΕΠΑΛΗΘΕΥΣΗ: Ελέγχουμε αν εμφανίστηκε οποιοδήποτε MessageDialog
+        mockedPane.verify(() -> JOptionPane.showMessageDialog(
+            nullable(java.awt.Component.class), 
+            any(), 
+            anyString(), 
+            anyInt()
+        ), atLeastOnce());
     }
+}
 
     @Test
     void testLoginFlowFailure() {
