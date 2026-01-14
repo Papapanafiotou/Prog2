@@ -47,10 +47,10 @@ import java.util.List;
      * {@code null}.
      */
     private File findScript() {
-<span class="fc" id="L50">        String currentDir = System.getProperty(&quot;user.dir&quot;);</span>
+<span class="nc" id="L50">        String currentDir = System.getProperty(&quot;user.dir&quot;);</span>
 
         // Λίστα πιθανών τοποθεσιών
-<span class="fc" id="L53">        String[] possibleLocations = {</span>
+<span class="nc" id="L53">        String[] possibleLocations = {</span>
             SCRIPT_NAME,
             &quot;statewallet/&quot; + SCRIPT_NAME,
             &quot;src/&quot; + SCRIPT_NAME,
@@ -58,18 +58,18 @@ import java.util.List;
         };
 
         // Έλεγχος στο root
-<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if (new File(currentDir, SCRIPT_NAME).exists()) {</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (new File(currentDir, SCRIPT_NAME).exists()) {</span>
 <span class="nc" id="L62">            return new File(currentDir, SCRIPT_NAME);</span>
         }
 
         // Έλεγχος σε υποφακέλους
-<span class="fc bfc" id="L66" title="All 2 branches covered.">        for (String loc : possibleLocations) {</span>
-<span class="fc" id="L67">            File f = new File(currentDir, loc);</span>
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">            if (f.exists()) {</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        for (String loc : possibleLocations) {</span>
+<span class="nc" id="L67">            File f = new File(currentDir, loc);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            if (f.exists()) {</span>
 <span class="nc" id="L69">                return f;</span>
             }
         }
-<span class="fc" id="L72">        return null;</span>
+<span class="nc" id="L72">        return null;</span>
     }
 
     /**
@@ -88,9 +88,9 @@ import java.util.List;
      */
     private String runPythonScript(final String goal, final String... args) {
         try {
-<span class="fc" id="L91">            File scriptFile = findScript();</span>
-<span class="pc bpc" id="L92" title="1 of 2 branches missed.">            if (scriptFile == null) {</span>
-<span class="fc" id="L93">                return &quot;ΣΦΑΛΜΑ: Δεν βρέθηκε το &quot; + SCRIPT_NAME;</span>
+<span class="nc" id="L91">            File scriptFile = findScript();</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">            if (scriptFile == null) {</span>
+<span class="nc" id="L93">                return &quot;ΣΦΑΛΜΑ: Δεν βρέθηκε το &quot; + SCRIPT_NAME;</span>
             }
 
 <span class="nc" id="L96">            List&lt;String&gt; command = new ArrayList&lt;&gt;();</span>
@@ -165,8 +165,8 @@ import java.util.List;
      */
     public String getSpecificAdvice(final String dbPath, final String name,
                                     final double amount, final String goal) {
-<span class="fc" id="L168">        return runPythonScript(goal, MODE_SPECIFIC, dbPath, name,</span>
-<span class="fc" id="L169">                String.valueOf(amount));</span>
+<span class="nc" id="L168">        return runPythonScript(goal, MODE_SPECIFIC, dbPath, name,</span>
+<span class="nc" id="L169">                String.valueOf(amount));</span>
     }
 
     /**
@@ -178,7 +178,7 @@ import java.util.List;
      * @return Η στρατηγική ανάλυση του AI ως συμβολοσειρά.
      */
     public String getGlobalStrategy(final String dbUrl, final String goal) {
-<span class="fc" id="L181">        return runPythonScript(goal, MODE_GLOBAL, dbUrl);</span>
+<span class="nc" id="L181">        return runPythonScript(goal, MODE_GLOBAL, dbUrl);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
