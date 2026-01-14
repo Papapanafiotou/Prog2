@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SocElemGrades.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">SocElemGrades.java</span></div><h1>SocElemGrades.java</h1><pre class="source lang-java linenums">package mainapp;
+
+/**
+ * Υπολογίζει τους βαθμούς για τα κοινωνικά στοιχεία του κράτους.
+ */
+<span class="fc" id="L6">public final class SocElemGrades {</span>
+
+    // Σταθερές Βαθμών
+    /** Βαθμός 10 (Άριστα). */
+    private static final int GRADE_10 = 10;
+    /** Βαθμός 9 (Πολύ καλά). */
+    private static final int GRADE_9 = 9;
+    /** Βαθμός 8 (Καλά). */
+    private static final int GRADE_8 = 8;
+    /** Βαθμός 7 (Μέτρια). */
+    private static final int GRADE_7 = 7;
+    /** Βαθμός 6 (Χαμηλά). */
+    private static final int GRADE_6 = 6;
+    /** Βαθμός 5 (Πολύ χαμηλά/Αποτυχία). */
+    private static final int GRADE_5 = 5;
+
+    // Σταθερές GINI
+    /** Όριο GINI για βαθμό 10. */
+    private static final double GINI_LIMIT_10 = 26.9;
+    /** Όριο GINI για βαθμό 9. */
+    private static final double GINI_LIMIT_9 = 28.9;
+    /** Όριο GINI για βαθμό 8. */
+    private static final double GINI_LIMIT_8 = 31.9;
+    /** Όριο GINI για βαθμό 7. */
+    private static final double GINI_LIMIT_7 = 33.9;
+    /** Όριο GINI για βαθμό 6. */
+    private static final double GINI_LIMIT_6 = 35.9;
+
+    // Σταθερές Εγκληματικότητας (Crime)
+    /** Όριο εγκληματικότητας για βαθμό 10. */
+    private static final double CRIME_LIMIT_10 = -0.03;
+    /** Όριο εγκληματικότητας για βαθμό 9. */
+    private static final double CRIME_LIMIT_9 = -0.01;
+    /** Όριο εγκληματικότητας για βαθμό 8. */
+    private static final double CRIME_LIMIT_8 = 0.03;
+    /** Όριο εγκληματικότητας για βαθμό 7. */
+    private static final double CRIME_LIMIT_7 = 0.06;
+    /** Όριο εγκληματικότητας για βαθμό 6. */
+    private static final double CRIME_LIMIT_6 = 0.09;
+
+    // Σταθερές Ψυχικής Υγείας (Mental Health)
+    /** Όριο ψυχικής υγείας για βαθμό 10. */
+    private static final double MENTAL_LIMIT_10 = 0.15;
+    /** Όριο ψυχικής υγείας για βαθμό 9. */
+    private static final double MENTAL_LIMIT_9 = 0.16;
+    /** Όριο ψυχικής υγείας για βαθμό 8. */
+    private static final double MENTAL_LIMIT_8 = 0.18;
+    /** Όριο ψυχικής υγείας για βαθμό 7. */
+    private static final double MENTAL_LIMIT_7 = 0.21;
+    /** Όριο ψυχικής υγείας για βαθμό 6. */
+    private static final double MENTAL_LIMIT_6 = 0.24;
+
+    // Σταθερές Υγείας/Παιδείας (Health/Edu)
+    /** Όριο δαπανών υγείας/παιδείας για βαθμό 10. */
+    private static final double HE_LIMIT_10 = 0.13;
+    /** Όριο δαπανών υγείας/παιδείας για βαθμό 9. */
+    private static final double HE_LIMIT_9 = 0.11;
+    /** Όριο δαπανών υγείας/παιδείας για βαθμό 8. */
+    private static final double HE_LIMIT_8 = 0.095;
+    /** Όριο δαπανών υγείας/παιδείας για βαθμό 7. */
+    private static final double HE_LIMIT_7 = 0.08;
+    /** Όριο δαπανών υγείας/παιδείας για βαθμό 6. */
+    private static final double HE_LIMIT_6 = 0.07;
+
+    // Δείκτες πίνακα βαρών
+    /** Δείκτης για το πρώτο βάρος (GINI). */
+    private static final int IDX_W1 = 0;
+    /** Δείκτης για το δεύτερο βάρος (Εγκληματικότητα). */
+    private static final int IDX_W2 = 1;
+    /** Δείκτης για το τρίτο βάρος (Ψυχική Υγεία). */
+    private static final int IDX_W3 = 2;
+    /** Δείκτης για το τέταρτο βάρος (Υγεία/Παιδεία). */
+    private static final int IDX_W4 = 3;
+
+    /**
+     * Υπολογίζει τον βαθμό για τον δείκτη GINI.
+     *
+     * @param gini Ο δείκτης GINI.
+     * @return Ο βαθμός (5-10).
+     */
+    public int getGINIGrade(final double gini) {
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (gini &lt;= GINI_LIMIT_10) {</span>
+<span class="fc" id="L88">            return GRADE_10;</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        } else if (gini &lt;= GINI_LIMIT_9) {</span>
+<span class="fc" id="L90">            return GRADE_9;</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        } else if (gini &lt;= GINI_LIMIT_8) {</span>
+<span class="fc" id="L92">            return GRADE_8;</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        } else if (gini &lt;= GINI_LIMIT_7) {</span>
+<span class="fc" id="L94">            return GRADE_7;</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        } else if (gini &lt;= GINI_LIMIT_6) {</span>
+<span class="fc" id="L96">            return GRADE_6;</span>
+        } else {
+<span class="fc" id="L98">            return GRADE_5;</span>
+        }
+    }
+
+    /**
+     * Υπολογίζει τον βαθμό για την εγκληματικότητα.
+     *
+     * @param percent Το ποσοστό μεταβολής εγκληματικότητας.
+     * @return Ο βαθμός (5-10).
+     */
+    public int getCrimeGrade(final double percent) {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (percent &lt;= CRIME_LIMIT_10) {</span>
+<span class="fc" id="L110">            return GRADE_10;</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        } else if (percent &lt;= CRIME_LIMIT_9) {</span>
+<span class="fc" id="L112">            return GRADE_9;</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        } else if (percent &lt;= CRIME_LIMIT_8) {</span>
+<span class="fc" id="L114">            return GRADE_8;</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        } else if (percent &lt;= CRIME_LIMIT_7) {</span>
+<span class="fc" id="L116">            return GRADE_7;</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        } else if (percent &lt;= CRIME_LIMIT_6) {</span>
+<span class="fc" id="L118">            return GRADE_6;</span>
+        } else {
+<span class="fc" id="L120">            return GRADE_5;</span>
+        }
+    }
+
+    /**
+     * Υπολογίζει τον βαθμό για την ψυχική υγεία.
+     *
+     * @param percent Το ποσοστό ατόμων με προβλήματα.
+     * @return Ο βαθμός (5-10).
+     */
+    public int getMentalHealthGrade(final double percent) {
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (percent &lt;= MENTAL_LIMIT_10) {</span>
+<span class="fc" id="L132">            return GRADE_10;</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        } else if (percent &lt;= MENTAL_LIMIT_9) {</span>
+<span class="fc" id="L134">            return GRADE_9;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        } else if (percent &lt;= MENTAL_LIMIT_8) {</span>
+<span class="fc" id="L136">            return GRADE_8;</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        } else if (percent &lt;= MENTAL_LIMIT_7) {</span>
+<span class="fc" id="L138">            return GRADE_7;</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        } else if (percent &lt;= MENTAL_LIMIT_6) {</span>
+<span class="fc" id="L140">            return GRADE_6;</span>
+        } else {
+<span class="fc" id="L142">            return GRADE_5;</span>
+        }
+    }
+
+    /**
+     * Υπολογίζει τον βαθμό για τις δαπάνες Υγείας και Παιδείας.
+     *
+     * @param percent Το ποσοστό δαπανών επί του ΑΕΠ.
+     * @return Ο βαθμός (5-10).
+     */
+    public int getHealthEduGrade(final double percent) {
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (percent &gt;= HE_LIMIT_10) {</span>
+<span class="fc" id="L154">            return GRADE_10;</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        } else if (percent &gt;= HE_LIMIT_9) {</span>
+<span class="fc" id="L156">            return GRADE_9;</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        } else if (percent &gt;= HE_LIMIT_8) {</span>
+<span class="fc" id="L158">            return GRADE_8;</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        } else if (percent &gt;= HE_LIMIT_7) {</span>
+<span class="fc" id="L160">            return GRADE_7;</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        } else if (percent &gt;= HE_LIMIT_6) {</span>
+<span class="fc" id="L162">            return GRADE_6;</span>
+        } else {
+<span class="fc" id="L164">            return GRADE_5;</span>
+        }
+    }
+
+    /**
+     * Υπολογίζει τον τελικό βαθμό για τον κοινωνικό τομέα.
+     *
+     * @param weights                  Πίνακας με τα 4 βάρη (w1, w2, w3, w4).
+     * @param gini                     Δείκτης GINI.
+     * @param crimePercent             Ποσοστό εγκληματικότητας.
+     * @param mentalHealthPercent      Ποσοστό ψυχικής υγείας.
+     * @param eduHealthExpensesPercent Ποσοστό δαπανών Υγείας/Παιδείας.
+     * @return Ο τελικός κοινωνικός βαθμός.
+     */
+    public double getSocialGrade(final double[] weights,
+                                 final double gini,
+                                 final double crimePercent,
+                                 final double mentalHealthPercent,
+                                 final double eduHealthExpensesPercent) {
+<span class="fc" id="L183">        GradeChar gradeChar = new GradeChar();</span>
+
+<span class="fc" id="L185">        int g1 = getGINIGrade(gini);</span>
+<span class="fc" id="L186">        System.out.println(&quot;O βαθμός για τον δείκτη GINI είναι: &quot; + g1);</span>
+<span class="fc" id="L187">        gradeChar.giniChar(g1);</span>
+
+<span class="fc" id="L189">        int g2 = getCrimeGrade(crimePercent);</span>
+<span class="fc" id="L190">        System.out.println(&quot;O βαθμός για την μεταβολή της εγκληματικότητας &quot;</span>
+                + &quot;είναι: &quot; + g2);
+<span class="fc" id="L192">        gradeChar.crimeRateChar(g2);</span>
+
+<span class="fc" id="L194">        int g3 = getMentalHealthGrade(mentalHealthPercent);</span>
+<span class="fc" id="L195">        System.out.println(&quot;O βαθμός για την ψυχική υγεία είναι: &quot; + g3);</span>
+
+<span class="fc" id="L197">        int g4 = getHealthEduGrade(eduHealthExpensesPercent);</span>
+<span class="fc" id="L198">        System.out.println(&quot;O βαθμός για τις δαπάνες Υγείας και Παιδείας &quot;</span>
+                + &quot;είναι: &quot; + g4);
+<span class="fc" id="L200">        gradeChar.edHealthChar(g4);</span>
+
+<span class="fc" id="L202">        double grade = weights[IDX_W1] * g1</span>
+                + weights[IDX_W2] * g2
+                + weights[IDX_W3] * g3
+                + weights[IDX_W4] * g4;
+
+<span class="fc" id="L207">        System.out.println(&quot;O βαθμός για το κράτος στον κοινωνικό τομέα &quot;</span>
+<span class="fc" id="L208">                + &quot;με βάση τα στοιχεία είναι &quot; + String.format(&quot;%.2f&quot;, grade));</span>
+<span class="fc" id="L209">        return grade;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

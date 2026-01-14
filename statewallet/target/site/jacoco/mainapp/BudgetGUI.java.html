@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BudgetGUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">BudgetGUI.java</span></div><h1>BudgetGUI.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.Serial;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Objects;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ * Η γραφική διεπαφή χρήστη (GUI) για την επεξεργασία του προϋπολογισμού.
+ */
+public final class BudgetGUI extends JFrame {
+
+    /** Serial Version UID. */
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /** Πλάτος παραθύρου. */
+    private static final int WINDOW_WIDTH = 1250;
+    /** Ύψος παραθύρου. */
+    private static final int WINDOW_HEIGHT = 700;
+    /** Μέγεθος πεδίου ID. */
+    private static final int ID_FIELD_SIZE = 8;
+    /** Μέγεθος πεδίου ποσού. */
+    private static final int AMOUNT_FIELD_SIZE = 10;
+    /** Γραμμές περιοχής κειμένου. */
+    private static final int TEXT_AREA_ROWS = 8;
+    /** Στήλες περιοχής κειμένου. */
+    private static final int TEXT_AREA_COLS = 50;
+    /** Μέγεθος κενού. */
+    private static final int GAP_SIZE = 20;
+    /** Δείκτης στήλης ποσού στον πίνακα. */
+    private static final int TABLE_COL_AMOUNT = 3;
+    /** Μέγεθος γραμματοσειράς κατάστασης. */
+    private static final int STATUS_FONT_SIZE = 14;
+    /** Μέγεθος γραμματοσειράς κονσόλας. */
+    private static final int CONSOLE_FONT_SIZE = 12;
+    /** Κενό Border Layout. */
+    private static final int BORDER_GAP = 8;
+    /** Κενό Panel Layout. */
+    private static final int PANEL_GAP = 5;
+    /** Χρώμα για κουμπί AI. */
+<span class="fc" id="L65">    private static final Color AI_BTN_COLOR = new Color(230, 230, 255);</span>
+
+    /** Χρώμα για θετικό προϋπολογισμό. */
+<span class="fc" id="L68">    private static final Color SUCCESS_COLOR = new Color(34, 139, 34);</span>
+
+    /** Διαχειριστής προϋπολογισμού. */
+    private final BudgetManager manager;
+    /** Διαδρομή βάσης δεδομένων. */
+    private final String dbPath;
+    /** Dropdown επιλογής πίνακα. */
+    private JComboBox&lt;TableInfo&gt; tableSelector;
+    /** Κουμπί φόρτωσης. */
+    private JButton loadTableButton;
+    /** Πίνακας δεδομένων. */
+    private JTable dataTable;
+    /** Μοντέλο πίνακα. */
+    private DefaultTableModel tableModel;
+    /** Πεδίο κειμένου ID. */
+    private JTextField idField;
+    /** Πεδίο κειμένου ποσού. */
+    private JTextField amountField;
+    /** Κουμπί ενημέρωσης. */
+    private JButton updateButton;
+    /** Κουμπί επιστροφής. */
+    private JButton backButton;
+    /** Κουμπί εμφάνισης αλλαγών. */
+    private JButton showChangesButton;
+    /** Περιοχή κειμένου αλλαγών. */
+    private JTextArea changesArea;
+    /** Ετικέτα κατάστασης προϋπολογισμού. */
+    private JLabel budgetStatusLabel;
+    /** Κουμπί εμφάνισης συνόλων. */
+    private JButton showTotalsButton;
+    /** Κουμπί εμφάνισης ποσοστών. */
+    private JButton percentageButton;
+    /** Κουμπί AI. */
+    private JButton aiButton;
+    /** Κουμπί πρόβλεψης. */
+    private JButton predictButton;
+
+    /**
+     * Κατασκευαστής του BudgetGUI.
+     *
+     * @param path Η διαδρομή της βάσης δεδομένων.
+     */
+<span class="fc" id="L110">    public BudgetGUI(final String path) {</span>
+<span class="fc" id="L111">        this.dbPath = path;</span>
+<span class="fc" id="L112">        this.manager = new BudgetManager(path);</span>
+
+<span class="fc" id="L114">        setTitle(&quot;Διαχείριση Προϋπολογισμού&quot;);</span>
+<span class="fc" id="L115">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="fc" id="L116">        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);</span>
+<span class="fc" id="L117">        setLocationRelativeTo(null);</span>
+
+<span class="fc" id="L119">        initComponents();</span>
+<span class="fc" id="L120">        initLayout();</span>
+<span class="fc" id="L121">        initListeners();</span>
+<span class="fc" id="L122">    }</span>
+
+    private void initComponents() {
+<span class="fc" id="L125">        backButton = new JButton(&quot;⬅ Πίσω&quot;);</span>
+<span class="fc" id="L126">        showTotalsButton = new JButton(&quot;📊 Εμφάνιση Συνόλων&quot;);</span>
+<span class="fc" id="L127">        percentageButton = new JButton(&quot;📈 Ποσοστά&quot;);</span>
+<span class="fc" id="L128">        predictButton = new JButton(&quot;🔮 Πρόβλεψη 2027&quot;);</span>
+<span class="fc" id="L129">        aiButton = new JButton(&quot;🤖 AI Σύμβουλος&quot;);</span>
+<span class="fc" id="L130">        aiButton.setBackground(AI_BTN_COLOR);</span>
+
+<span class="fc" id="L132">        tableSelector = new JComboBox&lt;&gt;();</span>
+<span class="fc" id="L133">        tableSelector.addItem(new TableInfo(&quot;Έσοδα&quot;, &quot;esoda&quot;, &quot;code&quot;));</span>
+<span class="fc" id="L134">        tableSelector.addItem(new TableInfo(&quot;Έξοδα&quot;, &quot;eksoda&quot;, &quot;code&quot;));</span>
+<span class="fc" id="L135">        tableSelector.addItem(new TableInfo(&quot;Κράτος&quot;, &quot;kratos&quot;, &quot;number&quot;));</span>
+<span class="fc" id="L136">        tableSelector.addItem(</span>
+                new TableInfo(&quot;Υπουργεία&quot;, &quot;ypourgeia&quot;, &quot;number&quot;));
+<span class="fc" id="L138">        tableSelector.addItem(new TableInfo(</span>
+                &quot;Αποκεντρωμένες Διοικήσεις&quot;, &quot;apokentromenes&quot;, &quot;number&quot;));
+
+<span class="fc" id="L141">        loadTableButton = new JButton(&quot;Εμφάνιση Πίνακα&quot;);</span>
+<span class="fc" id="L142">        budgetStatusLabel = new JLabel(&quot;Χαρακτηρισμός: -&quot;);</span>
+<span class="fc" id="L143">        budgetStatusLabel.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD,</span>
+                STATUS_FONT_SIZE));
+
+<span class="fc" id="L146">        tableModel = new DefaultTableModel(</span>
+                new Object[]{&quot;ID&quot;, &quot;Περιγραφή&quot;, &quot;Αρχικό Ποσό&quot;, &quot;Τρέχον Ποσό&quot;},
+                0
+<span class="fc" id="L149">        ) {</span>
+            @Override
+            public boolean isCellEditable(final int row, final int column) {
+<span class="nc" id="L152">                return false;</span>
+            }
+        };
+<span class="fc" id="L155">        dataTable = new JTable(tableModel);</span>
+<span class="fc" id="L156">        dataTable.setFillsViewportHeight(true);</span>
+
+<span class="fc" id="L158">        idField = new JTextField(ID_FIELD_SIZE);</span>
+<span class="fc" id="L159">        amountField = new JTextField(AMOUNT_FIELD_SIZE);</span>
+<span class="fc" id="L160">        updateButton = new JButton(&quot;Αλλαγή Ποσού&quot;);</span>
+
+<span class="fc" id="L162">        showChangesButton = new JButton(&quot;Εμφάνιση Αλλαγών&quot;);</span>
+<span class="fc" id="L163">        changesArea = new JTextArea(TEXT_AREA_ROWS, TEXT_AREA_COLS);</span>
+<span class="fc" id="L164">        changesArea.setEditable(false);</span>
+<span class="fc" id="L165">        changesArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN,</span>
+                CONSOLE_FONT_SIZE));
+<span class="fc" id="L167">    }</span>
+
+    private void initLayout() {
+<span class="fc" id="L170">        setLayout(new BorderLayout(BORDER_GAP, BORDER_GAP));</span>
+
+<span class="fc" id="L172">        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="fc" id="L173">        topPanel.add(backButton);</span>
+<span class="fc" id="L174">        topPanel.add(new JLabel(&quot;Πίνακας:&quot;));</span>
+<span class="fc" id="L175">        topPanel.add(tableSelector);</span>
+<span class="fc" id="L176">        topPanel.add(loadTableButton);</span>
+<span class="fc" id="L177">        topPanel.add(showTotalsButton);</span>
+<span class="fc" id="L178">        topPanel.add(aiButton);</span>
+<span class="fc" id="L179">        topPanel.add(Box.createRigidArea(new Dimension(GAP_SIZE, 0)));</span>
+<span class="fc" id="L180">        topPanel.add(budgetStatusLabel);</span>
+
+<span class="fc" id="L182">        JScrollPane tableScroll = new JScrollPane(dataTable);</span>
+
+<span class="fc" id="L184">        JPanel bottomPanel = new JPanel(new BorderLayout(PANEL_GAP, PANEL_GAP));</span>
+
+<span class="fc" id="L186">        JPanel updatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="fc" id="L187">        updatePanel.setBorder(BorderFactory.createTitledBorder(</span>
+                &quot;Αλλαγές στοιχείου προϋπολογισμού&quot;));
+<span class="fc" id="L189">        updatePanel.add(new JLabel(&quot;ID:&quot;));</span>
+<span class="fc" id="L190">        updatePanel.add(idField);</span>
+<span class="fc" id="L191">        updatePanel.add(new JLabel(&quot;Νέο ποσό:&quot;));</span>
+<span class="fc" id="L192">        updatePanel.add(amountField);</span>
+<span class="fc" id="L193">        updatePanel.add(updateButton);</span>
+<span class="fc" id="L194">        updatePanel.add(percentageButton);</span>
+<span class="fc" id="L195">        updatePanel.add(predictButton);</span>
+
+<span class="fc" id="L197">        JPanel changesPanel = new JPanel(new BorderLayout());</span>
+<span class="fc" id="L198">        changesPanel.setBorder(</span>
+<span class="fc" id="L199">                BorderFactory.createTitledBorder(&quot;Αλλαγές προϋπολογισμού&quot;));</span>
+<span class="fc" id="L200">        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="fc" id="L201">        btnPanel.add(showChangesButton);</span>
+<span class="fc" id="L202">        changesPanel.add(btnPanel, BorderLayout.NORTH);</span>
+<span class="fc" id="L203">        changesPanel.add(new JScrollPane(changesArea), BorderLayout.CENTER);</span>
+
+<span class="fc" id="L205">        bottomPanel.add(updatePanel, BorderLayout.NORTH);</span>
+<span class="fc" id="L206">        bottomPanel.add(changesPanel, BorderLayout.CENTER);</span>
+<span class="fc" id="L207">        add(topPanel, BorderLayout.NORTH);</span>
+<span class="fc" id="L208">        add(tableScroll, BorderLayout.CENTER);</span>
+<span class="fc" id="L209">        add(bottomPanel, BorderLayout.SOUTH);</span>
+<span class="fc" id="L210">    }</span>
+
+    private void initListeners() {
+<span class="fc" id="L213">        backButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L214">            this.dispose();</span>
+<span class="nc" id="L215">            new StateWalletLauncher().setVisible(true);</span>
+<span class="nc" id="L216">        });</span>
+
+<span class="pc" id="L218">        loadTableButton.addActionListener(e -&gt; loadSelectedTable());</span>
+
+<span class="fc" id="L220">        dataTable.addMouseListener(new MouseAdapter() {</span>
+            @Override
+            public void mouseClicked(final MouseEvent evt) {
+<span class="nc bnc" id="L223" title="All 2 branches missed.">                if (evt.getClickCount() == 2) {</span>
+<span class="nc" id="L224">                    int row = dataTable.getSelectedRow();</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">                    if (row &gt;= 0) {</span>
+<span class="nc" id="L226">                        Object idVal = tableModel.getValueAt(row, 0);</span>
+<span class="nc" id="L227">                        Object amountVal = tableModel.getValueAt(</span>
+                                row, TABLE_COL_AMOUNT);
+<span class="nc" id="L229">                        idField.setText(Objects.toString(idVal, &quot;&quot;));</span>
+<span class="nc" id="L230">                        amountField.setText(Objects.toString(amountVal, &quot;&quot;));</span>
+                    }
+                }
+<span class="nc" id="L233">            }</span>
+        });
+
+<span class="pc" id="L236">        updateButton.addActionListener(e -&gt; updateAmount());</span>
+<span class="pc" id="L237">        showChangesButton.addActionListener(e -&gt; loadChangesFromDb());</span>
+<span class="fc" id="L238">        showTotalsButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L239">            TableInfo info = (TableInfo) tableSelector.getSelectedItem();</span>
+
+<span class="nc bnc" id="L241" title="All 2 branches missed.">            if (info == null) {</span>
+<span class="nc" id="L242">                JOptionPane.showMessageDialog(this,</span>
+                        &quot;Δεν έχει επιλεγεί πίνακας.&quot;,
+                        &quot;Προειδοποίηση&quot;,
+                        JOptionPane.WARNING_MESSAGE);
+<span class="nc" id="L246">                return;</span>
+            }
+
+<span class="nc" id="L249">            TotalsPanel panel = new TotalsPanel(manager);</span>
+<span class="nc" id="L250">            panel.updateTotals(info.tableName);</span>
+
+<span class="nc" id="L252">            JOptionPane.showMessageDialog(</span>
+                    this,
+                    panel,
+                    &quot;Σύνολα Πίνακα: &quot; + info.displayName,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+<span class="nc" id="L258">        });</span>
+<span class="fc" id="L259">        percentageButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L260">            new PercentageUI(manager, dbPath);</span>
+<span class="nc" id="L261">        });</span>
+<span class="fc" id="L262">        predictButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L263">            int row = dataTable.getSelectedRow();</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">            if (row &lt; 0) {</span>
+<span class="nc" id="L265">                JOptionPane.showMessageDialog(this,</span>
+                        &quot;Παρακαλώ επιλέξτε πρώτα μια γραμμή από τον πίνακα!&quot;,
+                        &quot;Προσοχή&quot;, JOptionPane.WARNING_MESSAGE);
+<span class="nc" id="L268">                return;</span>
+            }
+
+            try {
+<span class="nc" id="L272">                TableInfo info = (TableInfo) tableSelector.getSelectedItem();</span>
+<span class="nc" id="L273">                int idValue = Integer.parseInt(</span>
+<span class="nc" id="L274">                        tableModel.getValueAt(row, 0).toString());</span>
+<span class="nc" id="L275">                String itemName = tableModel.getValueAt(row, 1).toString();</span>
+
+<span class="nc" id="L277">                PredictionUI predictionWindow = new PredictionUI(</span>
+                        dbPath,
+                        info.tableName,
+                        info.idColumnName,
+                        idValue,
+                        itemName
+                );
+<span class="nc" id="L284">                predictionWindow.setVisible(true);</span>
+
+<span class="nc" id="L286">            } catch (Exception ex) {</span>
+<span class="nc" id="L287">                JOptionPane.showMessageDialog(this,</span>
+                        &quot;Σφάλμα κατά την εκκίνηση της πρόβλεψης: &quot;
+<span class="nc" id="L289">                                + ex.getMessage(),</span>
+                        &quot;Σφάλμα&quot;, JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L291">            }</span>
+<span class="nc" id="L292">        });</span>
+<span class="fc" id="L293">        aiButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L294">            String selectedId = null;</span>
+<span class="nc" id="L295">            String selectedName = null;</span>
+<span class="nc" id="L296">            String selectedAmount = null;</span>
+
+<span class="nc" id="L298">            int row = dataTable.getSelectedRow();</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">            if (row &gt;= 0) {</span>
+<span class="nc" id="L300">                Object idVal = tableModel.getValueAt(row, 0);</span>
+<span class="nc" id="L301">                Object nameVal = tableModel.getValueAt(row, 1);</span>
+                // Magic Number Fix
+<span class="nc" id="L303">                Object amountVal = tableModel.getValueAt(</span>
+                        row, TABLE_COL_AMOUNT);
+
+<span class="nc" id="L306">                selectedId = Objects.toString(idVal, &quot;&quot;);</span>
+<span class="nc" id="L307">                selectedName = Objects.toString(nameVal, &quot;&quot;);</span>
+<span class="nc" id="L308">                selectedAmount = Objects.toString(amountVal, &quot;&quot;);</span>
+            }
+
+<span class="nc" id="L311">            new AiAdvisorDialog(this, dbPath, selectedId, selectedName,</span>
+<span class="nc" id="L312">                    selectedAmount).setVisible(true);</span>
+<span class="nc" id="L313">        });</span>
+<span class="fc" id="L314">    }</span>
+
+    private void loadSelectedTable() {
+<span class="nc" id="L317">        TableInfo info = (TableInfo) tableSelector.getSelectedItem();</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">        if (info == null) {</span>
+<span class="nc" id="L319">            return;</span>
+        }
+<span class="nc" id="L321">        tableModel.setRowCount(0);</span>
+<span class="nc" id="L322">        String sql = &quot;SELECT &quot; + info.idColumnName</span>
+                + &quot;, name, original_amount, amount FROM &quot; + info.tableName;
+
+<span class="nc" id="L325">        try (Connection conn = DriverManager.getConnection(dbPath);</span>
+<span class="nc" id="L326">             Statement stmt = conn.createStatement();</span>
+<span class="nc" id="L327">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L329">                Object[] row = new Object[]{</span>
+<span class="nc" id="L330">                    rs.getInt(info.idColumnName),</span>
+<span class="nc" id="L331">                    rs.getString(&quot;name&quot;),</span>
+<span class="nc" id="L332">                    String.format(java.util.Locale.US, &quot;%.2f&quot;,</span>
+<span class="nc" id="L333">                            rs.getDouble(&quot;original_amount&quot;)),</span>
+<span class="nc" id="L334">                    String.format(java.util.Locale.US, &quot;%.2f&quot;,</span>
+<span class="nc" id="L335">                            rs.getDouble(&quot;amount&quot;))</span>
+                };
+<span class="nc" id="L337">                tableModel.addRow(row);</span>
+<span class="nc" id="L338">            }</span>
+
+<span class="nc" id="L340">        } catch (SQLException ex) {</span>
+<span class="nc" id="L341">            JOptionPane.showMessageDialog(this,</span>
+<span class="nc" id="L342">                    &quot;Σφάλμα: &quot; + ex.getMessage(),</span>
+                    &quot;Σφάλμα&quot;,
+                    JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L345">        }</span>
+<span class="nc" id="L346">        updateBudgetUI();</span>
+<span class="nc" id="L347">    }</span>
+
+    private void updateAmount() {
+<span class="nc" id="L350">        TableInfo info = (TableInfo) tableSelector.getSelectedItem();</span>
+<span class="nc bnc" id="L351" title="All 2 branches missed.">        if (info == null) {</span>
+<span class="nc" id="L352">            return;</span>
+        }
+<span class="nc" id="L354">        String idText = idField.getText().trim();</span>
+<span class="nc" id="L355">        String amountText = amountField.getText().trim();</span>
+<span class="nc bnc" id="L356" title="All 4 branches missed.">        if (idText.isEmpty() || amountText.isEmpty()) {</span>
+<span class="nc" id="L357">            JOptionPane.showMessageDialog(this,</span>
+                    &quot;Συμπλήρωσε ID και νέο ποσό.&quot;,
+                    &quot;Προειδοποίηση&quot;,
+                    JOptionPane.WARNING_MESSAGE);
+<span class="nc" id="L361">            return;</span>
+        }
+        try {
+<span class="nc" id="L364">            int id = Integer.parseInt(idText);</span>
+<span class="nc" id="L365">            double newAmount = Double.parseDouble(amountText);</span>
+<span class="nc" id="L366">            double oldAmount = -1;</span>
+<span class="nc bnc" id="L367" title="All 2 branches missed.">            for (int i = 0; i &lt; tableModel.getRowCount(); i++) {</span>
+<span class="nc" id="L368">                int rowId = Integer.parseInt(</span>
+<span class="nc" id="L369">                        tableModel.getValueAt(i, 0).toString()</span>
+                );
+<span class="nc bnc" id="L371" title="All 2 branches missed.">                if (rowId == id) {</span>
+<span class="nc" id="L372">                    oldAmount = Double.parseDouble(</span>
+<span class="nc" id="L373">                            tableModel.getValueAt(</span>
+<span class="nc" id="L374">                                    i, TABLE_COL_AMOUNT).toString()</span>
+                    );
+<span class="nc" id="L376">                    break;</span>
+                }
+            }
+<span class="nc bnc" id="L379" title="All 2 branches missed.">            if (newAmount &lt; 0) {</span>
+<span class="nc" id="L380">                int option = JOptionPane.showConfirmDialog(this,</span>
+                        &quot;Το νέο ποσό είναι αρνητικό. Συνέχεια;&quot;,
+                        &quot;Επιβεβαίωση&quot;,
+                        JOptionPane.YES_NO_OPTION);
+<span class="nc bnc" id="L384" title="All 2 branches missed.">                if (option != JOptionPane.YES_OPTION) {</span>
+<span class="nc" id="L385">                    return;</span>
+                }
+            }
+<span class="nc bnc" id="L388" title="All 2 branches missed.">            if (!Constrains.isReasonableChange(oldAmount, newAmount)) {</span>
+<span class="nc" id="L389">                int option = JOptionPane.showConfirmDialog(</span>
+                        this,
+                        &quot;⚠️ Η αλλαγή υπερβαίνει το 50% του αρχικού ποσού.\n&quot;
+                                + &quot;Θέλεις να συνεχίσεις;&quot;,
+                        &quot;Προειδοποίηση&quot;,
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+<span class="nc bnc" id="L398" title="All 2 branches missed.">                if (option != JOptionPane.YES_OPTION) {</span>
+<span class="nc" id="L399">                    return;</span>
+                }
+            }
+<span class="nc" id="L402">            boolean success = manager.updateAmount(</span>
+                    info.tableName, info.idColumnName, id, newAmount);
+<span class="nc bnc" id="L404" title="All 2 branches missed.">            if (success) {</span>
+<span class="nc" id="L405">                JOptionPane.showMessageDialog(this,</span>
+                        &quot;Επιτυχής ενημέρωση!&quot;,
+                        &quot;Επιτυχία&quot;,
+                        JOptionPane.INFORMATION_MESSAGE);
+<span class="nc" id="L409">                loadSelectedTable();</span>
+<span class="nc" id="L410">                updateBudgetUI();</span>
+            } else {
+<span class="nc" id="L412">                JOptionPane.showMessageDialog(this,</span>
+                        &quot;Αποτυχία: Δεν βρέθηκε το ID.&quot;,
+                        &quot;Αποτυχία&quot;,
+                        JOptionPane.WARNING_MESSAGE);
+            }
+<span class="nc" id="L417">        } catch (NumberFormatException ex) {</span>
+<span class="nc" id="L418">            JOptionPane.showMessageDialog(this,</span>
+                    &quot;Λάθος μορφή αριθμών.&quot;,
+                    &quot;Σφάλμα&quot;,
+                    JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L422">        }</span>
+<span class="nc" id="L423">    }</span>
+
+    private void loadChangesFromDb() {
+<span class="nc" id="L426">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L427">        sb.append(&quot;--- Αλλαγές Προϋπολογισμού ---\n&quot;);</span>
+<span class="nc" id="L428">        boolean foundAny = false;</span>
+
+<span class="nc" id="L430">        TableInfo[] tables = new TableInfo[]{</span>
+            new TableInfo(&quot;Έσοδα&quot;, &quot;esoda&quot;, &quot;code&quot;),
+            new TableInfo(&quot;Έξοδα&quot;, &quot;eksoda&quot;, &quot;code&quot;),
+            new TableInfo(&quot;Κράτος&quot;, &quot;kratos&quot;, &quot;number&quot;),
+            new TableInfo(&quot;Υπουργεία&quot;, &quot;ypourgeia&quot;, &quot;number&quot;),
+            new TableInfo(&quot;Αποκεντρωμένες&quot;, &quot;apokentromenes&quot;, &quot;number&quot;)
+        };
+<span class="nc bnc" id="L437" title="All 2 branches missed.">        for (TableInfo info : tables) {</span>
+<span class="nc" id="L438">            String sql = &quot;SELECT &quot; + info.idColumnName</span>
+                    + &quot;, name, amount, original_amount FROM &quot;
+                    + info.tableName + &quot; WHERE amount != original_amount&quot;;
+
+<span class="nc" id="L442">            try (Connection conn = DriverManager.getConnection(dbPath);</span>
+<span class="nc" id="L443">                 Statement stmt = conn.createStatement();</span>
+<span class="nc" id="L444">                 ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="nc" id="L446">                boolean tableHasChanges = false;</span>
+<span class="nc bnc" id="L447" title="All 2 branches missed.">                while (rs.next()) {</span>
+<span class="nc bnc" id="L448" title="All 2 branches missed.">                    if (!tableHasChanges) {</span>
+<span class="nc" id="L449">                        sb.append(&quot;\nAλλαγές στον πίνακα: &quot;)</span>
+<span class="nc" id="L450">                                .append(info.displayName).append(&quot;\n&quot;);</span>
+<span class="nc" id="L451">                        tableHasChanges = true;</span>
+<span class="nc" id="L452">                        foundAny = true;</span>
+                    }
+<span class="nc" id="L454">                    sb.append(String.format(</span>
+                            &quot;ID: %-3d | %-20s | Αρχικό: %.2f | Νέο: %.2f%n&quot;,
+<span class="nc" id="L456">                            rs.getInt(info.idColumnName),</span>
+<span class="nc" id="L457">                            rs.getString(&quot;name&quot;),</span>
+<span class="nc" id="L458">                            rs.getDouble(&quot;original_amount&quot;),</span>
+<span class="nc" id="L459">                            rs.getDouble(&quot;amount&quot;)</span>
+                    ));
+                }
+
+<span class="nc" id="L463">            } catch (SQLException e) {</span>
+<span class="nc" id="L464">                sb.append(&quot;Σφάλμα: &quot;).append(e.getMessage()).append(&quot;\n&quot;);</span>
+<span class="nc" id="L465">            }</span>
+        }
+<span class="nc bnc" id="L467" title="All 2 branches missed.">        if (!foundAny) {</span>
+<span class="nc" id="L468">            sb.append(&quot;Δεν βρέθηκαν αλλαγές.\n&quot;);</span>
+        }
+<span class="nc" id="L470">        changesArea.setText(sb.toString());</span>
+<span class="nc" id="L471">        changesArea.setCaretPosition(0);</span>
+<span class="nc" id="L472">    }</span>
+
+    private void updateBudgetUI() {
+<span class="nc" id="L475">        double[] rev = manager.getTotal(&quot;esoda&quot;);</span>
+<span class="nc" id="L476">        double[] exp = manager.getTotal(&quot;eksoda&quot;);</span>
+<span class="nc" id="L477">        String statusText = manager.getBudgetCharacterism(rev[1], exp[1]);</span>
+<span class="nc" id="L478">        budgetStatusLabel.setText(&quot;Χαρακτηρισμός: &quot; + statusText);</span>
+
+<span class="nc bnc" id="L480" title="All 2 branches missed.">        if (rev[1] &gt; exp[1]) {</span>
+<span class="nc" id="L481">            budgetStatusLabel.setForeground(SUCCESS_COLOR);</span>
+<span class="nc bnc" id="L482" title="All 2 branches missed.">        } else if (rev[1] &lt; exp[1]) {</span>
+<span class="nc" id="L483">            budgetStatusLabel.setForeground(Color.RED);</span>
+        } else {
+<span class="nc" id="L485">            budgetStatusLabel.setForeground(Color.BLUE);</span>
+        }
+<span class="nc" id="L487">    }</span>
+
+    /**
+     * Εσωτερική κλάση που κρατά πληροφορίες για κάθε πίνακα.
+     */
+    private static class TableInfo {
+
+        /** Το εμφανιζόμενο όνομα. */
+        private final String displayName;
+        /** Το όνομα του πίνακα στη βάση. */
+        private final String tableName;
+        /** Το όνομα της στήλης ID. */
+        private final String idColumnName;
+
+        /**
+         * Κατασκευαστής.
+         *
+         * @param display Το εμφανιζόμενο όνομα.
+         * @param table   Το όνομα πίνακα.
+         * @param idCol   Το όνομα στήλης ID.
+         */
+        TableInfo(final String display, final String table,
+<span class="fc" id="L509">                  final String idCol) {</span>
+<span class="fc" id="L510">            this.displayName = display;</span>
+<span class="fc" id="L511">            this.tableName = table;</span>
+<span class="fc" id="L512">            this.idColumnName = idCol;</span>
+<span class="fc" id="L513">        }</span>
+
+        @Override
+        public String toString() {
+<span class="fc" id="L517">            return displayName;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

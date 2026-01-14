@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Search.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">Search.java</span></div><h1>Search.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+/**
+ * Υλοποιεί τη λειτουργία αναζήτησης σε όλους τους πίνακες.
+ */
+public final class Search {
+
+    /** Λίστα πινάκων για αναζήτηση. */
+<span class="fc" id="L15">    private static final String[] TABLES = {</span>
+        &quot;esoda&quot;, &quot;eksoda&quot;, &quot;kratos&quot;, &quot;ypourgeia&quot;, &quot;apokentromenes&quot;
+    };
+
+    /** Το URL της βάσης. */
+    private final String url;
+
+    /**
+     * Κατασκευαστής.
+     *
+     * @param databaseUrl Το URL της βάσης δεδομένων.
+     */
+<span class="fc" id="L27">    public Search(final String databaseUrl) {</span>
+<span class="fc" id="L28">        this.url = databaseUrl;</span>
+<span class="fc" id="L29">    }</span>
+
+    /**
+     * Αναζητά το ποσό βάσει ονόματος.
+     *
+     * @param name Το όνομα προς αναζήτηση.
+     * @return Το ποσό που βρέθηκε ή 0.
+     */
+    public double searchAmount(final String name) {
+<span class="fc bfc" id="L38" title="All 4 branches covered.">        if (name == null || name.trim().isEmpty()) {</span>
+<span class="fc" id="L39">            System.out.println(&quot;Σφάλμα: Δεν δόθηκε όνομα για αναζήτηση.&quot;);</span>
+<span class="fc" id="L40">            return 0;</span>
+        }
+<span class="fc" id="L42">        double amount = 0;</span>
+<span class="fc" id="L43">        try (Connection conn = DriverManager.getConnection(url)) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            for (String table : TABLES) {</span>
+<span class="fc" id="L45">                String sql = &quot;SELECT amount FROM &quot; + table</span>
+                        + &quot; WHERE name LIKE ?&quot;;
+<span class="fc" id="L47">                try (PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L48">                    stmt.setString(1, &quot;%&quot; + name.trim() + &quot;%&quot;);</span>
+<span class="fc" id="L49">                    try (ResultSet rs = stmt.executeQuery()) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">                        if (rs.next()) {</span>
+<span class="fc" id="L51">                            amount = rs.getDouble(&quot;amount&quot;);</span>
+<span class="fc" id="L52">                            System.out.println(&quot; ΒΡΕΘΗΚΕ στον πίνακα &quot;</span>
+                                    + table + &quot;! Ποσό: &quot; + (long) amount);
+<span class="fc" id="L54">                            return amount;</span>
+                        }
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">                    }</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">                }</span>
+            }
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="fc" id="L60">            System.err.println(&quot;Σφάλμα στη βάση: &quot; + e.getMessage());</span>
+<span class="fc" id="L61">        }</span>
+<span class="fc" id="L62">        return amount;</span>
+    }
+
+    /**
+     * Αναζητά το όνομα βάσει ποσού.
+     *
+     * @param amount1 Το ποσό προς αναζήτηση.
+     * @return Το όνομα που βρέθηκε ή null.
+     */
+    public String searchString(final double amount1) {
+<span class="fc" id="L72">        String name = null;</span>
+<span class="fc" id="L73">        try (Connection conn = DriverManager.getConnection(url)) {</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            for (String table : TABLES) {</span>
+<span class="fc" id="L75">                String sql = &quot;SELECT name FROM &quot; + table + &quot; WHERE amount = ?&quot;;</span>
+<span class="fc" id="L76">                try (PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L77">                    stmt.setDouble(1, amount1);</span>
+<span class="fc" id="L78">                    try (ResultSet rs = stmt.executeQuery()) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                        if (rs.next()) {</span>
+<span class="fc" id="L80">                            name = rs.getString(&quot;name&quot;);</span>
+<span class="fc" id="L81">                            return name;</span>
+                        }
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">                    }</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">                }</span>
+            }
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="fc" id="L87">            System.err.println(&quot;Σφάλμα στη βάση: &quot; + e.getMessage());</span>
+<span class="fc" id="L88">        }</span>
+<span class="fc" id="L89">        return name;</span>
+    }
+
+    /**
+     * Επιστρέφει το όνομα του πίνακα που περιέχει το όνομα αναζήτησης.
+     *
+     * @param name2 Το όνομα προς αναζήτηση.
+     * @return Το όνομα του πίνακα ή null.
+     */
+    public String searchTable(final String name2) {
+<span class="fc" id="L99">        String tab = null;</span>
+<span class="fc" id="L100">        try (Connection conn = DriverManager.getConnection(url)) {</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">            for (String table : TABLES) {</span>
+<span class="fc" id="L102">                String sql = &quot;SELECT 1 FROM &quot; + table + &quot; WHERE name = ?&quot;;</span>
+<span class="fc" id="L103">                try (PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L104">                    stmt.setString(1, name2);</span>
+<span class="fc" id="L105">                    try (ResultSet rs = stmt.executeQuery()) {</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">                        if (rs.next()) {</span>
+<span class="fc" id="L107">                            tab = table;</span>
+                        }
+                    }
+                }
+            }
+<span class="fc" id="L112">        } catch (SQLException e) {</span>
+<span class="fc" id="L113">            System.err.println(&quot;Σφάλμα στη βάση: &quot; + e.getMessage());</span>
+<span class="fc" id="L114">        }</span>
+<span class="fc" id="L115">        return tab;</span>
+    }
+
+    /**
+     * Αναζητά το ποσό βάσει ονόματος σε συγκεκριμένο πίνακα.
+     *
+     * @param name      Το όνομα προς αναζήτηση.
+     * @param tableName Το όνομα του πίνακα.
+     * @return Το ποσό που βρέθηκε ή 0.
+     */
+    public double searchAmountInTable(final String name,
+                                      final String tableName) {
+<span class="fc bfc" id="L127" title="All 4 branches covered.">        if (name == null || name.trim().isEmpty()) {</span>
+<span class="fc" id="L128">            System.out.println(&quot;Σφάλμα: Δεν δόθηκε όνομα για αναζήτηση.&quot;);</span>
+<span class="fc" id="L129">            return 0;</span>
+        }
+<span class="pc bpc" id="L131" title="1 of 4 branches missed.">        if (tableName == null || tableName.trim().isEmpty()) {</span>
+<span class="fc" id="L132">            System.out.println(&quot;Σφάλμα: Δεν δόθηκε όνομα πίνακα.&quot;);</span>
+<span class="fc" id="L133">            return 0;</span>
+        }
+<span class="fc" id="L135">        double amount = 0;</span>
+<span class="fc" id="L136">        try (Connection conn = DriverManager.getConnection(url)) {</span>
+
+<span class="fc" id="L138">            String sql = &quot;SELECT amount FROM &quot; + tableName</span>
+                    + &quot; WHERE name LIKE ?&quot;;
+<span class="fc" id="L140">            try (PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L141">                stmt.setString(1, &quot;%&quot; + name.trim() + &quot;%&quot;);</span>
+<span class="fc" id="L142">                try (ResultSet rs = stmt.executeQuery()) {</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">                    if (rs.next()) {</span>
+<span class="fc" id="L144">                        amount = rs.getDouble(&quot;amount&quot;);</span>
+<span class="fc" id="L145">                        System.out.println(&quot; ΒΡΕΘΗΚΕ στον πίνακα &quot;</span>
+                                + tableName + &quot;! Ποσό: &quot; + (long) amount);
+<span class="fc" id="L147">                        return amount;</span>
+                    } else {
+<span class="fc" id="L149">                        System.out.println(&quot; Δεν βρέθηκε εγγραφή στον πίνακα &quot;</span>
+                                + tableName);
+                    }
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">                }</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">            }</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="fc" id="L155">            System.err.println(&quot;Σφάλμα στη βάση: &quot; + e.getMessage());</span>
+<span class="fc" id="L156">        }</span>
+<span class="fc" id="L157">        return amount;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

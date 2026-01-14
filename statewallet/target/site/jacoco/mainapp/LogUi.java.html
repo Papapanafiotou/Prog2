@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LogUi.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">LogUi.java</span></div><h1>LogUi.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.io.Serial;
+import java.util.Random;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.border.EmptyBorder;
+
+/**
+ * Η γραφική διεπαφή για τη σύνδεση χρηστών (Login Screen).
+ */
+public final class LogUi extends JFrame {
+
+    /** Serial Version UID. */
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    // Σταθερές Παραθύρου
+    /** Πλάτος παραθύρου. */
+    private static final int WINDOW_WIDTH = 400;
+    /** Ύψος παραθύρου. */
+    private static final int WINDOW_HEIGHT = 550;
+    /** Περιθώριο. */
+    private static final int BORDER_PADDING = 30;
+    /** Πλάτος κουμπιού. */
+    private static final int BTN_WIDTH = 230;
+    /** Ύψος κουμπιού. */
+    private static final int BTN_HEIGHT = 35;
+    /** Padding Οριζόντιο. */
+    private static final int PAD_HOR = 50;
+
+    // Σταθερές Χρωμάτων (RGB)
+    /** Red component φόντου. */
+    private static final int BG_R = 245;
+    /** Green component φόντου. */
+    private static final int BG_G = 245;
+    /** Blue component φόντου. */
+    private static final int BG_B = 250;
+    /** Red component κειμένου. */
+    private static final int TXT_R = 45;
+    /** Green component κειμένου. */
+    private static final int TXT_G = 52;
+    /** Blue component κειμένου. */
+    private static final int TXT_B = 54;
+
+    // Σταθερές Σχεδίασης
+    /** Μέγεθος εικονιδίου. */
+    private static final int ICON_SIZE = 60;
+    /** Κενό μετά το εικονίδιο. */
+    private static final int GAP_ICON = 8;
+    /** Μέγεθος τίτλου. */
+    private static final int TITLE_SIZE = 20;
+    /** Κενό μετά τον τίτλο. */
+    private static final int GAP_TITLE = 35;
+    /** Κενό μεταξύ κουμπιών. */
+    private static final int GAP_BTN = 13;
+    /** Κενό πριν την έξοδο. */
+    private static final int GAP_EXIT = 40;
+    /** Μέγεθος γραμματοσειράς κουμπιών. */
+    private static final int BTN_FONT = 13;
+    /** Μήκος τυχαίου κωδικού. */
+    private static final int RND_PASS_LEN = 10;
+    /** Κενό μεταξύ στοιχείων στο password panel. */
+    private static final int PASS_PANEL_GAP = 5;
+
+    /** Αντικείμενο λογαριασμών. */
+<span class="nc" id="L79">    private final Accounts acc = new Accounts();</span>
+
+    /**
+     * Κατασκευαστής.
+     */
+<span class="nc" id="L84">    public LogUi() {</span>
+<span class="nc" id="L85">        acc.createTable();</span>
+<span class="nc" id="L86">        setTitle(&quot;Σύστημα Χρηστών&quot;);</span>
+<span class="nc" id="L87">        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);</span>
+<span class="nc" id="L88">        setDefaultCloseOperation(EXIT_ON_CLOSE);</span>
+<span class="nc" id="L89">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L90">        setResizable(true);</span>
+
+<span class="nc" id="L92">        JPanel panel = new JPanel();</span>
+<span class="nc" id="L93">        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));</span>
+<span class="nc" id="L94">        panel.setBorder(new EmptyBorder(</span>
+                BORDER_PADDING, PAD_HOR, BORDER_PADDING, PAD_HOR));
+<span class="nc" id="L96">        panel.setBackground(new Color(BG_R, BG_G, BG_B));</span>
+
+<span class="nc" id="L98">        JLabel userIcon = new JLabel(&quot;👤&quot;);</span>
+<span class="nc" id="L99">        userIcon.setFont(new Font(&quot;Segoe UI Emoji&quot;, Font.PLAIN, ICON_SIZE));</span>
+<span class="nc" id="L100">        userIcon.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L101">        panel.add(userIcon);</span>
+<span class="nc" id="L102">        panel.add(Box.createRigidArea(new Dimension(0, GAP_ICON)));</span>
+
+<span class="nc" id="L104">        JLabel welcomeLabel = new JLabel(&quot;Καλώς ορίσατε!&quot;);</span>
+<span class="nc" id="L105">        welcomeLabel.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, TITLE_SIZE));</span>
+<span class="nc" id="L106">        welcomeLabel.setForeground(new Color(TXT_R, TXT_G, TXT_B));</span>
+<span class="nc" id="L107">        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L108">        panel.add(welcomeLabel);</span>
+<span class="nc" id="L109">        panel.add(Box.createRigidArea(new Dimension(0, GAP_TITLE)));</span>
+
+<span class="nc" id="L111">        JButton btnLogin = createStyledButton(&quot;Σύνδεση&quot;);</span>
+<span class="nc" id="L112">        JButton btnCreate = createStyledButton(&quot;Δημιουργία Λογαριασμού&quot;);</span>
+<span class="nc" id="L113">        JButton btnChange = createStyledButton(&quot;Αλλαγή Κωδικού&quot;);</span>
+<span class="nc" id="L114">        JButton btnForgot = createStyledButton(&quot;Ξέχασα τον Κωδικό&quot;);</span>
+<span class="nc" id="L115">        JButton btnExit = createStyledButton(&quot;Έξοδος&quot;);</span>
+
+<span class="nc" id="L117">        panel.add(btnLogin);</span>
+<span class="nc" id="L118">        panel.add(Box.createRigidArea(new Dimension(0, GAP_BTN)));</span>
+<span class="nc" id="L119">        panel.add(btnCreate);</span>
+<span class="nc" id="L120">        panel.add(Box.createRigidArea(new Dimension(0, GAP_BTN)));</span>
+<span class="nc" id="L121">        panel.add(btnChange);</span>
+<span class="nc" id="L122">        panel.add(Box.createRigidArea(new Dimension(0, GAP_BTN)));</span>
+<span class="nc" id="L123">        panel.add(btnForgot);</span>
+<span class="nc" id="L124">        panel.add(Box.createRigidArea(new Dimension(0, GAP_EXIT)));</span>
+<span class="nc" id="L125">        panel.add(btnExit);</span>
+
+<span class="nc" id="L127">        add(panel);</span>
+
+<span class="nc" id="L129">        btnLogin.addActionListener(e -&gt; login());</span>
+<span class="nc" id="L130">        btnCreate.addActionListener(e -&gt; createAccount());</span>
+<span class="nc" id="L131">        btnChange.addActionListener(e -&gt; changePassword());</span>
+<span class="nc" id="L132">        btnForgot.addActionListener(e -&gt; forgotPassword());</span>
+<span class="nc" id="L133">        btnExit.addActionListener(e -&gt; System.exit(0));</span>
+<span class="nc" id="L134">    }</span>
+
+    private JButton createStyledButton(final String text) {
+<span class="nc" id="L137">        JButton btn = new JButton(text);</span>
+<span class="nc" id="L138">        btn.setMaximumSize(new Dimension(BTN_WIDTH, BTN_HEIGHT));</span>
+<span class="nc" id="L139">        btn.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L140">        btn.setFocusPainted(false);</span>
+<span class="nc" id="L141">        btn.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, BTN_FONT));</span>
+<span class="nc" id="L142">        btn.setBackground(Color.WHITE);</span>
+<span class="nc" id="L143">        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L144">        return btn;</span>
+    }
+
+    /**
+     * Βοηθητική μέθοδος για λήψη κωδικού με επιλογή εμφάνισης (masking).
+     *
+     * @param message Το μήνυμα προτροπής προς τον χρήστη.
+     * @return Ο κωδικός που πληκτρολογήθηκε ή null αν ακυρώθηκε.
+     */
+    private String getPasswordInput(final String message) {
+<span class="nc" id="L154">        JPanel panel = new JPanel();</span>
+<span class="nc" id="L155">        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));</span>
+
+<span class="nc" id="L157">        JLabel label = new JLabel(message);</span>
+<span class="nc" id="L158">        label.setAlignmentX(Component.LEFT_ALIGNMENT);</span>
+
+<span class="nc" id="L160">        JPasswordField pf = new JPasswordField();</span>
+<span class="nc" id="L161">        pf.setAlignmentX(Component.LEFT_ALIGNMENT);</span>
+
+        // Αποθήκευση του αρχικού χαρακτήρα απόκρυψης (συνήθως • ή *)
+<span class="nc" id="L164">        char defaultEcho = pf.getEchoChar();</span>
+
+<span class="nc" id="L166">        JCheckBox showPass = new JCheckBox(&quot;Εμφάνιση κωδικού&quot;);</span>
+<span class="nc" id="L167">        showPass.setAlignmentX(Component.LEFT_ALIGNMENT);</span>
+<span class="nc" id="L168">        showPass.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, BTN_FONT));</span>
+
+        // Λειτουργία εμφάνισης/απόκρυψης
+<span class="nc" id="L171">        showPass.addActionListener(e -&gt; {</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            if (showPass.isSelected()) {</span>
+<span class="nc" id="L173">                pf.setEchoChar((char) 0); // 0 = Κανονικό κείμενο</span>
+            } else {
+<span class="nc" id="L175">                pf.setEchoChar(defaultEcho); // Επαναφορά απόκρυψης</span>
+            }
+<span class="nc" id="L177">        });</span>
+
+<span class="nc" id="L179">        panel.add(label);</span>
+<span class="nc" id="L180">        panel.add(Box.createVerticalStrut(PASS_PANEL_GAP));</span>
+<span class="nc" id="L181">        panel.add(pf);</span>
+<span class="nc" id="L182">        panel.add(Box.createVerticalStrut(PASS_PANEL_GAP));</span>
+<span class="nc" id="L183">        panel.add(showPass);</span>
+
+<span class="nc" id="L185">        int action = JOptionPane.showConfirmDialog(null,</span>
+                panel,
+                &quot;Εισαγωγή Κωδικού&quot;,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (action == JOptionPane.OK_OPTION) {</span>
+<span class="nc" id="L192">            return new String(pf.getPassword());</span>
+        }
+<span class="nc" id="L194">        return null;</span>
+    }
+
+    private void createAccount() {
+<span class="nc" id="L198">        String username = JOptionPane.showInputDialog(&quot;Username:&quot;);</span>
+<span class="nc bnc" id="L199" title="All 4 branches missed.">        if (username == null || username.trim().isEmpty()) {</span>
+<span class="nc" id="L200">            return;</span>
+        }
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (acc.getPassword(username) != null) {</span>
+<span class="nc" id="L203">            JOptionPane.showMessageDialog(null, &quot;Το όνομα υπάρχει!&quot;,</span>
+                    &quot;Σφάλμα&quot;, JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L205">            return;</span>
+        }
+<span class="nc" id="L207">        String id = JOptionPane.showInputDialog(&quot;Αριθμός Ταυτότητας:&quot;);</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        if (id == null) {</span>
+<span class="nc" id="L209">            return;</span>
+        }
+        String password;
+<span class="nc" id="L212">        String[] options = {&quot;Τυχαίος&quot;, &quot;Χειροκίνητος&quot;};</span>
+<span class="nc" id="L213">        int choice = JOptionPane.showOptionDialog(null, &quot;Επιλογή κωδικού&quot;,</span>
+                &quot;Κωδικός&quot;, 0, JOptionPane.QUESTION_MESSAGE,
+                null, options, options[0]);
+
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        if (choice == 0) {</span>
+<span class="nc" id="L218">            String chars = &quot;abcdefghijklmnopqrstuvwxyz0123456789!@#$&quot;;</span>
+<span class="nc" id="L219">            Random r = new Random();</span>
+<span class="nc" id="L220">            StringBuilder sb = new StringBuilder();</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">            for (int i = 0; i &lt; RND_PASS_LEN; i++) {</span>
+<span class="nc" id="L222">                sb.append(chars.charAt(r.nextInt(chars.length())));</span>
+            }
+<span class="nc" id="L224">            password = sb.toString();</span>
+<span class="nc" id="L225">            JOptionPane.showMessageDialog(null, &quot;Ο κωδικός σας: &quot; + password);</span>
+<span class="nc" id="L226">        } else {</span>
+            // Χρήση της μεθόδου για απόκρυψη κωδικού
+<span class="nc" id="L228">            password = getPasswordInput(&quot;Δώστε κωδικό (8+ chars):&quot;);</span>
+
+<span class="nc bnc" id="L230" title="All 2 branches missed.">            if (password == null) {</span>
+<span class="nc" id="L231">                return;</span>
+            }
+<span class="nc bnc" id="L233" title="All 2 branches missed.">            if (!Accounts.validatePassword(password)) {</span>
+<span class="nc" id="L234">                JOptionPane.showMessageDialog(null, &quot;Αδύναμος κωδικός!&quot;);</span>
+<span class="nc" id="L235">                return;</span>
+            }
+        }
+<span class="nc" id="L238">        acc.createAccount(username, password, id);</span>
+<span class="nc" id="L239">        JOptionPane.showMessageDialog(null, &quot;Επιτυχής δημιουργία!&quot;);</span>
+<span class="nc" id="L240">    }</span>
+
+    private void login() {
+<span class="nc" id="L243">        String user = JOptionPane.showInputDialog(&quot;Username:&quot;);</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L245">            return;</span>
+        }
+<span class="nc" id="L247">        String realPass = acc.getPassword(user);</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">        if (realPass == null) {</span>
+<span class="nc" id="L249">            JOptionPane.showMessageDialog(null, &quot;Ο χρήστης δεν βρέθηκε.&quot;);</span>
+<span class="nc" id="L250">            return;</span>
+        }
+
+        // Χρήση της μεθόδου για απόκρυψη κωδικού
+<span class="nc" id="L254">        String pass = getPasswordInput(&quot;Κωδικός:&quot;);</span>
+
+<span class="nc bnc" id="L256" title="All 2 branches missed.">        if (pass == null) {</span>
+<span class="nc" id="L257">            return;</span>
+        }
+<span class="nc bnc" id="L259" title="All 2 branches missed.">        if (acc.logIn(realPass, pass)) {</span>
+<span class="nc" id="L260">            JOptionPane.showMessageDialog(null, &quot;Επιτυχής σύνδεση!&quot;);</span>
+<span class="nc" id="L261">            this.dispose();</span>
+<span class="nc" id="L262">            new StateWalletLauncher().setVisible(true);</span>
+        } else {
+<span class="nc" id="L264">            JOptionPane.showMessageDialog(null, &quot;Λάθος κωδικός.&quot;);</span>
+        }
+<span class="nc" id="L266">    }</span>
+
+    private void changePassword() {
+<span class="nc" id="L269">        String user = JOptionPane.showInputDialog(&quot;Username:&quot;);</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L271">            return;</span>
+        }
+
+        // Χρήση της μεθόδου για τον παλιό κωδικό
+<span class="nc" id="L275">        String oldP = getPasswordInput(&quot;Τρέχων κωδικός:&quot;);</span>
+
+<span class="nc bnc" id="L277" title="All 2 branches missed.">        if (oldP == null) {</span>
+<span class="nc" id="L278">            return;</span>
+        }
+<span class="nc bnc" id="L280" title="All 2 branches missed.">        if (acc.logIn(acc.getPassword(user), oldP)) {</span>
+            // Χρήση της μεθόδου για τον νέο κωδικό
+<span class="nc" id="L282">            String newP = getPasswordInput(&quot;Νέος κωδικός:&quot;);</span>
+
+<span class="nc bnc" id="L284" title="All 4 branches missed.">            if (newP != null &amp;&amp; Accounts.validatePassword(newP)) {</span>
+<span class="nc" id="L285">                acc.newPass(newP, user);</span>
+<span class="nc" id="L286">                JOptionPane.showMessageDialog(null, &quot;Ο κωδικός ενημερώθηκε!&quot;);</span>
+            }
+<span class="nc" id="L288">        } else {</span>
+<span class="nc" id="L289">            JOptionPane.showMessageDialog(null, &quot;Λάθος στοιχεία!&quot;);</span>
+        }
+<span class="nc" id="L291">    }</span>
+
+    private void forgotPassword() {
+<span class="nc" id="L294">        String user = JOptionPane.showInputDialog(&quot;Username:&quot;);</span>
+<span class="nc" id="L295">        String id = JOptionPane.showInputDialog(&quot;Αριθμός Ταυτότητας:&quot;);</span>
+<span class="nc bnc" id="L296" title="All 6 branches missed.">        if (user != null &amp;&amp; id != null &amp;&amp; id.equals(acc.getId(user))) {</span>
+<span class="nc" id="L297">            JOptionPane.showMessageDialog(null,</span>
+<span class="nc" id="L298">                    &quot;Ο κωδικός σας είναι: &quot; + acc.getPassword(user));</span>
+        } else {
+<span class="nc" id="L300">            JOptionPane.showMessageDialog(null, &quot;Τα στοιχεία δεν ταυτίζονται.&quot;);</span>
+        }
+<span class="nc" id="L302">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

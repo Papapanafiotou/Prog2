@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BudgetMenu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">BudgetMenu.java</span></div><h1>BudgetMenu.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+/**
+ * Το μενού κονσόλας της εφαρμογής.
+ */
+public final class BudgetMenu {
+
+    /** Επιλογή: Εμφάνιση. */
+    private static final int OPTION_SHOW = 1;
+    /** Επιλογή: Αλλαγή. */
+    private static final int OPTION_CHANGE = 2;
+    /** Επιλογή: Λίστα Αλλαγών. */
+    private static final int OPTION_CHANGES_LIST = 3;
+    /** Επιλογή: Σύνολο. */
+    private static final int OPTION_TOTAL = 4;
+    /** Επιλογή: Αλλαγή Έτους. */
+    private static final int OPTION_YEAR = 5;
+    /** Επιλογή: Αναζήτηση. */
+    private static final int OPTION_SEARCH = 6;
+    /** Επιλογή: Χαρακτηρισμός. */
+    private static final int OPTION_CHAR = 7;
+    /** Επιλογή: Μέγιστο-Ελάχιστο. */
+    private static final int OPTION_MINMAX = 8;
+    /** Επιλογή: Ποσοστό. */
+    private static final int OPTION_PERCENTAGE = 9;
+    /** Επιλογή: AI Specific. */
+    private static final int OPTION_AI_SPECIFIC = 10;
+    /** Επιλογή: AI Global. */
+    private static final int OPTION_AI_GLOBAL = 11;
+    /** Επιλογή: Πρόβλεψη 2027. */
+    private static final int OPTION_PREDICT = 12;
+    /** Επιλογή: Σύστημα βαθμολόγησης. */
+    private static final int OPTION_GRADE = 13;
+    /** Επιλογή: Έξοδος. */
+    private static final int OPTION_EXIT = 14;
+
+    /** Πίνακας: Έσοδα. */
+    private static final int TABLE_ESODA = 1;
+    /** Πίνακας: Έξοδα. */
+    private static final int TABLE_EKSODA = 2;
+    /** Πίνακας: Κράτος. */
+    private static final int TABLE_KRATOS = 3;
+    /** Πίνακας: Υπουργεία. */
+    private static final int TABLE_YPOURGEIA = 4;
+    /** Πίνακας: Αποκεντρωμένες. */
+    private static final int TABLE_APOK = 5;
+    /** Πίνακας: Όλα. */
+    private static final int TABLE_ALL = 6;
+    /** Πίνακας: Πίσω. */
+    private static final int TABLE_BACK = 7;
+
+    /** Έτος έναρξης ιστορικών δεδομένων. */
+    private static final int START_YEAR = 2023;
+    /** Έτος λήξης ιστορικών δεδομένων. */
+    private static final int END_YEAR = 2026;
+    /** Έτος πρόβλεψης. */
+    private static final int PREDICT_YEAR = 2027;
+    /** Επιλογή χρήστη: ΝΑΙ (1). */
+    private static final int CHOICE_YES = 1;
+    /** Πολλαπλασιαστής ποσοστού. */
+    private static final int PERCENT_MULTIPLIER = 100;
+
+    /** Επιλογή διαχείρισης βάσης. */
+<span class="fc" id="L74">    private final DatabaseChooser chooser = new DatabaseChooser();</span>
+    /** URL βάσης δεδομένων. */
+    private String url;
+    /** Διαχειριστής προϋπολογισμού. */
+    private final BudgetManager manager;
+    /** Scanner εισόδου. */
+    private final Scanner scanner;
+
+    /**
+     * Κατασκευαστής.
+     *
+     * @param dbUrl Το URL της βάσης δεδομένων.
+     */
+<span class="fc" id="L87">    public BudgetMenu(final String dbUrl) {</span>
+<span class="fc" id="L88">        this.url = dbUrl;</span>
+<span class="fc" id="L89">        this.manager = new BudgetManager(dbUrl);</span>
+        // Αναγκάζουμε τον Scanner να διαβάζει CP737 (Ελληνικά DOS)
+<span class="fc" id="L91">        this.scanner = new Scanner(System.in, &quot;CP737&quot;);</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * Ξεκινάει το μενού επιλογών.
+     */
+    public void start() {
+        while (true) {
+<span class="fc" id="L99">            printMenuOptions();</span>
+<span class="fc" id="L100">            System.out.print(&quot;Επιλογή: &quot;);</span>
+
+            int choice;
+            try {
+<span class="fc" id="L104">                choice = scanner.nextInt();</span>
+<span class="fc" id="L105">                scanner.nextLine();</span>
+<span class="fc" id="L106">            } catch (Exception e) {</span>
+<span class="fc" id="L107">                System.out.println(&quot;Μη έγκυρη είσοδος.&quot;);</span>
+<span class="fc" id="L108">                scanner.nextLine();</span>
+<span class="fc" id="L109">                continue;</span>
+<span class="fc" id="L110">            }</span>
+
+<span class="fc bfc" id="L112" title="All 2 branches covered.">            if (processChoice(choice)) {</span>
+<span class="fc" id="L113">                return;</span>
+            }
+<span class="fc" id="L115">        }</span>
+    }
+    /**
+     * Εμφάνιση μενού επιλογών.
+     */
+    private void printMenuOptions() {
+<span class="fc" id="L121">        System.out.println(&quot;\n-------------------------------------------&quot;);</span>
+<span class="fc" id="L122">        System.out.println(&quot;Επιλέξτε μία από τις παρακάτω λειτουργίες&quot;);</span>
+<span class="fc" id="L123">        System.out.println(&quot;1. Εμφάνιση στοιχείων&quot;);</span>
+<span class="fc" id="L124">        System.out.println(&quot;2. Αλλαγή στοιχείου&quot;);</span>
+<span class="fc" id="L125">        System.out.println(&quot;3. Εμφάνιση αλλαγών&quot;);</span>
+<span class="fc" id="L126">        System.out.println(&quot;4. Εμφάνιση συνόλου&quot;);</span>
+<span class="fc" id="L127">        System.out.println(&quot;5. Αλλαγή έτους&quot;);</span>
+<span class="fc" id="L128">        System.out.println(&quot;6. Αναζήτηση στοιχείου&quot;);</span>
+<span class="fc" id="L129">        System.out.println(&quot;7. Χαρακτηρισμός προϋπολογισμού&quot;);</span>
+<span class="fc" id="L130">        System.out.println(&quot;8. Εμφάνιση Μέγιστου-Ελάχιστου&quot;);</span>
+<span class="fc" id="L131">        System.out.println(&quot;9. Εμφάνιση Ποσοστού σε σχέση με σύνολο&quot;);</span>
+<span class="fc" id="L132">        System.out.println(&quot;10. Χρήση AI για συγκεκριμένο λογαριασμό&quot;);</span>
+<span class="fc" id="L133">        System.out.println(&quot;11. Χρήση AI για πιο γενική αναφορά&quot;);</span>
+<span class="fc" id="L134">        System.out.println(&quot;12. Πρόβλεψη Τιμής για το 2027&quot;);</span>
+<span class="fc" id="L135">        System.out.println(&quot;13. Σύστημα βαθμολόγησης κράτους (ΕΛΣΤΑΤ)&quot;);</span>
+<span class="fc" id="L136">        System.out.println(&quot;14. Έξοδος&quot;);</span>
+<span class="fc" id="L137">    }</span>
+    /**
+     * Διαχειριστής επιλογών.
+     * @param choice επιλογή του χρήστη
+     * @return false για τον τερματισμό του προγράμματος
+     */
+    private boolean processChoice(final int choice) {
+<span class="pc bpc" id="L144" title="11 of 15 branches missed.">        switch (choice) {</span>
+<span class="fc" id="L145">            case OPTION_SHOW -&gt; showBudgetSelection();</span>
+<span class="nc" id="L146">            case OPTION_CHANGE -&gt; changeBudget();</span>
+<span class="nc" id="L147">            case OPTION_CHANGES_LIST -&gt; manager.showChanges();</span>
+<span class="fc" id="L148">            case OPTION_TOTAL -&gt; showTotalSelection();</span>
+            case OPTION_YEAR -&gt; {
+<span class="nc" id="L150">                String newURL = chooser.getUrl();</span>
+<span class="nc" id="L151">                this.url = newURL;</span>
+<span class="nc" id="L152">                manager.setUrl(newURL);</span>
+<span class="nc" id="L153">            }</span>
+            case OPTION_SEARCH -&gt; {
+<span class="nc" id="L155">                Search s = new Search(url);</span>
+<span class="nc" id="L156">                System.out.println(&quot;Εισάγετε το στοιχείο αναζήτησης&quot;);</span>
+<span class="nc" id="L157">                String name = scanner.nextLine().trim();</span>
+<span class="nc" id="L158">                s.searchAmount(name);</span>
+<span class="nc" id="L159">            }</span>
+<span class="nc" id="L160">            case OPTION_CHAR -&gt; handleCharacterism();</span>
+            case OPTION_EXIT -&gt; {
+<span class="fc" id="L162">                System.out.println(&quot;Έξοδος...&quot;);</span>
+<span class="fc" id="L163">                scanner.close();</span>
+<span class="fc" id="L164">                return true;</span>
+            }
+<span class="fc" id="L166">            case OPTION_AI_SPECIFIC -&gt; handleAiSpecific();</span>
+<span class="nc" id="L167">            case OPTION_AI_GLOBAL -&gt; handleAiGlobal();</span>
+            case OPTION_MINMAX -&gt; {
+<span class="nc" id="L169">                MinMaX minmaxfinder = new MinMaX(url);</span>
+<span class="nc" id="L170">                minmaxfinder.showMinMax();</span>
+<span class="nc" id="L171">            }</span>
+<span class="nc" id="L172">            case OPTION_PERCENTAGE -&gt; getPercentage();</span>
+<span class="nc" id="L173">            case OPTION_PREDICT -&gt; predictValue();</span>
+            case OPTION_GRADE -&gt; {
+<span class="nc" id="L175">                TotalGrade t = new TotalGrade();</span>
+<span class="nc" id="L176">                t.getTotalGrade();</span>
+<span class="nc" id="L177">            }</span>
+<span class="nc" id="L178">            default -&gt; System.out.println(&quot;Λάθος επιλογή.&quot;);</span>
+        }
+<span class="fc" id="L180">        return false;</span>
+    }
+    /**
+     * Μέθοδος διαχείρισης χαρακτηρισμού του προϋπολογισμού.
+     * Καλεί την getBudgetCharacterism αναλογα με τις επιλογές
+     * του χρήστη.
+     */
+    private void handleCharacterism() {
+<span class="nc" id="L188">        System.out.println(&quot;Θέλετε χαρακτηρισμό στα αρχικά ή επεξεργασμένα;&quot;);</span>
+<span class="nc" id="L189">        System.out.println(&quot;(1 για αρχικά 2 για επεξεργασμένα)&quot;);</span>
+<span class="nc" id="L190">        System.out.print(&quot;Επιλογή: &quot;);</span>
+<span class="nc" id="L191">        int cho = scanner.nextInt();</span>
+<span class="nc" id="L192">        scanner.nextLine();</span>
+<span class="nc" id="L193">        double[] revenue = manager.getTotal(&quot;esoda&quot;);</span>
+<span class="nc" id="L194">        double[] expenses = manager.getTotal(&quot;eksoda&quot;);</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (cho == 1) {</span>
+<span class="nc" id="L196">            System.out.println(manager.getBudgetCharacterism(</span>
+                    revenue[0], expenses[0]));
+        } else {
+<span class="nc" id="L199">            System.out.println(manager.getBudgetCharacterism(</span>
+                    revenue[1], expenses[1]));
+        }
+<span class="nc" id="L202">    }</span>
+    /**
+     * Μέθοδος διαχείρισης εμφάνισης προϋπολογισμού.
+     * Καλεί την printTable ανάλογα με τις επιλογές του χρήστη.
+     */
+    private void showBudgetSelection() {
+<span class="fc" id="L208">        System.out.println(&quot;\nΠοιον πίνακα θέλετε να δείτε;&quot;);</span>
+<span class="fc" id="L209">        System.out.println(&quot;1. Έσοδα&quot;);</span>
+<span class="fc" id="L210">        System.out.println(&quot;2. Έξοδα&quot;);</span>
+<span class="fc" id="L211">        System.out.println(&quot;3. Κράτος&quot;);</span>
+<span class="fc" id="L212">        System.out.println(&quot;4. Υπουργεία&quot;);</span>
+<span class="fc" id="L213">        System.out.println(&quot;5. Αποκεντρωμένες Διοικήσεις&quot;);</span>
+<span class="fc" id="L214">        System.out.println(&quot;6. Όλα&quot;);</span>
+<span class="fc" id="L215">        System.out.println(&quot;7. Πίσω&quot;);</span>
+<span class="fc" id="L216">        System.out.print(&quot;Επιλογή: &quot;);</span>
+
+<span class="fc" id="L218">        int choice = scanner.nextInt();</span>
+<span class="fc" id="L219">        scanner.nextLine();</span>
+
+<span class="pc bpc" id="L221" title="7 of 8 branches missed.">        switch (choice) {</span>
+<span class="nc" id="L222">            case TABLE_ESODA -&gt; manager.printTable(&quot;esoda&quot;, &quot;code&quot;);</span>
+<span class="nc" id="L223">            case TABLE_EKSODA -&gt; manager.printTable(&quot;eksoda&quot;, &quot;code&quot;);</span>
+<span class="nc" id="L224">            case TABLE_KRATOS -&gt; manager.printTable(&quot;kratos&quot;, &quot;number&quot;);</span>
+<span class="nc" id="L225">            case TABLE_YPOURGEIA -&gt; manager.printTable(&quot;ypourgeia&quot;, &quot;number&quot;);</span>
+<span class="nc" id="L226">            case TABLE_APOK -&gt; manager.printTable(&quot;apokentromenes&quot;, &quot;number&quot;);</span>
+            case TABLE_ALL -&gt; {
+<span class="nc" id="L228">                manager.printTable(&quot;esoda&quot;, &quot;code&quot;);</span>
+<span class="nc" id="L229">                manager.printTable(&quot;eksoda&quot;, &quot;code&quot;);</span>
+<span class="nc" id="L230">                manager.printTable(&quot;kratos&quot;, &quot;number&quot;);</span>
+<span class="nc" id="L231">                manager.printTable(&quot;ypourgeia&quot;, &quot;number&quot;);</span>
+<span class="nc" id="L232">                manager.printTable(&quot;apokentromenes&quot;, &quot;number&quot;);</span>
+<span class="nc" id="L233">            }</span>
+            case TABLE_BACK -&gt; {
+<span class="fc" id="L235">                return;</span>
+            }
+<span class="nc" id="L237">            default -&gt; System.out.println(&quot;Λάθος επιλογή.&quot;);</span>
+        }
+<span class="nc" id="L239">    }</span>
+
+    /**
+     * Διαχειρίζεται τη διαδικασία τροποποίησης του προϋπολογισμού (ποσού)
+     * για μια συγκεκριμένη εγγραφή σε έναν από τους διαθέσιμους πίνακες.
+     * &lt;p&gt;
+     * Η ροή εκτέλεσης περιλαμβάνει:
+     * &lt;ol&gt;
+     * &lt;li&gt;Επιλογή της κατηγορίας (Έσοδα, Έξοδα, Κράτος, Υπουργεία,
+     * Αποκεντρωμένες).&lt;/li&gt;
+     * &lt;li&gt;Ανάκτηση της τρέχουσας τιμής βάσει του ID που δίνει ο χρήστης.&lt;/li&gt;
+     * &lt;li&gt;Εισαγωγή του νέου ποσού.&lt;/li&gt;
+     * &lt;li&gt;Έλεγχο περιορισμών (Constraints) μέσω της κλάσης {@code Constrains}:
+     * &lt;ul&gt;
+     * &lt;li&gt;Έλεγχος για αρνητικά ποσά.&lt;/li&gt;
+     * &lt;li&gt;Προειδοποίηση αν η απόκλιση τιμής υπερβαίνει το 50%.&lt;/li&gt;
+     * &lt;li&gt;Προειδοποίηση αν το δημοσιονομικό έλλειμμα ξεπεράσει το 3%.&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;/li&gt;
+     * &lt;li&gt;Ενημέρωση της βάσης δεδομένων μέσω του {@code manager}, εφόσον
+     * εγκριθεί η αλλαγή.&lt;/li&gt;
+     * &lt;/ol&gt;
+     *
+     * @see Constrains
+     */
+
+    private void changeBudget() {
+<span class="nc" id="L266">        System.out.println(&quot;\nΕπιλέξτε πίνακα:&quot;);</span>
+<span class="nc" id="L267">        System.out.println(&quot;1. Έσοδα&quot;);</span>
+<span class="nc" id="L268">        System.out.println(&quot;2. Έξοδα&quot;);</span>
+<span class="nc" id="L269">        System.out.println(&quot;3. Κράτος&quot;);</span>
+<span class="nc" id="L270">        System.out.println(&quot;4. Υπουργεία&quot;);</span>
+<span class="nc" id="L271">        System.out.println(&quot;5. Αποκεντρωμένες Διοικήσεις&quot;);</span>
+<span class="nc" id="L272">        System.out.print(&quot;Επιλογή: &quot;);</span>
+
+<span class="nc" id="L274">        int tableChoice = scanner.nextInt();</span>
+<span class="nc" id="L275">        scanner.nextLine();</span>
+
+        String tableName;
+        String idColName;
+
+<span class="nc bnc" id="L280" title="All 6 branches missed.">        switch (tableChoice) {</span>
+            case TABLE_ESODA -&gt; {
+<span class="nc" id="L282">                tableName = &quot;esoda&quot;;</span>
+<span class="nc" id="L283">                idColName = &quot;code&quot;;</span>
+<span class="nc" id="L284">            }</span>
+            case TABLE_EKSODA -&gt; {
+<span class="nc" id="L286">                tableName = &quot;eksoda&quot;;</span>
+<span class="nc" id="L287">                idColName = &quot;code&quot;;</span>
+<span class="nc" id="L288">            }</span>
+            case TABLE_KRATOS -&gt; {
+<span class="nc" id="L290">                tableName = &quot;kratos&quot;;</span>
+<span class="nc" id="L291">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L292">            }</span>
+            case TABLE_YPOURGEIA -&gt; {
+<span class="nc" id="L294">                tableName = &quot;ypourgeia&quot;;</span>
+<span class="nc" id="L295">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L296">            }</span>
+            case TABLE_APOK -&gt; {
+<span class="nc" id="L298">                tableName = &quot;apokentromenes&quot;;</span>
+<span class="nc" id="L299">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L300">            }</span>
+            default -&gt; {
+<span class="nc" id="L302">                System.out.println(&quot;Άκυρη επιλογή.&quot;);</span>
+<span class="nc" id="L303">                return;</span>
+            }
+        }
+
+        try {
+<span class="nc" id="L308">            System.out.print(&quot;Δώσε το ID (&quot; + idColName + &quot;): &quot;);</span>
+<span class="nc" id="L309">            int id = Integer.parseInt(scanner.nextLine());</span>
+
+<span class="nc" id="L311">            double oldAmount = manager.getCurrentAmount(</span>
+                    tableName, idColName, id);
+
+<span class="nc bnc" id="L314" title="All 2 branches missed.">            if (oldAmount == -1) {</span>
+<span class="nc" id="L315">                System.out.println(&quot;Το ID δεν βρέθηκε.&quot;);</span>
+<span class="nc" id="L316">                return;</span>
+            }
+
+<span class="nc" id="L319">            System.out.print(&quot;Δώσε το νέο ποσό: &quot;);</span>
+<span class="nc" id="L320">            double newAmount = Double.parseDouble(scanner.nextLine());</span>
+
+<span class="nc" id="L322">            newAmount = Constrains.negativeAmount(scanner, newAmount);</span>
+
+<span class="nc bnc" id="L324" title="All 2 branches missed.">            if (!Constrains.isReasonableChange(oldAmount, newAmount)) {</span>
+<span class="nc" id="L325">                System.out.println(&quot;ΠΡΟΣΟΧΗ! Η αλλαγή υπερβαίνει το 50%.&quot;);</span>
+<span class="nc" id="L326">                System.out.println(&quot;Για συνέχεια πατήστε 1, αλλιώς 2.&quot;);</span>
+<span class="nc" id="L327">                int confirm = scanner.nextInt();</span>
+<span class="nc" id="L328">                scanner.nextLine();</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">                if (confirm != CHOICE_YES) {</span>
+<span class="nc" id="L330">                    return;</span>
+                }
+            }
+
+<span class="nc" id="L334">            double[] rev = manager.getTotal(&quot;esoda&quot;);</span>
+<span class="nc" id="L335">            double[] exp = manager.getTotal(&quot;eksoda&quot;);</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">            if (!Constrains.deficitLimit(rev[1], exp[1])) {</span>
+<span class="nc" id="L337">                System.out.println(&quot;Η αλλαγή οδηγεί σε έλλειμα &gt; 3%.&quot;);</span>
+<span class="nc" id="L338">                System.out.println(&quot;Για συνέχεια πατήστε 1, αλλιώς 2.&quot;);</span>
+<span class="nc" id="L339">                int choice = scanner.nextInt();</span>
+<span class="nc" id="L340">                scanner.nextLine();</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">                if (choice != CHOICE_YES) {</span>
+<span class="nc" id="L342">                    return;</span>
+                }
+            }
+
+<span class="nc" id="L346">            boolean success = manager.updateAmount(</span>
+                    tableName, idColName, id, newAmount);
+
+<span class="nc bnc" id="L349" title="All 2 branches missed.">            if (success) {</span>
+<span class="nc" id="L350">                System.out.println(&quot;Επιτυχής ενημέρωση!&quot;);</span>
+            } else {
+<span class="nc" id="L352">                System.out.println(&quot;Αποτυχία: Δεν βρέθηκε το ID.&quot;);</span>
+            }
+
+<span class="nc" id="L355">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L356">            System.out.println(&quot;Λάθος είσοδος (μόνο αριθμοί).&quot;);</span>
+<span class="nc" id="L357">        }</span>
+<span class="nc" id="L358">    }</span>
+    /**
+     * Μέθοδος διαχείριης εμφάνισης συνόλου.
+     * Καλεί την getTotal ανάλογα με τις επιλογές
+     * του χρήστη.
+     */
+    private void showTotalSelection() {
+<span class="fc" id="L365">        System.out.println(&quot;\nΠοιανού πίνακα θέλετε να δείτε το σύνολο ;&quot;);</span>
+<span class="fc" id="L366">        System.out.println(&quot;1. Έσοδα&quot;);</span>
+<span class="fc" id="L367">        System.out.println(&quot;2. Έξοδα&quot;);</span>
+<span class="fc" id="L368">        System.out.println(&quot;3. Κράτος&quot;);</span>
+<span class="fc" id="L369">        System.out.println(&quot;4. Υπουργεία&quot;);</span>
+<span class="fc" id="L370">        System.out.println(&quot;5. Αποκεντρωμένες Διοικήσεις&quot;);</span>
+<span class="fc" id="L371">        System.out.print(&quot;Επιλογή: &quot;);</span>
+        double[] results;
+<span class="fc" id="L373">        int tableChoice = scanner.nextInt();</span>
+<span class="fc" id="L374">        scanner.nextLine();</span>
+<span class="pc bpc" id="L375" title="5 of 6 branches missed.">        switch (tableChoice) {</span>
+            case TABLE_ESODA -&gt; {
+<span class="fc" id="L377">                results = manager.getTotal(&quot;esoda&quot;);</span>
+<span class="fc" id="L378">            }</span>
+            case TABLE_EKSODA -&gt; {
+<span class="nc" id="L380">                results = manager.getTotal(&quot;eksoda&quot;);</span>
+<span class="nc" id="L381">            }</span>
+            case TABLE_KRATOS -&gt; {
+<span class="nc" id="L383">                results = manager.getTotal(&quot;kratos&quot;);</span>
+<span class="nc" id="L384">            }</span>
+            case TABLE_YPOURGEIA -&gt; {
+<span class="nc" id="L386">                results = manager.getTotal(&quot;ypourgeia&quot;);</span>
+<span class="nc" id="L387">            }</span>
+            case TABLE_APOK -&gt; {
+<span class="nc" id="L389">                results = manager.getTotal(&quot;apokentromenes&quot;);</span>
+<span class="nc" id="L390">            }</span>
+            default -&gt; {
+<span class="nc" id="L392">                System.out.println(&quot;Άκυρη επιλογή.&quot;);</span>
+<span class="nc" id="L393">                return;</span>
+            }
+        }
+<span class="fc" id="L396">        System.out.println(&quot;--- Αποτελέσματα για πίνακα: &quot; + tableChoice</span>
+                + &quot; ---&quot;);
+<span class="fc" id="L398">        System.out.printf(&quot;Συνολικό Ποσό(αρχικό): %,.2f%n&quot;, results[0]);</span>
+<span class="fc" id="L399">        System.out.printf(&quot;Συνολικό Ποσό(επεξεργασμένο): %,.2f%n&quot;,</span>
+<span class="fc" id="L400">                results[1]);</span>
+<span class="fc" id="L401">    }</span>
+
+    /**
+     * Υπολογίζει και εμφανίζει τα ποσοστά των εγγραφών.
+     */
+    public void getPercentage() {
+<span class="nc" id="L407">        System.out.println(&quot;Για έσοδα πατήστε 1, έξοδα 2, υπουργεία 3.&quot;);</span>
+<span class="nc" id="L408">        String tablename = null;</span>
+        do {
+<span class="nc" id="L410">            int answer = scanner.nextInt();</span>
+<span class="nc bnc" id="L411" title="All 4 branches missed.">            switch (answer) {</span>
+                case TABLE_ESODA -&gt; {
+<span class="nc" id="L413">                    tablename = &quot;esoda&quot;;</span>
+<span class="nc" id="L414">                }</span>
+                case TABLE_EKSODA -&gt; {
+<span class="nc" id="L416">                    tablename = &quot;eksoda&quot;;</span>
+<span class="nc" id="L417">                }</span>
+                case TABLE_KRATOS -&gt; {
+<span class="nc" id="L419">                    tablename = &quot;ypourgeia&quot;;</span>
+<span class="nc" id="L420">                }</span>
+<span class="nc" id="L421">                default -&gt; System.out.println(&quot;Η τιμή δεν είναι 1, 2 ή 3.&quot;);</span>
+            }
+<span class="nc bnc" id="L423" title="All 2 branches missed.">        } while (tablename == null);</span>
+
+<span class="nc" id="L425">        double[] total = manager.getTotal(tablename);</span>
+<span class="nc" id="L426">        System.out.println(&quot;1: Μεμονωμένο ποσοστό, 2: Όλα τα ποσοστά&quot;);</span>
+<span class="nc" id="L427">        int answer2 = scanner.nextInt();</span>
+
+<span class="nc bnc" id="L429" title="All 2 branches missed.">        if (answer2 == 1) {</span>
+            double percent;
+<span class="nc" id="L431">            System.out.println(&quot;Για ποιον λογαριασμό;&quot;);</span>
+<span class="nc" id="L432">            scanner.nextLine();</span>
+<span class="nc" id="L433">            String name = scanner.nextLine();</span>
+<span class="nc" id="L434">            Search search = new Search(url);</span>
+<span class="nc" id="L435">            double amount = search.searchAmountInTable(name, tablename);</span>
+            try {
+<span class="nc" id="L437">                percent = (amount / total[1]) * PERCENT_MULTIPLIER;</span>
+<span class="nc" id="L438">                System.out.printf(&quot;%.4f %% %n&quot;, percent);</span>
+<span class="nc" id="L439">            } catch (ArithmeticException e) {</span>
+<span class="nc" id="L440">                System.out.println(&quot;Δεν μπορεί να γίνει διαίρεση με 0!&quot;);</span>
+<span class="nc" id="L441">            }</span>
+
+<span class="nc bnc" id="L443" title="All 2 branches missed.">        } else if (answer2 == 2) {</span>
+<span class="nc" id="L444">            processAllPercentages(tablename, total[1]);</span>
+        }
+<span class="nc" id="L446">    }</span>
+    /**
+     * Ανακτά δεδομένα από τον καθορισμένο πίνακα της βάσης δεδομένων,
+     * υπολογίζει
+     * το ποσοστό κάθε εγγραφής σε σχέση με το δοθέν συνολικό ποσό και
+     * οπτικοποιεί τα αποτελέσματα.
+     *
+     * Η μέθοδος εκτελεί τις ακόλουθες λειτουργίες:
+     * 1. Ερωτά τη βάση δεδομένων για να καταμετρήσει το πλήθος των γραμμών.
+     * 2. Ανακτά τις στήλες &quot;name&quot; και &quot;amount&quot; από τον πίνακα.
+     * 3. Υπολογίζει το ποσοστό για κάθε εγγραφή (amount / totalAmount).
+     * 4. Εκτυπώνει τα διαμορφωμένα ποσοστά στην κονσόλα.
+     * 5. Δημιουργεί και εμφανίζει ένα γράφημα πίτας μέσω της κλάσης
+     * EconomicsChart.
+     *
+     *
+     *
+     * @param tablename   Το όνομα του πίνακα της βάσης δεδομένων.
+     * Ο πίνακας πρέπει
+     * να περιέχει οπωσδήποτε τις στήλες &quot;name&quot; και &quot;amount&quot;.
+     * @param totalAmount Το συνολικό ποσό που χρησιμοποιείται ως
+     * παρονομαστής
+     * για τον υπολογισμό του ποσοστού κάθε στοιχείου.
+     */
+    private void processAllPercentages(final String tablename,
+                                       final double totalAmount) {
+<span class="nc" id="L472">        int rowCount = 0;</span>
+<span class="nc" id="L473">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="nc" id="L474">             Statement stmtCount = conn.createStatement();</span>
+<span class="nc" id="L475">             ResultSet rsCount = stmtCount.executeQuery(</span>
+                     &quot;SELECT COUNT(*) FROM &quot; + tablename)) {
+<span class="nc bnc" id="L477" title="All 2 branches missed.">            if (rsCount.next()) {</span>
+<span class="nc" id="L478">                rowCount = rsCount.getInt(1);</span>
+            }
+<span class="nc" id="L480">        } catch (SQLException e) {</span>
+<span class="nc" id="L481">            System.err.println(&quot;Σφάλμα καταμέτρησης: &quot; + e.getMessage());</span>
+<span class="nc" id="L482">            return;</span>
+<span class="nc" id="L483">        }</span>
+
+<span class="nc" id="L485">        String[] namesArray = new String[rowCount];</span>
+<span class="nc" id="L486">        double[] amountsArray = new double[rowCount];</span>
+
+<span class="nc" id="L488">        try (Connection conn = DriverManager.getConnection(url);</span>
+<span class="nc" id="L489">             Statement stmt = conn.createStatement();</span>
+<span class="nc" id="L490">             ResultSet rs = stmt.executeQuery(</span>
+                     &quot;SELECT name, amount FROM &quot; + tablename)) {
+<span class="nc" id="L492">            int index = 0;</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L494">                namesArray[index] = rs.getString(&quot;name&quot;);</span>
+<span class="nc" id="L495">                amountsArray[index] = rs.getDouble(&quot;amount&quot;);</span>
+<span class="nc" id="L496">                index++;</span>
+            }
+<span class="nc" id="L498">            System.out.println(&quot;Ανάγνωση &quot; + rowCount + &quot; γραμμών.&quot;);</span>
+<span class="nc" id="L499">        } catch (SQLException e) {</span>
+<span class="nc" id="L500">            System.err.println(&quot;Σφάλμα ανάγνωσης: &quot; + e.getMessage());</span>
+<span class="nc" id="L501">        }</span>
+
+<span class="nc" id="L503">        double[] percentages = new double[amountsArray.length];</span>
+<span class="nc" id="L504">        System.out.println(&quot;----ΠΟΣΟΣΤΑ ΣΤΟΙΧΕΙΩΝ---&quot;);</span>
+<span class="nc bnc" id="L505" title="All 2 branches missed.">        for (int i = 0; i &lt; namesArray.length; i++) {</span>
+<span class="nc" id="L506">            percentages[i] = (amountsArray[i] / totalAmount);</span>
+<span class="nc" id="L507">            double p = percentages[i] * PERCENT_MULTIPLIER;</span>
+<span class="nc" id="L508">            System.out.println(&quot;ΣΤΟΙΧΕΙΟ: &quot; + namesArray[i]</span>
+<span class="nc" id="L509">                    + &quot; ΠΟΣΟΣΤΟ: &quot; + String.format(&quot;%.4f&quot;, p) + &quot; %&quot;);</span>
+        }
+<span class="nc" id="L511">        EconomicsChart e = new EconomicsChart();</span>
+<span class="nc" id="L512">        e.showPieChart(namesArray, percentages);</span>
+<span class="nc" id="L513">    }</span>
+
+    /**
+     * Διαχειρίζεται την αλληλεπίδραση για τη λήψη εξειδικευμένης συμβουλής AI
+     * για μια συγκεκριμένη εγγραφή (Specific Advice).
+     * &lt;p&gt;
+     * Η μέθοδος καθοδηγεί τον χρήστη στα εξής βήματα:
+     * &lt;ol&gt;
+     * &lt;li&gt;Επιλογή πίνακα (Έσοδα, Έξοδα, Κράτος, Υπουργεία).&lt;/li&gt;
+     * &lt;li&gt;Εισαγωγή του μοναδικού κωδικού (ID) της εγγραφής.&lt;/li&gt;
+     * &lt;li&gt;Ανάκτηση του ονόματος και του τρέχοντος ποσού από τον
+     * {@code manager}.&lt;/li&gt;
+     * &lt;li&gt;Καθορισμός ενός στόχου (goal) από τον χρήστη.&lt;/li&gt;
+     * &lt;li&gt;Κλήση της κλάσης {@code AiBridge} για τη λήψη της
+     * συμβουλής.&lt;/li&gt;
+     * &lt;/ol&gt;
+     */
+
+    private void handleAiSpecific() {
+<span class="fc" id="L532">        System.out.println(&quot;\n--- AI Σύμβουλος (Specific) ---&quot;);</span>
+<span class="fc" id="L533">        System.out.println(&quot;Επιλέξτε πίνακα (1-4):&quot;);</span>
+<span class="fc" id="L534">        int tableChoice = scanner.nextInt();</span>
+<span class="fc" id="L535">        scanner.nextLine();</span>
+
+        String tableName;
+        String idColName;
+
+<span class="pc bpc" id="L540" title="4 of 5 branches missed.">        switch (tableChoice) {</span>
+            case TABLE_ESODA -&gt; {
+<span class="fc" id="L542">                tableName = &quot;esoda&quot;;</span>
+<span class="fc" id="L543">                idColName = &quot;code&quot;;</span>
+<span class="fc" id="L544">            }</span>
+            case TABLE_EKSODA -&gt; {
+<span class="nc" id="L546">                tableName = &quot;eksoda&quot;;</span>
+<span class="nc" id="L547">                idColName = &quot;code&quot;;</span>
+<span class="nc" id="L548">            }</span>
+            case TABLE_KRATOS -&gt; {
+<span class="nc" id="L550">                tableName = &quot;kratos&quot;;</span>
+<span class="nc" id="L551">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L552">            }</span>
+            case TABLE_YPOURGEIA -&gt; {
+<span class="nc" id="L554">                tableName = &quot;ypourgeia&quot;;</span>
+<span class="nc" id="L555">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L556">            }</span>
+            default -&gt; {
+<span class="nc" id="L558">                System.out.println(&quot;Άκυρη επιλογή πίνακα.&quot;);</span>
+<span class="nc" id="L559">                return;</span>
+            }
+        }
+
+<span class="fc" id="L563">        System.out.print(&quot;Δώσε το ID (&quot; + idColName + &quot;): &quot;);</span>
+<span class="pc bpc" id="L564" title="1 of 2 branches missed.">        if (!scanner.hasNextInt()) {</span>
+<span class="nc" id="L565">            System.out.println(&quot;Πρέπει να δώσετε αριθμό!&quot;);</span>
+<span class="nc" id="L566">            scanner.nextLine();</span>
+<span class="nc" id="L567">            return;</span>
+        }
+<span class="fc" id="L569">        int id = scanner.nextInt();</span>
+<span class="fc" id="L570">        scanner.nextLine();</span>
+
+<span class="fc" id="L572">        String name = manager.getNameById(tableName, idColName, id);</span>
+<span class="fc" id="L573">        double amount = manager.getCurrentAmount(tableName, idColName, id);</span>
+
+<span class="pc bpc" id="L575" title="3 of 4 branches missed.">        if (name == null || amount == -1) {</span>
+<span class="fc" id="L576">            System.out.println(&quot;Δεν βρέθηκε εγγραφή με αυτό το ID.&quot;);</span>
+<span class="fc" id="L577">            return;</span>
+        }
+
+<span class="nc" id="L580">        System.out.println(&quot;Επιλέξατε: &quot; + name);</span>
+<span class="nc" id="L581">        System.out.printf(&quot;Τρέχον Ποσό: %,.2f €\n&quot;, amount);</span>
+<span class="nc" id="L582">        System.out.print(&quot;Στόχος: &quot;);</span>
+<span class="nc" id="L583">        String goal = scanner.nextLine();</span>
+
+<span class="nc" id="L585">        System.out.println(&quot;Ο ψηφιακός βοηθός σκέφτεται...&quot;);</span>
+<span class="nc" id="L586">        AiBridge ai = new AiBridge();</span>
+<span class="nc" id="L587">        System.out.println(ai.getSpecificAdvice(</span>
+                this.url, name, amount, goal));
+<span class="nc" id="L589">    }</span>
+
+    /**
+     * Διαχειρίζεται την αλληλεπίδραση για τον καθολικό στρατηγικό σχεδιασμό
+     * (Global Strategy).
+     * &lt;p&gt;
+     * Η μέθοδος ζητά από τον χρήστη έναν γενικό στόχο και ενεργοποιεί την
+     * ανάλυση
+     * ολόκληρης της βάσης δεδομένων (μέσω του URL) χρησιμοποιώντας την
+     * {@code AiBridge},
+     * επιστρέφοντας μια συνολική στρατηγική πρόταση.
+     */
+
+    private void handleAiGlobal() {
+<span class="nc" id="L603">        System.out.println(&quot;\n--- AI Στρατηγικός Σχεδιασμός ---&quot;);</span>
+<span class="nc" id="L604">        System.out.print(&quot;Στόχος: &quot;);</span>
+<span class="nc" id="L605">        String goal = scanner.nextLine();</span>
+
+<span class="nc" id="L607">        System.out.println(&quot;Ανάλυση βάσης δεδομένων...&quot;);</span>
+<span class="nc" id="L608">        AiBridge ai = new AiBridge();</span>
+<span class="nc" id="L609">        System.out.println(ai.getGlobalStrategy(this.url, goal));</span>
+<span class="nc" id="L610">    }</span>
+    /**
+    * Μέθοδος διαχείρισης της διαδικασίας προβλέψεων.
+    *
+    * Κλήση της collectHistory για την συλλογή των ιστορικών δεδομένων
+    * του στοιχείου του προϋπολογισμού που επιλέχθηκε.
+    *
+    * Μετά, κλήση της performPrediction για την εκτέλεση
+    * απλής γραμμικής παλινδρόμισης για την πρόβλεψη.
+    */
+    private void predictValue() {
+<span class="nc" id="L621">        System.out.println(&quot;\n--- Πρόβλεψη για το έτος 2027 ---&quot;);</span>
+<span class="nc" id="L622">        System.out.println(&quot;Επιλέξτε πίνακα (1-5):&quot;);</span>
+        int tableChoice;
+        try {
+<span class="nc" id="L625">            tableChoice = scanner.nextInt();</span>
+<span class="nc" id="L626">            scanner.nextLine();</span>
+<span class="nc" id="L627">        } catch (Exception e) {</span>
+<span class="nc" id="L628">            System.out.println(&quot;Μη έγκυρη είσοδος.&quot;);</span>
+<span class="nc" id="L629">            scanner.nextLine();</span>
+<span class="nc" id="L630">            return;</span>
+<span class="nc" id="L631">        }</span>
+
+        String tableName;
+        String idColName;
+
+<span class="nc bnc" id="L636" title="All 6 branches missed.">        switch (tableChoice) {</span>
+            case TABLE_ESODA -&gt; {
+<span class="nc" id="L638">                tableName = &quot;esoda&quot;;</span>
+<span class="nc" id="L639">                idColName = &quot;code&quot;;</span>
+<span class="nc" id="L640">            }</span>
+            case TABLE_EKSODA -&gt; {
+<span class="nc" id="L642">                tableName = &quot;eksoda&quot;;</span>
+<span class="nc" id="L643">                idColName = &quot;code&quot;;</span>
+<span class="nc" id="L644">            }</span>
+            case TABLE_KRATOS -&gt; {
+<span class="nc" id="L646">                tableName = &quot;kratos&quot;;</span>
+<span class="nc" id="L647">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L648">            }</span>
+            case TABLE_YPOURGEIA -&gt; {
+<span class="nc" id="L650">                tableName = &quot;ypourgeia&quot;;</span>
+<span class="nc" id="L651">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L652">            }</span>
+            case TABLE_APOK -&gt; {
+<span class="nc" id="L654">                tableName = &quot;apokentromenes&quot;;</span>
+<span class="nc" id="L655">                idColName = &quot;number&quot;;</span>
+<span class="nc" id="L656">            }</span>
+            default -&gt; {
+<span class="nc" id="L658">                System.out.println(&quot;Άκυρη επιλογή.&quot;);</span>
+<span class="nc" id="L659">                return;</span>
+            }
+        }
+
+<span class="nc" id="L663">        System.out.print(&quot;Δώσε το ID (&quot; + idColName + &quot;) για πρόβλεψη: &quot;);</span>
+        int id;
+        try {
+<span class="nc" id="L666">            id = Integer.parseInt(scanner.nextLine());</span>
+<span class="nc" id="L667">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L668">            System.out.println(&quot;Λάθος είσοδος ID.&quot;);</span>
+<span class="nc" id="L669">            return;</span>
+<span class="nc" id="L670">        }</span>
+        /*Κλήση του collectHistory, ανάλογα με τα στοιχεία που δόθηκαν. */
+<span class="nc" id="L672">        Map&lt;Integer, Double&gt; history = collectHistory(tableName, idColName, id);</span>
+
+<span class="nc bnc" id="L674" title="All 2 branches missed.">        if (history.size() &lt; 2) {</span>
+<span class="nc" id="L675">            System.out.println(&quot;Δεν υπάρχουν αρκετά δεδομένα για πρόβλεψη.&quot;);</span>
+<span class="nc" id="L676">            return;</span>
+        }
+
+<span class="nc" id="L679">        performPrediction(history);</span>
+<span class="nc" id="L680">    }</span>
+    /**
+     * Συλλέγει ιστορικά οικονομικά δεδομένα για μια συγκεκριμένη εγγραφή
+     * σε ένα εύρος ετών (από {@code START_YEAR} έως {@code END_YEAR}).
+     *
+     * Η μέθοδος λειτουργεί ως εξής για κάθε έτος:
+     *
+     * Ελέγχει αν υπάρχει ήδη η βάση δεδομένων για το συγκεκριμένο έτος.
+     * Αν δεν υπάρχει, την δημιουργεί δυναμικά μετατρέποντας
+     * το αντίστοιχο PDF του προϋπολογισμού σε δεδομένα.
+     * Ανακτά το ποσό για το ζητούμενο ID χρησιμοποιώντας
+     * τον {@link BudgetManager}.
+     * Αν η βάση δημιουργήθηκε προσωρινά μόνο για αυτή τη διαδικασία,
+     * την διαγράφει
+     * στο τέλος για να μην πιάνει χώρο.
+     *
+     *
+     *
+     * @param tableName   Το όνομα του πίνακα στη βάση δεδομένων στον
+     * οποίο θα γίνει η αναζήτηση.
+     * @param idColName   Το όνομα της στήλης που περιέχει το αναγνωριστικό
+     * @param id          Ο μοναδικός αριθμός (ID) της εγγραφής που αναζητούμε.
+     * @return            Ένα {@link Map} (συγκεκριμένα {@link LinkedHashMap}
+     * για διατήρηση της σειράς)
+     * που αντιστοιχεί το Έτος (Integer) στο Ποσό (Double).
+     * Επιστρέφει μόνο τα έτη για τα οποία βρέθηκαν έγκυρα δεδομένα.
+     */
+    private Map&lt;Integer, Double&gt; collectHistory(final String tableName,
+                                                final String idColName,
+                                                final int id) {
+<span class="nc" id="L710">        System.out.println(&quot;Συλλογή ιστορικών δεδομένων (2023-2026)...&quot;);</span>
+<span class="nc" id="L711">        Map&lt;Integer, Double&gt; history = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc" id="L712">        DatabaseFinder finder = new DatabaseFinder();</span>
+
+<span class="nc bnc" id="L714" title="All 2 branches missed.">        for (int year = START_YEAR; year &lt;= END_YEAR; year++) {</span>
+<span class="nc" id="L715">            String dbName = &quot;budget_&quot; + year + &quot;.db&quot;;</span>
+<span class="nc" id="L716">            String currentDbUrl = &quot;jdbc:sqlite:&quot; + dbName;</span>
+<span class="nc" id="L717">            boolean tempCreated = false;</span>
+
+<span class="nc bnc" id="L719" title="All 2 branches missed.">            if (!finder.findYearbase(year)) {</span>
+                try {
+<span class="nc" id="L721">                    Pdftocsv.run(year);</span>
+<span class="nc" id="L722">                    PinakesImporter importer = new PinakesImporter(</span>
+                            currentDbUrl);
+<span class="nc" id="L724">                    importer.importAll();</span>
+<span class="nc" id="L725">                    tempCreated = true;</span>
+<span class="nc" id="L726">                } catch (Exception e) {</span>
+<span class="nc" id="L727">                    System.out.println(&quot;Αδυναμία ανάγνωσης έτους &quot; + year);</span>
+<span class="nc" id="L728">                    continue;</span>
+<span class="nc" id="L729">                }</span>
+            }
+
+<span class="nc" id="L732">            BudgetManager tempManager = new BudgetManager(currentDbUrl);</span>
+<span class="nc" id="L733">            double amount = tempManager.getCurrentAmount(</span>
+                    tableName, idColName, id);
+
+<span class="nc bnc" id="L736" title="All 2 branches missed.">            if (amount != -1) {</span>
+<span class="nc" id="L737">                history.put(year, amount);</span>
+<span class="nc" id="L738">                System.out.printf(&quot;Έτος %d: %,.2f EUR%n&quot;, year, amount);</span>
+            } else {
+<span class="nc" id="L740">                System.out.printf(&quot;Έτος %d: Δεν βρέθηκε εγγραφή.%n&quot;, year);</span>
+            }
+
+<span class="nc bnc" id="L743" title="All 2 branches missed.">            if (tempCreated) {</span>
+                try {
+<span class="nc" id="L745">                    new File(dbName).delete();</span>
+<span class="nc" id="L746">                } catch (Exception e) {</span>
+                    // Ignore deletion errors
+<span class="nc" id="L748">                }</span>
+            }
+        }
+<span class="nc" id="L751">        return history;</span>
+    }
+    /**
+     * Εκτελεί οικονομική πρόβλεψη για το έτος {@code PREDICT_YEAR} βασισμένη
+     * στα ιστορικά δεδομένα, χρησιμοποιώντας τη μέθοδο της
+     * Γραμμικής Παλινδρόμησης.
+     *
+     *
+     * Ο αλγόριθμος υπολογίζει την εξίσωση της ευθείας (y = mx + b)
+     * που ταιριάζει
+     * καλύτερα στα δεδομένα.
+     *
+     *
+     * Στη συνέχεια, συγκρίνει την προβλεπόμενη τιμή με την τελευταία γνωστή
+     * τιμή
+     * (του έτους {@code END_YEAR}) για να καθορίσει και να εκτυπώσει την
+     * τάση (Αύξηση ή Μείωση).
+     *
+     * @param history Ένας χάρτης (Map) που περιέχει τα ιστορικά δεδομένα,
+     * όπου το κλειδί είναι το Έτος (ανεξάρτητη μεταβλητή x)
+     * και η τιμή είναι το Ποσό (εξαρτημένη μεταβλητή y).
+     */
+    private void performPrediction(final Map&lt;Integer, Double&gt; history) {
+<span class="nc" id="L774">        double n = history.size();</span>
+<span class="nc" id="L775">        double sumX = 0;</span>
+<span class="nc" id="L776">        double sumY = 0;</span>
+<span class="nc" id="L777">        double sumXY = 0;</span>
+<span class="nc" id="L778">        double sumX2 = 0;</span>
+
+<span class="nc bnc" id="L780" title="All 2 branches missed.">        for (Map.Entry&lt;Integer, Double&gt; entry : history.entrySet()) {</span>
+<span class="nc" id="L781">            double x = entry.getKey();</span>
+<span class="nc" id="L782">            double y = entry.getValue();</span>
+<span class="nc" id="L783">            sumX += x;</span>
+<span class="nc" id="L784">            sumY += y;</span>
+<span class="nc" id="L785">            sumXY += (x * y);</span>
+<span class="nc" id="L786">            sumX2 += (x * x);</span>
+<span class="nc" id="L787">        }</span>
+
+<span class="nc" id="L789">        double slope = (n * sumXY - sumX * sumY)</span>
+                / (n * sumX2 - sumX * sumX);
+<span class="nc" id="L791">        double intercept = (sumY - slope * sumX) / n;</span>
+<span class="nc" id="L792">        double predicted = slope * PREDICT_YEAR + intercept;</span>
+
+<span class="nc" id="L794">        System.out.println(&quot;----------------------------------------&quot;);</span>
+<span class="nc" id="L795">        System.out.printf(&quot;Εκτίμηση για το 2027: %,.2f EUR%n&quot;, predicted);</span>
+
+<span class="nc" id="L797">        double growth = predicted - history.get(END_YEAR);</span>
+<span class="nc bnc" id="L798" title="All 2 branches missed.">        if (growth &gt; 0) {</span>
+<span class="nc" id="L799">            System.out.printf(&quot;Τάση: Αύξηση (+%,.2f EUR)%n&quot;, growth);</span>
+        } else {
+<span class="nc" id="L801">            System.out.printf(&quot;Τάση: Μείωση (%,.2f EUR)%n&quot;, growth);</span>
+        }
+<span class="nc" id="L803">        System.out.println(&quot;----------------------------------------&quot;);</span>
+<span class="nc" id="L804">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GradeChar.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">GradeChar.java</span></div><h1>GradeChar.java</h1><pre class="source lang-java linenums">package mainapp;
+
+/**
+ * Παρέχει λεκτικές περιγραφές και σχόλια για τους βαθμούς που έχουν
+ * υπολογιστεί.
+ */
+<span class="fc" id="L7">public final class GradeChar {</span>
+
+    // Σταθερές Βαθμών
+    /** Βαθμός 5 (Πολύ χαμηλά/Αποτυχία). */
+    private static final int GRADE_LOWEST = 5;
+    /** Βαθμός 6 (Χαμηλά). */
+    private static final int GRADE_LOW = 6;
+    /** Βαθμός 8 (Καλά). */
+    private static final int GRADE_GOOD = 8;
+    /** Βαθμός 9 (Πολύ καλά/Άριστα). */
+    private static final int GRADE_EXCELLENT = 9;
+
+    /**
+     * Εκτυπώνει σχόλια για τον βαθμό μεγέθυνσης του ΑΕΠ.
+     *
+     * @param grade Ο βαθμός (5-10).
+     */
+    public void gdpGrowthChar(final int grade) {
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">        if (grade == GRADE_LOWEST) {</span>
+<span class="nc" id="L26">            System.out.println(&quot;Το ΑΕΠ μειώθηκε! Πρέπει να &quot;</span>
+                    + &quot; γίνουν ενέργειες για την επαναφορά της ανάπτυξής του &quot;
+                    + &quot; το νέο έτος&quot;);
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        } else if (grade == GRADE_LOW) {</span>
+<span class="nc" id="L30">            System.out.println(&quot;Πολύ μικρή αύξηση του ΑΕΠ! Πρέπει την &quot;</span>
+                    + &quot;επόμενη χρονιά να αυξηθεί ο ρυθμός μεγένθυσης!&quot;);
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        } else if (grade &gt;= GRADE_EXCELLENT) {</span>
+<span class="fc" id="L33">            System.out.println(&quot;Μεγάλη αύξηση του ΑΕΠ! Η εγχώρια οικονομία&quot;</span>
+                    + &quot; αναπτύσσεται με γρήγορο ρυθμό. Συγχαρητήρια&quot;);
+        } else {
+<span class="nc" id="L36">            System.out.println(&quot;Καλή επίδοση. Το ΑΕΠ παρουσίασε &quot;</span>
+                    + &quot;αποδεκτή αύξηση.&quot;);
+        }
+<span class="fc" id="L39">    }</span>
+
+    /**
+     * Εκτυπώνει σχόλια για τον βαθμό του πρωτογενούς πλεονάσματος.
+     *
+     * @param grade Ο βαθμός (5-10).
+     */
+    public void surplusChar(final int grade) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (grade == GRADE_LOWEST) {</span>
+<span class="fc" id="L48">            System.out.println(&quot;Το πρωτογενές πλεόνασμα έχει αρνητική τιμή.&quot;</span>
+                    + &quot; Το κράτος δεν κατάφερε να καλύψει τα έξοδά του &quot;
+                    + &quot;με τα έσοδα! Πρέπει να γίνει πιο υπεύθυνη κατανομή &quot;
+                    + &quot;και διάθεση των πόρων τη νέα χρονιά!&quot;);
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        } else if (grade == GRADE_LOW) {</span>
+<span class="nc" id="L53">            System.out.println(&quot;Μικρό πρωτογενές πλεόνασμα. Πρέπει να γίνουν &quot;</span>
+                    + &quot;ενέργειες για την αύξησή του &quot;);
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        } else if (grade &gt;= GRADE_EXCELLENT) {</span>
+<span class="fc" id="L56">            System.out.println(&quot;Το κράτος κατάφερε να καλύψει τα έξοδά του με &quot;</span>
+                    + &quot; τα έσοδά του εξαιρούμενων των τόκων πολύ αποδοτικά! &quot;
+                    + &quot; Συγχαρητήρια&quot;);
+        } else {
+<span class="nc" id="L60">            System.out.println(&quot;Καλή επίδοση. Το κράτος κάλυψε τα έξοδά του&quot;</span>
+                    + &quot; με τα έσοδα που είχε σε αποδεκτό βαθμό.&quot;);
+        }
+<span class="fc" id="L63">    }</span>
+
+    /**
+     * Εκτυπώνει σχόλια για τον βαθμό του δείκτη GINI (ανισότητα).
+     *
+     * @param grade Ο βαθμός (5-10).
+     */
+    public void giniChar(final int grade) {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (grade &lt;= GRADE_LOW) {</span>
+<span class="fc" id="L72">            System.out.println(&quot;Υπάρχουν μεγάλες εισοδηματικές ανισότητες&quot;</span>
+                    + &quot; εντός του πληθυσμού! Πρέπει να γίνουν ενέργειες &quot;
+                    + &quot;για να κατανεμηθεί πιο δίκαια το συνολικό εισόδημα &quot;
+                    + &quot;στην κοινωνία!&quot;);
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        } else if (grade &gt;= GRADE_EXCELLENT) {</span>
+<span class="fc" id="L77">            System.out.println(&quot;Οι εισοδηματικές ανισότητες έχουν &quot;</span>
+                    + &quot;περιοριστεί! Πολύ καλή επίδοση!&quot;);
+        } else {
+<span class="nc" id="L80">            System.out.println(&quot;Aποδεκτή επίδοση. Οι εισοδηματικές &quot;</span>
+                    + &quot;ανισότητες βρίσκονται σε επιτρεπτό επίπεδο.&quot;);
+        }
+<span class="fc" id="L83">    }</span>
+
+    /**
+     * Εκτυπώνει σχόλια για τον βαθμό εγκληματικότητας.
+     *
+     * @param grade Ο βαθμός (5-10).
+     */
+    public void crimeRateChar(final int grade) {
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (grade &lt;= GRADE_LOW) {</span>
+<span class="nc" id="L92">            System.out.println(&quot;Μεγάλη αύξηση της εγκληματικότητας! &quot;</span>
+                    + &quot;Πρέπει να γίνουν ενέργειες για τον περιορισμό της&quot;);
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        } else if (grade &gt;= GRADE_EXCELLENT) {</span>
+<span class="fc" id="L95">            System.out.println(&quot;H εγκληματικότητα μειώθηκε σημαντικά! &quot;</span>
+                    + &quot;Πολύ καλή επίδοση. Συγχαρητήρια!&quot;);
+        } else {
+<span class="fc" id="L98">            System.out.println(&quot;Οι μεταβολές της εγκληματικότητας βρίσκονται &quot;</span>
+                    + &quot;εντός των επιτρεπτών ορίων.&quot;);
+        }
+<span class="fc" id="L101">    }</span>
+
+    /**
+     * Εκτυπώνει σχόλια για τον βαθμό δαπανών Υγείας και Παιδείας.
+     *
+     * @param grade Ο βαθμός (5-10).
+     */
+    public void edHealthChar(final int grade) {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (grade &lt;= GRADE_LOW) {</span>
+<span class="fc" id="L110">            System.out.println(&quot;Oι δαπάνες στην υγεία και την παιδεία &quot;</span>
+                    + &quot;είναι αρκετά χαμηλές. Πρέπει να αυξηθούν! Υπάρχει &quot;
+                    + &quot;δυσαρέσκεια στον πληθυσμό!&quot;);
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        } else if (grade &gt;= GRADE_EXCELLENT) {</span>
+<span class="nc" id="L114">            System.out.println(&quot;Γίνονται μεγάλες δαπάνες σε υγεία &quot;</span>
+                    + &quot;και παιδεία! Οι πολίτες είναι ευχαριστημένοι!&quot;);
+        } else {
+<span class="fc" id="L117">            System.out.println(&quot;Οι δαπάνες σε υγεία και παιδεία βρίσκονται &quot;</span>
+                    + &quot;σε επιτρεπτό επίπεδο. Ίσως πρέπει να αυξηθούν για την &quot;
+                    + &quot;ευρύτερη ικανοποίηση των πολιτών!&quot;);
+        }
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * Εκτυπώνει σχόλια για τον βαθμό Ανανεώσιμων Πηγών Ενέργειας (RES).
+     *
+     * @param grade Ο βαθμός (5-10).
+     */
+    public void resChar(final int grade) {
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (grade &lt;= GRADE_LOW) {</span>
+<span class="fc" id="L130">            System.out.println(&quot;Το ποσοστό χρήσης των ανανεώσιμων &quot;</span>
+                    + &quot;πηγών ενέργειας είναι χαμηλό! Πρέπει να αυξηθεί.&quot;);
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        } else if (grade &gt;= GRADE_EXCELLENT) {</span>
+<span class="fc" id="L133">            System.out.println(&quot;Οι ανανεώσιμες πηγές ενέργειας &quot;</span>
+                    + &quot;αξιοποιήθηκαν σε πολύ μεγάλη κλίμακα! Συγχαρητήρια!&quot;);
+        } else {
+<span class="nc" id="L136">            System.out.println(&quot;Η αξιοποίηση ανανεώσιμων πηγών ενέργειας &quot;</span>
+                    + &quot; βρίσκεται σε αποδεκτό επίπεδο&quot;);
+        }
+<span class="fc" id="L139">    }</span>
+
+    /**
+     * Εκτυπώνει σχόλια για τον βαθμό εκπομπής ρύπων.
+     *
+     * @param grade Ο βαθμός (5-10).
+     */
+    public void emissionChar(final int grade) {
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        if (grade &lt;= GRADE_LOW) {</span>
+<span class="nc" id="L148">            System.out.println(&quot;Οι ρύποι παρουσίασαν σημαντική αύξηση. &quot;</span>
+                    + &quot; Πρέπει να γίνουν ενέργειες για την μείωσή τους ώστε να&quot;
+                    + &quot; πετύχουμε τους μακροπρόθεσμους περιβαλλοντικούς &quot;
+                    + &quot;μας στόχους!&quot;);
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        } else if (grade &gt;= GRADE_EXCELLENT) {</span>
+<span class="fc" id="L153">            System.out.println(&quot;Αξιοσημείωτη μείωση στους ρύπους! &quot;</span>
+                    + &quot;Συγχαρητήρια.&quot;);
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        } else if (grade == GRADE_GOOD) {</span>
+<span class="fc" id="L156">            System.out.println(&quot;Μικρή μείωση των ρύπων. Καλή επίδοση με βάση&quot;</span>
+                    + &quot; τους μακροπρόθεσμους στόχους.&quot;);
+        } else {
+<span class="nc" id="L159">            System.out.println(&quot;Μικρή αύξηση στους ρύπους. Μπορούν να γίνουν &quot;</span>
+                    + &quot;ενέργειες για να φτάσουμε στην μείωση!&quot;);
+        }
+<span class="fc" id="L162">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

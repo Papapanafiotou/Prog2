@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AiAdvisorDialog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">AiAdvisorDialog.java</span></div><h1>AiAdvisorDialog.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.io.Serial;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingWorker;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
+
+/**
+ * Η κλάση {@code AiAdvisorDialog} υλοποιεί το γραφικό περιβάλλον για τον AI
+ * Οικονομικό Σύμβουλο.
+ * &lt;p&gt;
+ * Χρησιμοποιεί {@link JEditorPane} για την εμφάνιση των απαντήσεων του AI σε
+ * μορφή HTML.
+ * &lt;/p&gt;
+ */
+public final class AiAdvisorDialog extends JDialog {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    // Διαστάσεις παραθύρου
+    /** Πλάτος παραθύρου. */
+    private static final int WIN_WIDTH = 850;
+    /** Ύψος παραθύρου. */
+    private static final int WIN_HEIGHT = 750;
+
+    // Layout Constants
+    /** Κενό περιθωρίων (Border Gap). */
+    private static final int GAP_BORDER = 10;
+    /** Εσωτερικό περιθώριο πάνελ (Padding). */
+    private static final int PADDING_PANEL = 15;
+    /** Κενό πλέγματος (Grid Gap). */
+    private static final int GAP_GRID = 10;
+    /** Αριθμός στηλών στο πλέγμα πληροφοριών. */
+    private static final int INFO_COLS = 3;
+
+    // Text Area Constants
+    /** Αριθμός γραμμών περιοχής κειμένου. */
+    private static final int TXT_ROWS = 4;
+    /** Αριθμός στηλών περιοχής κειμένου. */
+    private static final int TXT_COLS = 40;
+
+    // Font Sizes
+    /** Μέγεθος κανονικής γραμματοσειράς. */
+    private static final int FONT_SIZE_NORMAL = 14;
+    /** Μέγεθος γραμματοσειράς κουμπιών. */
+    private static final int FONT_SIZE_BTN = 12;
+    /** Μέγεθος γραμματοσειράς σφαλμάτων. */
+    private static final int FONT_SIZE_ERR = 16;
+
+    // Scroll Pane Dimensions
+    /** Πλάτος περιοχής κύλισης. */
+    private static final int SCROLL_W = 600;
+    /** Ύψος περιοχής κύλισης. */
+    private static final int SCROLL_H = 300;
+
+    // Colors
+    /** Τιμή γκρι χρώματος (RGB). */
+    private static final int COL_GRAY = 230;
+
+    // Λειτουργίες AI
+    /** Λειτουργία γενικής στρατηγικής. */
+    private static final String MODE_GLOBAL = &quot;global&quot;;
+    /** Λειτουργία συγκεκριμένης συμβουλής. */
+    private static final String MODE_SPECIFIC = &quot;specific&quot;;
+
+    /** Η γέφυρα επικοινωνίας με το AI. */
+    private final AiBridge aiBridge;
+    /** Η διαδρομή της βάσης δεδομένων. */
+    private final String dbPath;
+
+    // Components
+    /** Το πεδίο που εμφανίζει την απάντηση (υποστηρίζει HTML). */
+    private JEditorPane responseArea;
+    /** Το πάνελ καρτελών (Tabs). */
+    private JTabbedPane tabbedPane;
+
+    // Global Tab Input
+    /** Πεδίο εισαγωγής στόχου για γενική στρατηγική. */
+    private JTextArea globalGoalArea;
+
+    // Specific Tab Inputs
+    /** Πεδίο ID εγγραφής. */
+    private JTextField idField;
+    /** Πεδίο ονόματος εγγραφής. */
+    private JTextField nameField;
+    /** Πεδίο ποσού εγγραφής. */
+    private JTextField amountField;
+    /** Πεδίο εισαγωγής στόχου για συγκεκριμένη εγγραφή. */
+    private JTextArea specificGoalArea;
+
+    /**
+     * Κατασκευάζει το παράθυρο διαλόγου και αρχικοποιεί τα γραφικά συστατικά.
+     *
+     * @param parent       Το γονικό παράθυρο.
+     * @param databasePath Η διαδρομή της βάσης δεδομένων.
+     * @param recId        Το ID της επιλεγμένης εγγραφής (μπορεί να είναι
+     * null).
+     * @param recName      Το όνομα της εγγραφής.
+     * @param recAmount    Το ποσό της εγγραφής.
+     */
+    public AiAdvisorDialog(final JFrame parent, final String databasePath,
+                           final String recId, final String recName,
+                           final String recAmount) {
+<span class="fc" id="L126">        super(parent, &quot;AI Οικονομικός Σύμβουλος&quot;, true);</span>
+<span class="fc" id="L127">        this.dbPath = databasePath;</span>
+<span class="fc" id="L128">        this.aiBridge = new AiBridge();</span>
+
+<span class="fc" id="L130">        setSize(WIN_WIDTH, WIN_HEIGHT);</span>
+<span class="fc" id="L131">        setLocationRelativeTo(parent);</span>
+<span class="fc" id="L132">        setLayout(new BorderLayout(GAP_BORDER, GAP_BORDER));</span>
+
+<span class="fc" id="L134">        initComponents(recId, recName, recAmount);</span>
+<span class="fc" id="L135">    }</span>
+
+    /**
+     * Αρχικοποιεί τη δομή του παραθύρου (Tabs, Inputs) και ρυθμίζει τον HTML
+     * Viewer.
+     *
+     * @param id     Το ID εγγραφής.
+     * @param name   Το όνομα εγγραφής.
+     * @param amount Το ποσό εγγραφής.
+     */
+    private void initComponents(final String id, final String name,
+                                final String amount) {
+<span class="fc" id="L147">        tabbedPane = new JTabbedPane();</span>
+<span class="fc" id="L148">        tabbedPane.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, FONT_SIZE_NORMAL));</span>
+
+        // --- TAB 1: Γενική Στρατηγική ---
+<span class="fc" id="L151">        JPanel globalPanel = new JPanel(new BorderLayout(GAP_BORDER,</span>
+                GAP_BORDER));
+<span class="fc" id="L153">        globalPanel.setBorder(BorderFactory.createEmptyBorder(</span>
+                PADDING_PANEL, PADDING_PANEL, PADDING_PANEL, PADDING_PANEL));
+
+<span class="fc" id="L156">        globalGoalArea = new JTextArea(TXT_ROWS, TXT_COLS);</span>
+<span class="fc" id="L157">        globalGoalArea.setLineWrap(true);</span>
+<span class="fc" id="L158">        globalGoalArea.setWrapStyleWord(true);</span>
+<span class="fc" id="L159">        globalGoalArea.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN,</span>
+                FONT_SIZE_NORMAL));
+<span class="fc" id="L161">        globalGoalArea.setBorder(BorderFactory.createTitledBorder(</span>
+                &quot;Ποιο είναι το όραμά σας για τον προϋπολογισμό;&quot;));
+<span class="fc" id="L163">        globalGoalArea.setText(&quot;π.χ. Θέλω να μειώσω το έλλειμμα κατά 3% &quot;</span>
+                + &quot;χωρίς να πειράξω την Υγεία.&quot;);
+
+<span class="fc" id="L166">        JPanel globalActionPanel = new JPanel(</span>
+                new FlowLayout(FlowLayout.RIGHT));
+<span class="fc" id="L168">        JButton runGlobalBtn = new JButton(&quot;✨ Λήψη Στρατηγικής&quot;);</span>
+<span class="fc" id="L169">        runGlobalBtn.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE_BTN));</span>
+<span class="pc" id="L170">        runGlobalBtn.addActionListener(e -&gt; runAiTask(MODE_GLOBAL));</span>
+<span class="fc" id="L171">        globalActionPanel.add(runGlobalBtn);</span>
+
+<span class="fc" id="L173">        globalPanel.add(new JScrollPane(globalGoalArea), BorderLayout.CENTER);</span>
+<span class="fc" id="L174">        globalPanel.add(globalActionPanel, BorderLayout.SOUTH);</span>
+
+        // --- TAB 2: Συγκεκριμένη Συμβουλή ---
+<span class="fc" id="L177">        JPanel specificPanel = new JPanel(new BorderLayout(GAP_BORDER,</span>
+                GAP_BORDER));
+<span class="fc" id="L179">        specificPanel.setBorder(BorderFactory.createEmptyBorder(</span>
+                PADDING_PANEL, PADDING_PANEL, PADDING_PANEL, PADDING_PANEL));
+
+<span class="pc bpc" id="L182" title="1 of 4 branches missed.">        boolean hasSelection = (id != null &amp;&amp; !id.isEmpty());</span>
+
+<span class="fc bfc" id="L184" title="All 2 branches covered.">        if (hasSelection) {</span>
+<span class="fc" id="L185">            JPanel infoPanel = new JPanel(</span>
+                    new GridLayout(1, INFO_COLS, GAP_GRID, 0));
+<span class="fc" id="L187">            idField = createReadOnlyField(&quot;ID&quot;, id);</span>
+<span class="fc" id="L188">            nameField = createReadOnlyField(&quot;Λογαριασμός&quot;, name);</span>
+<span class="fc" id="L189">            amountField = createReadOnlyField(&quot;Ποσό (€)&quot;, amount);</span>
+
+<span class="fc" id="L191">            infoPanel.add(idField);</span>
+<span class="fc" id="L192">            infoPanel.add(nameField);</span>
+<span class="fc" id="L193">            infoPanel.add(amountField);</span>
+
+<span class="fc" id="L195">            specificGoalArea = new JTextArea(TXT_ROWS, TXT_COLS);</span>
+<span class="fc" id="L196">            specificGoalArea.setLineWrap(true);</span>
+<span class="fc" id="L197">            specificGoalArea.setWrapStyleWord(true);</span>
+<span class="fc" id="L198">            specificGoalArea.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN,</span>
+                    FONT_SIZE_NORMAL));
+<span class="fc" id="L200">            specificGoalArea.setBorder(BorderFactory.createTitledBorder(</span>
+                    &quot;Τι θέλετε να κάνετε με αυτόν τον λογαριασμό;&quot;));
+
+<span class="fc" id="L203">            JPanel centerSpecPanel = new JPanel(new BorderLayout(0,</span>
+                    PADDING_PANEL));
+<span class="fc" id="L205">            centerSpecPanel.add(infoPanel, BorderLayout.NORTH);</span>
+<span class="fc" id="L206">            centerSpecPanel.add(new JScrollPane(specificGoalArea),</span>
+                    BorderLayout.CENTER);
+
+<span class="fc" id="L209">            JPanel specActionPanel = new JPanel(</span>
+                    new FlowLayout(FlowLayout.RIGHT));
+<span class="fc" id="L211">            JButton runSpecBtn = new JButton(&quot;💡 Λήψη Συμβουλής&quot;);</span>
+<span class="fc" id="L212">            runSpecBtn.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE_BTN));</span>
+<span class="pc" id="L213">            runSpecBtn.addActionListener(e -&gt; runAiTask(MODE_SPECIFIC));</span>
+<span class="fc" id="L214">            specActionPanel.add(runSpecBtn);</span>
+
+<span class="fc" id="L216">            specificPanel.add(centerSpecPanel, BorderLayout.CENTER);</span>
+<span class="fc" id="L217">            specificPanel.add(specActionPanel, BorderLayout.SOUTH);</span>
+
+<span class="fc" id="L219">        } else {</span>
+<span class="fc" id="L220">            JPanel errorPanel = new JPanel();</span>
+<span class="fc" id="L221">            errorPanel.setLayout(new BoxLayout(errorPanel, BoxLayout.Y_AXIS));</span>
+
+<span class="fc" id="L223">            JLabel errorMsg1 = new JLabel(&quot;Δεν έχετε επιλέξει λογαριασμό!&quot;);</span>
+<span class="fc" id="L224">            errorMsg1.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE_ERR));</span>
+<span class="fc" id="L225">            errorMsg1.setForeground(Color.RED);</span>
+<span class="fc" id="L226">            errorMsg1.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+
+<span class="fc" id="L228">            JLabel errorMsg2 = new JLabel(</span>
+                    &quot;Για να χρησιμοποιήσετε αυτή τη λειτουργία,&quot;);
+<span class="fc" id="L230">            errorMsg2.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+
+<span class="fc" id="L232">            JLabel errorMsg3 = new JLabel(&quot;παρακαλώ κλείστε το παράθυρο &quot;</span>
+                    + &quot;και επιλέξτε μια γραμμή από τον πίνακα.&quot;);
+<span class="fc" id="L234">            errorMsg3.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+
+<span class="fc" id="L236">            errorPanel.add(Box.createVerticalGlue());</span>
+<span class="fc" id="L237">            errorPanel.add(errorMsg1);</span>
+<span class="fc" id="L238">            errorPanel.add(Box.createVerticalStrut(PADDING_PANEL));</span>
+<span class="fc" id="L239">            errorPanel.add(errorMsg2);</span>
+<span class="fc" id="L240">            errorPanel.add(errorMsg3);</span>
+<span class="fc" id="L241">            errorPanel.add(Box.createVerticalGlue());</span>
+
+<span class="fc" id="L243">            specificPanel.add(errorPanel, BorderLayout.CENTER);</span>
+        }
+
+<span class="fc" id="L246">        tabbedPane.addTab(&quot;🌍 Γενική Στρατηγική&quot;, globalPanel);</span>
+<span class="fc" id="L247">        tabbedPane.addTab(&quot;🎯 Συγκεκριμένη Ανάλυση&quot;, specificPanel);</span>
+
+        // --- HTML Viewer Setup ---
+<span class="fc" id="L250">        responseArea = new JEditorPane();</span>
+<span class="fc" id="L251">        responseArea.setEditable(false);</span>
+<span class="fc" id="L252">        responseArea.setContentType(&quot;text/html&quot;);</span>
+
+<span class="fc" id="L254">        HTMLEditorKit kit = new HTMLEditorKit();</span>
+<span class="fc" id="L255">        StyleSheet styleSheet = kit.getStyleSheet();</span>
+<span class="fc" id="L256">        styleSheet.addRule(&quot;body { font-family: 'Segoe UI', sans-serif; &quot;</span>
+                + &quot;font-size: 14px; margin: 10px; }&quot;);
+<span class="fc" id="L258">        styleSheet.addRule(&quot;ul { margin-left: 20px; }&quot;);</span>
+<span class="fc" id="L259">        styleSheet.addRule(&quot;li { margin-bottom: 5px; }&quot;);</span>
+<span class="fc" id="L260">        styleSheet.addRule(&quot;b { color: #333; }&quot;);</span>
+
+<span class="fc" id="L262">        responseArea.setEditorKit(kit);</span>
+<span class="fc" id="L263">        responseArea.setDocument(kit.createDefaultDocument());</span>
+
+<span class="fc" id="L265">        JScrollPane responseScroll = new JScrollPane(responseArea);</span>
+<span class="fc" id="L266">        responseScroll.setBorder(BorderFactory.createTitledBorder(</span>
+                &quot;Απάντηση AI&quot;));
+<span class="fc" id="L268">        responseScroll.setPreferredSize(new Dimension(SCROLL_W, SCROLL_H));</span>
+
+<span class="fc" id="L270">        JPanel bottomPanel = new JPanel(new BorderLayout());</span>
+<span class="fc" id="L271">        bottomPanel.add(responseScroll, BorderLayout.CENTER);</span>
+
+<span class="fc" id="L273">        JPanel closePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));</span>
+<span class="fc" id="L274">        JButton closeButton = new JButton(&quot;← Πίσω&quot;);</span>
+<span class="fc" id="L275">        closeButton.setFont(new Font(&quot;Segoe UI&quot;, Font.PLAIN, FONT_SIZE_BTN));</span>
+<span class="pc" id="L276">        closeButton.addActionListener(e -&gt; dispose());</span>
+<span class="fc" id="L277">        closePanel.add(closeButton);</span>
+
+<span class="fc" id="L279">        bottomPanel.add(closePanel, BorderLayout.SOUTH);</span>
+
+<span class="fc" id="L281">        add(tabbedPane, BorderLayout.CENTER);</span>
+<span class="fc" id="L282">        add(bottomPanel, BorderLayout.SOUTH);</span>
+
+<span class="pc bpc" id="L284" title="1 of 2 branches missed.">        if (tabbedPane.getTabCount() &gt; 1) {</span>
+<span class="fc bfc" id="L285" title="All 2 branches covered.">            if (hasSelection) {</span>
+<span class="fc" id="L286">                tabbedPane.setSelectedIndex(1);</span>
+            } else {
+<span class="fc" id="L288">                tabbedPane.setSelectedIndex(0);</span>
+            }
+        }
+<span class="fc" id="L291">    }</span>
+
+    private JTextField createReadOnlyField(final String title,
+                                           final String value) {
+<span class="fc" id="L295">        JTextField field = new JTextField();</span>
+<span class="fc" id="L296">        field.setBorder(BorderFactory.createTitledBorder(title));</span>
+<span class="fc" id="L297">        field.setText(value);</span>
+<span class="fc" id="L298">        field.setEditable(false);</span>
+<span class="fc" id="L299">        field.setBackground(new Color(COL_GRAY, COL_GRAY, COL_GRAY));</span>
+<span class="fc" id="L300">        field.setHorizontalAlignment(JTextField.CENTER);</span>
+<span class="fc" id="L301">        field.setFont(new Font(&quot;Segoe UI&quot;, Font.BOLD, FONT_SIZE_BTN));</span>
+<span class="fc" id="L302">        return field;</span>
+    }
+
+    /**
+     * Εκτελεί την επικοινωνία με το AI στο παρασκήνιο (Background Thread).
+     *
+     * @param mode Η λειτουργία (&quot;global&quot; ή &quot;specific&quot;).
+     */
+    private void runAiTask(final String mode) {
+<span class="nc" id="L311">        responseArea.setText(&quot;&lt;html&gt;&lt;body&gt;&lt;h3 style='color:blue'&gt;&quot;</span>
+                + &quot;⏳ Ο AI οικονομικός σύμβουλος αναλύει το αίτημα σας...&quot;
+                + &quot; Παρακαλώ περιμένετε...&lt;/h3&gt;&lt;/body&gt;&lt;/html&gt;&quot;);
+<span class="nc" id="L314">        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));</span>
+
+<span class="nc" id="L316">        new SwingWorker&lt;String, Void&gt;() {</span>
+            @Override
+            protected String doInBackground() throws Exception {
+                String goal;
+<span class="nc bnc" id="L320" title="All 2 branches missed.">                if (MODE_GLOBAL.equals(mode)) {</span>
+<span class="nc" id="L321">                    goal = globalGoalArea.getText().trim();</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">                    if (goal.isEmpty()) {</span>
+<span class="nc" id="L323">                        return &quot;Παρακαλώ εισάγετε έναν στόχο.&quot;;</span>
+                    }
+<span class="nc" id="L325">                    return aiBridge.getGlobalStrategy(dbPath, goal);</span>
+                } else {
+<span class="nc bnc" id="L327" title="All 2 branches missed.">                    String name = nameField != null</span>
+<span class="nc" id="L328">                            ? nameField.getText().trim() : &quot;&quot;;</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">                    String amountStr = amountField != null</span>
+<span class="nc" id="L330">                            ? amountField.getText().trim() : &quot;&quot;;</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">                    goal = specificGoalArea != null</span>
+<span class="nc" id="L332">                            ? specificGoalArea.getText().trim() : &quot;&quot;;</span>
+
+<span class="nc bnc" id="L334" title="All 2 branches missed.">                    if (goal.isEmpty()) {</span>
+<span class="nc" id="L335">                        return &quot;Παρακαλώ γράψτε τι θέλετε να κάνετε &quot;</span>
+                                + &quot;με τον λογαριασμό.&quot;;
+                    }
+                    try {
+<span class="nc" id="L339">                        double amount = Double.parseDouble(amountStr);</span>
+<span class="nc" id="L340">                        return aiBridge.getSpecificAdvice(</span>
+                                dbPath, name, amount, goal);
+<span class="nc" id="L342">                    } catch (NumberFormatException e) {</span>
+<span class="nc" id="L343">                        return &quot;Σφάλμα ανάγνωσης ποσού.&quot;;</span>
+                    }
+                }
+            }
+
+            @Override
+            protected void done() {
+                try {
+<span class="nc" id="L351">                    String result = get();</span>
+<span class="nc" id="L352">                    responseArea.setText(result);</span>
+<span class="nc" id="L353">                    responseArea.setCaretPosition(0);</span>
+<span class="nc" id="L354">                } catch (Exception e) {</span>
+<span class="nc" id="L355">                    responseArea.setText(&quot;&lt;html&gt;&lt;body style='color:red'&gt;&quot;</span>
+<span class="nc" id="L356">                            + &quot;Σφάλμα: &quot; + e.getMessage() + &quot;&lt;/body&gt;&lt;/html&gt;&quot;);</span>
+                } finally {
+<span class="nc" id="L358">                    setCursor(Cursor.getDefaultCursor());</span>
+                }
+<span class="nc" id="L360">            }</span>
+<span class="nc" id="L361">        }.execute();</span>
+<span class="nc" id="L362">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

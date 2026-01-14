@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MinMaX.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">MinMaX.java</span></div><h1>MinMaX.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+/**
+ * Υπολογίζει και εμφανίζει τις ελάχιστες και μέγιστες τιμές από τους
+ * πίνακες της βάσης δεδομένων.
+ */
+public final class MinMaX {
+
+    // Σταθερές Επιλογών
+    /** Επιλογή για εύρεση ελαχίστου. */
+    private static final int OPTION_MIN = 1;
+    /** Επιλογή για εύρεση μεγίστου. */
+    private static final int OPTION_MAX = 2;
+
+    // Σταθερές Κατηγοριών
+    /** Κατηγορία Εσόδων. */
+    private static final int CAT_INCOME = 1;
+    /** Κατηγορία Εξόδων. */
+    private static final int CAT_EXPENSE = 2;
+    /** Κατηγορία Υπουργείων. */
+    private static final int CAT_MINISTRY = 3;
+
+    /** Το URL της βάσης δεδομένων. */
+    private final String databaseUrl;
+
+    /**
+     * Κατασκευαστής.
+     *
+     * @param url Το URL της βάσης δεδομένων.
+     */
+<span class="fc" id="L38">    public MinMaX(final String url) {</span>
+<span class="fc" id="L39">        this.databaseUrl = url;</span>
+<span class="fc" id="L40">    }</span>
+
+    /**
+     * Ρωτά τον χρήστη αν θέλει να βρει ελάχιστο ή μέγιστο και για ποια
+     * κατηγορία, και εμφανίζει το αποτέλεσμα.
+     */
+    public void showMinMax() {
+<span class="fc" id="L47">        Scanner scan = new Scanner(System.in, &quot;CP737&quot;);</span>
+<span class="fc" id="L48">        Search s = new Search(databaseUrl);</span>
+
+<span class="fc" id="L50">        int operation = 0;</span>
+<span class="fc" id="L51">        boolean validOp = false;</span>
+
+        // 1. Επιλογή Λειτουργίας (Min/Max)
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        while (!validOp) {</span>
+<span class="fc" id="L55">            System.out.println(&quot;Θα θέλατε να υπολογίσετε μέγιστο ή ελάχιστο; &quot;</span>
+                    + &quot;(1 για ελάχιστο - 2 για μέγιστο)&quot;);
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            if (scan.hasNextInt()) {</span>
+<span class="fc" id="L58">                operation = scan.nextInt();</span>
+<span class="fc" id="L59">                scan.nextLine(); // Clear buffer</span>
+<span class="fc bfc" id="L60" title="All 4 branches covered.">                if (operation == OPTION_MIN || operation == OPTION_MAX) {</span>
+<span class="fc" id="L61">                    validOp = true;</span>
+                } else {
+<span class="fc" id="L63">                    System.out.println(&quot;Μη έγκυρη επιλογή. Δώστε 1 ή 2.&quot;);</span>
+                }
+            } else {
+<span class="fc" id="L66">                System.out.println(&quot;Παρακαλώ εισάγετε αριθμό.&quot;);</span>
+<span class="fc" id="L67">                scan.next(); // Clear invalid input</span>
+            }
+        }
+
+<span class="fc" id="L71">        int category = 0;</span>
+<span class="fc" id="L72">        boolean validCat = false;</span>
+
+        // 2. Επιλογή Κατηγορίας
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        while (!validCat) {</span>
+<span class="fc" id="L76">            System.out.println(&quot;Επιλέξτε κατηγορία:&quot;);</span>
+<span class="fc" id="L77">            System.out.println(&quot;1. Έσοδα&quot;);</span>
+<span class="fc" id="L78">            System.out.println(&quot;2. Έξοδα&quot;);</span>
+<span class="fc" id="L79">            System.out.println(&quot;3. Δαπάνη Υπουργείου&quot;);</span>
+<span class="fc" id="L80">            System.out.print(&quot;Επιλογή: &quot;);</span>
+
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">            if (scan.hasNextInt()) {</span>
+<span class="fc" id="L83">                category = scan.nextInt();</span>
+<span class="fc" id="L84">                scan.nextLine();</span>
+<span class="pc bpc" id="L85" title="2 of 4 branches missed.">                if (category &gt;= CAT_INCOME &amp;&amp; category &lt;= CAT_MINISTRY) {</span>
+<span class="fc" id="L86">                    validCat = true;</span>
+                } else {
+<span class="nc" id="L88">                    System.out.println(&quot;Μη έγκυρη επιλογή. Δώστε 1, 2 ή 3.&quot;);</span>
+                }
+            } else {
+<span class="nc" id="L91">                System.out.println(&quot;Παρακαλώ εισάγετε αριθμό.&quot;);</span>
+<span class="nc" id="L92">                scan.next();</span>
+            }
+        }
+
+        // 3. Εκτέλεση και Εμφάνιση
+<span class="fc" id="L97">        double rawValue = getMinMax(operation, category);</span>
+<span class="fc" id="L98">        long value = (long) rawValue;</span>
+<span class="fc" id="L99">        String name = s.searchString(rawValue);</span>
+
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        String opText = (operation == OPTION_MIN) ? &quot;ελάχιστο&quot; : &quot;μέγιστο&quot;;</span>
+<span class="fc" id="L102">        String catText = &quot;&quot;;</span>
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (category == CAT_INCOME) {</span>
+<span class="fc" id="L105">            catText = &quot;έσοδο&quot;;</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        } else if (category == CAT_EXPENSE) {</span>
+<span class="fc" id="L107">            catText = &quot;έξοδο&quot;;</span>
+        } else {
+<span class="fc" id="L109">            catText = &quot;ποσό σε υπουργείο&quot;;</span>
+        }
+
+<span class="fc" id="L112">        System.out.println(&quot;Το &quot; + opText + &quot; &quot; + catText + &quot; είναι το &quot;</span>
+                + name + &quot; με ποσό &quot; + value);
+<span class="fc" id="L114">    }</span>
+
+    /**
+     * Εκτελεί το SQL query για την εύρεση min/max.
+     *
+     * @param opType  Ο τύπος πράξης (1=MIN, 2=MAX).
+     * @param catType Η κατηγορία (1=Έσοδα, 2=Έξοδα, 3=Υπουργεία).
+     * @return Η τιμή που βρέθηκε.
+     */
+    public double getMinMax(final int opType, final int catType) {
+<span class="fc" id="L124">        String table = &quot;&quot;;</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        String function = (opType == OPTION_MIN) ? &quot;MIN&quot; : &quot;MAX&quot;;</span>
+
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (catType == CAT_INCOME) {</span>
+<span class="fc" id="L128">            table = &quot;esoda&quot;;</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        } else if (catType == CAT_EXPENSE) {</span>
+<span class="fc" id="L130">            table = &quot;eksoda&quot;;</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        } else if (catType == CAT_MINISTRY) {</span>
+<span class="fc" id="L132">            table = &quot;ypourgeia&quot;;</span>
+        }
+
+<span class="fc" id="L135">        String sql = &quot;SELECT &quot; + function + &quot;(amount) AS value FROM &quot; + table;</span>
+<span class="fc" id="L136">        double value = 0;</span>
+
+<span class="fc" id="L138">        try (Connection conn = DriverManager.getConnection(databaseUrl);</span>
+<span class="fc" id="L139">             PreparedStatement stmt = conn.prepareStatement(sql);</span>
+<span class="fc" id="L140">             ResultSet rs = stmt.executeQuery()) {</span>
+
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L143">                value = rs.getDouble(&quot;value&quot;);</span>
+            }
+
+<span class="nc" id="L146">        } catch (SQLException e) {</span>
+<span class="nc" id="L147">            e.printStackTrace();</span>
+<span class="fc" id="L148">        }</span>
+<span class="fc" id="L149">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

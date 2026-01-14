@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="el"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PercentageUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">statewallet</a> &gt; <a href="index.source.html" class="el_package">mainapp</a> &gt; <span class="el_source">PercentageUI.java</span></div><h1>PercentageUI.java</h1><pre class="source lang-java linenums">package mainapp;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.io.Serial;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+/**
+ * Παράθυρο γραφικής διεπαφής για τον υπολογισμό και την εμφάνιση
+ * ποσοστιαίας αναλογίας των εγγραφών ενός πίνακα.
+ */
+public final class PercentageUI extends JFrame {
+
+    /** Serial Version UID. */
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    // Σταθερές Παραθύρου
+    /** Πλάτος παραθύρου. */
+    private static final int WIN_WIDTH = 500;
+    /** Ύψος παραθύρου. */
+    private static final int WIN_HEIGHT = 400;
+    /** Κενό (gap) στη διάταξη. */
+    private static final int LAYOUT_GAP = 10;
+
+    // Σταθερές Γραμματοσειράς
+    /** Όνομα γραμματοσειράς αποτελεσμάτων. */
+    private static final String FONT_NAME = &quot;Consolas&quot;;
+    /** Μέγεθος γραμματοσειράς αποτελεσμάτων. */
+    private static final int FONT_SIZE = 12;
+
+    // Σταθερές Υπολογισμών
+    /** Πολλαπλασιαστής για μετατροπή σε ποσοστό. */
+    private static final double PERCENT_MULT = 100.0;
+    /** Μέγιστο μήκος ονόματος πριν την αποκοπή. */
+    private static final int MAX_NAME_LEN = 27;
+    /** Σύμβολο αποκοπής κειμένου. */
+    private static final String DOTS = &quot;...&quot;;
+    /** Αριθμός επαναλήψεων διαχωριστικής γραμμής. */
+    private static final int SEPARATOR_REPEAT = 65;
+
+    // Σταθερές Πινάκων Βάσης
+    /** Δείκτης στήλης ποσού (αν χρησιμοποιείται). */
+    private static final int COL_IDX_AMOUNT = 2;
+
+    /**
+     * Κατασκευαστής.
+     *
+     * @param manager Ο διαχειριστής προϋπολογισμού.
+     * @param dbPath  Η διαδρομή της βάσης δεδομένων.
+     */
+<span class="nc" id="L65">    public PercentageUI(final BudgetManager manager, final String dbPath) {</span>
+<span class="nc" id="L66">        setTitle(&quot;Ανάλυση Ποσοστών (Κείμενο)&quot;);</span>
+<span class="nc" id="L67">        setSize(WIN_WIDTH, WIN_HEIGHT);</span>
+<span class="nc" id="L68">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L69">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L70">        setLayout(new BorderLayout(LAYOUT_GAP, LAYOUT_GAP));</span>
+
+        // Πάνελ Επιλογών
+<span class="nc" id="L73">        JPanel controlPanel = new JPanel(new FlowLayout());</span>
+<span class="nc" id="L74">        controlPanel.add(new JLabel(&quot;Επιλέξτε Πίνακα:&quot;));</span>
+
+        // Δημιουργία του ComboBox με τα αντικείμενα TableOption
+<span class="nc" id="L77">        JComboBox&lt;TableOption&gt; comboTable = new JComboBox&lt;&gt;();</span>
+
+        // Προσθήκη των επιλογών
+<span class="nc" id="L80">        comboTable.addItem(new TableOption(&quot;Έσοδα&quot;, &quot;esoda&quot;));</span>
+<span class="nc" id="L81">        comboTable.addItem(new TableOption(&quot;Έξοδα&quot;, &quot;eksoda&quot;));</span>
+<span class="nc" id="L82">        comboTable.addItem(new TableOption(&quot;Κράτος&quot;, &quot;kratos&quot;));</span>
+<span class="nc" id="L83">        comboTable.addItem(new TableOption(&quot;Υπουργεία&quot;, &quot;ypourgeia&quot;));</span>
+<span class="nc" id="L84">        comboTable.addItem(new TableOption(</span>
+                &quot;Αποκεντρωμένες Διοικήσεις&quot;, &quot;apokentromenes&quot;));
+
+<span class="nc" id="L87">        controlPanel.add(comboTable);</span>
+
+        // Κουμπί υπολογισμού
+<span class="nc" id="L90">        JButton btnCalculate = new JButton(&quot;Υπολογισμός Ποσοστών&quot;);</span>
+<span class="nc" id="L91">        controlPanel.add(btnCalculate);</span>
+
+<span class="nc" id="L93">        add(controlPanel, BorderLayout.NORTH);</span>
+
+        // Περιοχή αποτελεσμάτων
+<span class="nc" id="L96">        JTextArea resultArea = new JTextArea();</span>
+<span class="nc" id="L97">        resultArea.setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));</span>
+<span class="nc" id="L98">        resultArea.setEditable(false);</span>
+<span class="nc" id="L99">        JScrollPane scrollPane = new JScrollPane(resultArea);</span>
+<span class="nc" id="L100">        add(scrollPane, BorderLayout.CENTER);</span>
+
+        // Action Listener για το κουμπί
+<span class="nc" id="L103">        btnCalculate.addActionListener(e -&gt; {</span>
+            // 1. Παίρνουμε το αντικείμενο TableOption
+<span class="nc" id="L105">            TableOption selectedOption = (TableOption) comboTable</span>
+<span class="nc" id="L106">                    .getSelectedItem();</span>
+
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            if (selectedOption == null) {</span>
+<span class="nc" id="L109">                return;</span>
+            }
+
+            // 2. Παίρνουμε την &quot;κρυφή&quot; τιμή για τη βάση
+<span class="nc" id="L113">            String table = selectedOption.getValue();</span>
+
+<span class="nc" id="L115">            double[] totals = manager.getTotal(table);</span>
+<span class="nc" id="L116">            double totalAmount = totals[1]; // Τρέχον σύνολο</span>
+
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (totalAmount &lt;= 0) {</span>
+<span class="nc" id="L119">                resultArea.setText(&quot;Σφάλμα: Το συνολικό ποσό του πίνακα &quot;</span>
+                        + &quot;είναι 0 ή αρνητικό.&quot;);
+<span class="nc" id="L121">                return;</span>
+            }
+
+<span class="nc" id="L124">            String sql = &quot;SELECT name, amount FROM &quot; + table;</span>
+
+<span class="nc" id="L126">            try (Connection conn = DriverManager.getConnection(dbPath);</span>
+<span class="nc" id="L127">                 Statement stmt = conn.createStatement();</span>
+<span class="nc" id="L128">                 ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="nc" id="L130">                StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L131">                sb.append(String.format(&quot;%-30s | %-15s | %-10s\n&quot;,</span>
+                        &quot;ΣΤΟΙΧΕΙΟ&quot;, &quot;ΠΟΣΟ&quot;, &quot;ΠΟΣΟΣΤΟ %&quot;));
+<span class="nc" id="L133">                sb.append(&quot;-&quot;.repeat(SEPARATOR_REPEAT)).append(&quot;\n&quot;);</span>
+
+<span class="nc bnc" id="L135" title="All 2 branches missed.">                while (rs.next()) {</span>
+<span class="nc" id="L136">                    String name = rs.getString(&quot;name&quot;);</span>
+<span class="nc" id="L137">                    double amount = rs.getDouble(&quot;amount&quot;);</span>
+<span class="nc" id="L138">                    double percent = (amount / totalAmount) * PERCENT_MULT;</span>
+
+                    // Κόψιμο ονόματος αν είναι πολύ μεγάλο
+                    String displayName;
+<span class="nc bnc" id="L142" title="All 2 branches missed.">                    if (name.length() &gt; MAX_NAME_LEN) {</span>
+<span class="nc" id="L143">                        displayName = name.substring(0, MAX_NAME_LEN) + DOTS;</span>
+                    } else {
+<span class="nc" id="L145">                        displayName = name;</span>
+                    }
+
+<span class="nc" id="L148">                    sb.append(String.format(&quot;%-30s | %15.2f | %9.2f%%\n&quot;,</span>
+<span class="nc" id="L149">                            displayName, amount, percent));</span>
+<span class="nc" id="L150">                }</span>
+
+<span class="nc" id="L152">                resultArea.setText(sb.toString());</span>
+<span class="nc" id="L153">                resultArea.setCaretPosition(0);</span>
+
+<span class="nc" id="L155">            } catch (SQLException ex) {</span>
+<span class="nc" id="L156">                JOptionPane.showMessageDialog(this,</span>
+<span class="nc" id="L157">                        &quot;Σφάλμα κατά την ανάκτηση: &quot; + ex.getMessage());</span>
+<span class="nc" id="L158">            }</span>
+<span class="nc" id="L159">        });</span>
+
+<span class="nc" id="L161">        setVisible(true);</span>
+<span class="nc" id="L162">    }</span>
+
+    /**
+     * Εσωτερική κλάση για την αντιστοίχιση ονόματος εμφάνισης και
+     * ονόματος πίνακα στη βάση.
+     */
+    private static final class TableOption {
+
+        /** Το εμφανιζόμενο όνομα (Label). */
+        private final String label;
+        /** Η τιμή για τη βάση δεδομένων (Value). */
+        private final String value;
+
+        /**
+         * Κατασκευαστής.
+         *
+         * @param lbl Το όνομα εμφάνισης.
+         * @param val Το όνομα πίνακα στη βάση.
+         */
+<span class="nc" id="L181">        TableOption(final String lbl, final String val) {</span>
+<span class="nc" id="L182">            this.label = lbl;</span>
+<span class="nc" id="L183">            this.value = val;</span>
+<span class="nc" id="L184">        }</span>
+
+        /**
+         * Επιστρέφει την τιμή για τη βάση.
+         *
+         * @return Το όνομα του πίνακα.
+         */
+        public String getValue() {
+<span class="nc" id="L192">            return value;</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L197">            return label;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
