@@ -37,6 +37,7 @@
    mvn compile
      
 ## 5. Οδηγίες Εκτέλεσης
+   cd στον φάκελο statewallet<br />
    Για εκκίνηση του προγράμματος από την γραμμή εντολών: java -cp target/statewallet.jar mainapp.StateWallet<br />
    Για εκκίνηση του προγράμματος από την γραφική διεπαφή: java -cp target/statewallet.jar mainapp.StateWalletUi<br />
    Για έλεγχο Checkstyle : mvn checkstyle:check<br />
