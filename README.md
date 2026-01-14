@@ -74,7 +74,7 @@
    Κάλυψη από JaCoCo<br />
 
 ## 10. Διάγραμμα UML
-      ## UML Class Diagram
+     
 
 ```mermaid
 classDiagram
